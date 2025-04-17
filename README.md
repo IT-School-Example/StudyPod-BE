@@ -3,7 +3,7 @@
 ## Environment
 ### Java 17, SpringBoot 3, Gradle
 
-# application.yml 추가 필요
+## application.yml 추가 필요
 ```yaml
 # 스프링 부트 서버가 실행되면 자동으로 로딩되는 파일
 # 스프링 프로필로 구동 환경 선택 (기본 로컬)
