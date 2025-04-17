@@ -1,0 +1,17 @@
+# 스프링 프로필 : prod (AWS EC2 서버로 톰캣 실행, H2 인메모리 DB)
+spring:
+  datasource:
+    jackson:
+      default-property-inclusion: non_null;
+    h2:
+      console:
+        enabled: false
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+  jpa:
+    show-sql: true # 전송 쿼리 확인, 애플리케이션 실행과정에 쿼리의 실행 구문을 모두 보여줌
+    hibernate:
+      ddl-auto: validate  # 운영 환경에서는 'update'로 변경
+    properties:
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect  # PostgreSQL 방언 사용
