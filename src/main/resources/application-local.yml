@@ -12,7 +12,9 @@ spring:
     hibernate:
       ddl-auto: create  # 매번 스키마 생성 (개발/로컬 환경에 적합)
     properties:
-      hibernate.dialect: org.hibernate.dialect.H2Dialect  # H2 방언 사용
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect  # H2 방언 사용
 
 #springdoc:
 #  swagger-ui:

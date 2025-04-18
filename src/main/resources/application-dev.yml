@@ -6,12 +6,31 @@ spring:
     console:
       enabled: true # /h2-console 설정
   datasource:
-    url: jdbc:postgres:192.168.1.95:5432/postgres
+    url: jdbc:postgresql://192.168.1.95:5432/postgres
     username: postgres
     password: 1234
   jpa:
     show-sql: true # 전송 쿼리 확인, 애플리케이션 실행과정에 쿼리의 실행 구문을 모두 보여줌
     hibernate:
-      ddl-auto: validate  # 운영 환경에서는 'update'로 변경
+      ddl-auto: validate  # 개발 환경에서는 담당자 외 'validate'로 변경
     properties:
-      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect  # PostgreSQL 방언 사용
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect  # PostgreSQL 방언 사용
+
+#springdoc:
+#  swagger-ui:
+#    path: /swagger-ui
+#    group-order: DESC
+#    tags-sorter: alpha
+#    operations-sorter: method
+#    disable-swagger-default-url: true
+#    display-request-duration: true
+#    doc-expansion: none
+#  api-docs:
+#    path: /api-docs
+#  show-actuator: true
+#  default-consumes-media-type: application/json
+#  default-produces-media-type: application/json
+#  paths-to-match:
+#    - /api/**
