@@ -20,7 +20,7 @@ public class StudyGroups extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "study_group_id")
-    private Long studyGroupId;
+    private Long id;
 
     @Column(name = "title", nullable = false)
     private String title;
