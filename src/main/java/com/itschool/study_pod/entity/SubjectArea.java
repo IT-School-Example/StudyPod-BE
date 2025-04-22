@@ -2,11 +2,13 @@ package com.itschool.study_pod.entity;
 
 import com.itschool.study_pod.enumclass.Subject;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@NoArgsConstructor
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @Table(name = "subject_areas")
 public class SubjectArea {
     @Id

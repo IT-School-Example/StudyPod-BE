@@ -21,7 +21,7 @@ public abstract class BaseEntity {
     private String createdBy;
 
     @CreatedDate
-    @Column(updatable = false, nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(updatable = false, nullable = false) // , columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
     private LocalDateTime createdAt;
 
     @LastModifiedBy
@@ -29,10 +29,10 @@ public abstract class BaseEntity {
     private String updatedBy;
 
     @LastModifiedDate
-    @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(nullable = false) // , columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
     private LocalDateTime updatedAt;
 
-    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    @Column(nullable = false) // , columnDefinition = "BOOLEAN DEFAULT FALSE"
     private boolean isDeleted;
 
     public void softDelete() {

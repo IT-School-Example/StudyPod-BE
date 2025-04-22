@@ -7,17 +7,14 @@ import com.itschool.study_pod.enumclass.FeeType;
 import com.itschool.study_pod.enumclass.MeetingMethod;
 import com.itschool.study_pod.enumclass.RecruitmentStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 @Table(name = "study_groups")
@@ -57,9 +54,9 @@ public class StudyGroup extends BaseEntity {
     @JoinColumn(name = "address_id", referencedColumnName = "sgg_id")
     private Sgg addressId;
 
-    /*@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "subject_area_id", nullable = false)*/
-    private Long subjectAreaId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subject_area_id", nullable = false)
+    private SubjectArea subjectArea;
 
     @ElementCollection
     @CollectionTable(name = "study_group_keywords",

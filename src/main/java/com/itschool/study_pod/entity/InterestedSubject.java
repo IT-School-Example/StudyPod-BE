@@ -2,20 +2,19 @@ package com.itschool.study_pod.entity;
 
 import com.itschool.study_pod.entity.base.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @Table(name = "interested_subjects")
 public class InterestedSubject extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "interested_subject_id", nullable = false)
-    private Long interestedSubjectId;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -23,8 +22,6 @@ public class InterestedSubject extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_area_id", nullable = false)
-    private SubjectArea subjectAreaId;
-
-
+    private SubjectArea subjectArea;
 
 }
