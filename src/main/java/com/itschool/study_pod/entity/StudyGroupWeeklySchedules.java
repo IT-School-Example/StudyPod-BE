@@ -1,9 +1,9 @@
 package com.itschool.study_pod.entity;
 
-import com.itschool.study_pod.enumclass.DayOfWeek;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 @Entity
