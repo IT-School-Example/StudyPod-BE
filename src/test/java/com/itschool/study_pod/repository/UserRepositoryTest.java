@@ -4,9 +4,13 @@ import com.itschool.study_pod.StudyPodApplicationTests;
 import com.itschool.study_pod.entity.User;
 import com.itschool.study_pod.enumclass.AccountRole;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,6 +18,16 @@ class UserRepositoryTest extends StudyPodApplicationTests {
 
     @Autowired
     private UserRepository userRepository;
+
+    @BeforeEach
+    public void beforeCleanUp() {
+        userRepository.deleteAll();
+    }
+
+    @AfterEach
+    public void afterCleanUp() {
+        userRepository.deleteAll();
+    }
 
     @Test
     @Transactional
@@ -118,11 +132,20 @@ class UserRepositoryTest extends StudyPodApplicationTests {
         // 삭제 후 데이터 개수 비교
         assertThat(afterCount).isEqualTo(beforeCount);
     }
-}
 
-/*@BeforeEach
-public void beforeCleanUp() {
-    System.out.println("User 테이블 전부 delete 시작");
-    userRepository.deleteAll(); // 테스트 전 데이터 초기화
-    System.out.println("User 테이블 전부 delete 완료");
-}*/
+    @Test
+    void findByEmail() {
+        User user = User.builder()
+                .email("find@example.com")
+                .password("pw")
+                .name("이름")
+                .role(AccountRole.ROLE_USER)
+                .build();
+
+        userRepository.save(user);
+        Optional<User> found = userRepository.findByEmail("find@example.com");
+
+        assertThat(found).isPresent();
+        assertThat(found.get().getEmail()).isEqualTo("find@example.com");
+    }
+}
