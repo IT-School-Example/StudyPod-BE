@@ -18,7 +18,7 @@ public class SubjectArea implements Convertible<SubjectAreaRequest, SubjectAreaR
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "subject_area_id", nullable = false)
-    private Long subjectAreaId;
+    private Long id;
 
     @Column(name = "subject_name", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -31,7 +31,7 @@ public class SubjectArea implements Convertible<SubjectAreaRequest, SubjectAreaR
 
     @Override
     public void update(SubjectAreaRequest request) {
-
+        this.subject = request.getSubject();
     }
 
     @Override
