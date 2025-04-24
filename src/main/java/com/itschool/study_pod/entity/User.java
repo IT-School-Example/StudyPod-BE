@@ -1,5 +1,8 @@
 package com.itschool.study_pod.entity;
 
+import com.itschool.study_pod.dto.request.UserInformationRequest;
+import com.itschool.study_pod.dto.request.UserPasswordRequest;
+import com.itschool.study_pod.dto.request.UserRequest;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.enumclass.AccountRole;
 import jakarta.persistence.*;
@@ -34,4 +37,23 @@ public class User extends BaseEntity {
 
     @Column(unique = true)
     private String nickname;
+
+    // update용
+    public void update(UserRequest request) {
+        if(request instanceof UserInformationRequest informationRequest) {
+            this.email = informationRequest.getEmail();
+            this.name = informationRequest.getName();
+        } else if(request instanceof UserPasswordRequest passwordRequest) {
+            this.password = passwordRequest.getPassword();
+        }
+    }
+
+    /*public void updateInformation(UserInformationRequest request) {
+        this.email = request.getEmail();
+        this.name = request.getName();
+    }
+
+    public void updatePassword(UserPasswordRequest request) {
+        this.password = request.getPassword();
+    }*/
 }
