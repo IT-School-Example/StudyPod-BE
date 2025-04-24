@@ -62,12 +62,13 @@ public class StudyGroup extends BaseEntity implements Convertible<StudyGroupRequ
     @JoinColumn(name = "subject_area_id", nullable = false)
     private SubjectArea subjectArea;
 
-    @ElementCollection
+    @Builder.Default
     @CollectionTable(name = "study_group_keywords",
             joinColumns = @JoinColumn(name = "study_group_id"))
     @Column(name = "keyword_name", nullable = false)
     private Set<String> keywords = new HashSet<>();
 
+    @Builder.Default
     @ElementCollection
     @CollectionTable(name = "study_group_weekly_schedules",
             joinColumns = @JoinColumn(name = "study_group_id"))
