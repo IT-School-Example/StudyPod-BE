@@ -1,138 +1,109 @@
 package com.itschool.study_pod.repository;
 
 import com.itschool.study_pod.StudyPodApplicationTests;
+import com.itschool.study_pod.dto.request.SubjectAreaRequest;
 import com.itschool.study_pod.entity.InterestedSubject;
 import com.itschool.study_pod.entity.SubjectArea;
 import com.itschool.study_pod.enumclass.Subject;
 import jakarta.persistence.EntityNotFoundException;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+
 @Transactional
 class SubjectAreaRepositoryTest extends StudyPodApplicationTests {
+
     @Autowired
     private SubjectAreaRepository subjectAreaRepository;
 
     @Autowired
     private InterestedSubjectRepository interestedSubjectRepository;
 
-//    @BeforeEach
-//    public void BeforeCleanUp() {
-//        System.out.println(this.getClass().getName() + " 테이블 전부 delete 시작");
-//        subjectAreaRepository.deleteAll();
-//        System.out.println(this.getClass().getName() + " 테이블 전부 delete 완료");
-//    }
+    // region CRUD 테스트
 
-//    @AfterEach
-//    public void AfterCleanUp() {
-//        System.out.println(this.getClass().getName() + " 테이블 전부 delete 시작");
-//        subjectAreaRepository.deleteAll();
-//        System.out.println(this.getClass().getName() + " 테이블 전부 delete 완료");
-//    }
-
-// 오류는 없는거 같은데.. 이게 맞나..?
-    // region CRUD
+    // 생성(Create) 테스트
     @Test
     void create() {
-
+        // 주제 영역 객체 생성
         SubjectArea entity = SubjectArea.builder()
                 .subject(Subject.IT)
                 .build();
 
-//        InterestedSubject interestedSubject = InterestedSubject.builder()
-//                .subjectArea(entity) // ?????????
-//                .build();
-
-
-        // 관심주제
+        // 저장 및 저장된 객체 반환
         SubjectArea savedEntity = subjectAreaRepository.save(entity);
 
-        SubjectArea findEntity = subjectAreaRepository.findById(savedEntity.getSubjectAreaId())
-                .orElseThrow(() -> new EntityNotFoundException());
-        System.out.println("entity : " + entity);
-        System.out.println("newEntity : " + savedEntity);
-
-        assertThat(entity == savedEntity).isTrue();
-
-//        assertThat(savedEntity.isDeleted()).isFalse(); // 엥....???
+        // 동일성 검증 (영속성 컨텍스트 내에서는 같은 엔티티로 인식)
+        assertThat(entity).isEqualTo(savedEntity);
     }
 
+    // 조회(Read) 테스트
     @Test
     void read() {
+        // 주제 영역 객체 생성 및 저장
         SubjectArea entity = SubjectArea.builder()
                 .subject(Subject.IT)
                 .build();
-
-//        InterestedSubject interestedSubject = InterestedSubject.builder()
-//                .subjectArea(entity) // ?????????
-//                .build();
-
-
-        // 관심주제
         SubjectArea savedEntity = subjectAreaRepository.save(entity);
 
-        SubjectArea findEntity = subjectAreaRepository.findById(savedEntity.getSubjectAreaId())
-                .orElseThrow(() -> new EntityNotFoundException());
-        System.out.println("entity : " + entity);
-        System.out.println("newEntity : " + savedEntity);
+        // ID 기반 조회
+        SubjectArea findEntity = subjectAreaRepository.findById(savedEntity.getId())
+                .orElseThrow(EntityNotFoundException::new);
 
-        assertThat(entity == savedEntity).isTrue();
-
-//        assertThat(savedEntity.isDeleted()).isFalse(); // 엥....???
+        // 조회한 엔티티가 저장된 엔티티와 동일한지 검증
+        assertThat(entity).isEqualTo(findEntity);
     }
 
+    // 수정(Update) 테스트
     @Test
     void update() {
+        // 초기 주제 영역 생성 및 저장
         SubjectArea entity = SubjectArea.builder()
                 .subject(Subject.IT)
                 .build();
-
-//        InterestedSubject interestedSubject = InterestedSubject.builder()
-//                .subjectArea(entity) // ?????????
-//                .build();
-
-
-        // 관심주제
         SubjectArea savedEntity = subjectAreaRepository.save(entity);
 
-        SubjectArea findEntity = subjectAreaRepository.findById(savedEntity.getSubjectAreaId())
-                .orElseThrow(() -> new EntityNotFoundException());
-        System.out.println("entity : " + entity);
-        System.out.println("newEntity : " + savedEntity);
+        // 엔티티 다시 조회
+        SubjectArea findEntity = subjectAreaRepository.findById(savedEntity.getId())
+                .orElseThrow(EntityNotFoundException::new);
 
-        assertThat(entity == savedEntity).isTrue();
+        // 변경할 주제 값
+        Subject updateSubject = Subject.BUSINESS;
 
-//        assertThat(savedEntity.isDeleted()).isFalse(); // 엥....???
+        // 요청 DTO 생성
+        SubjectAreaRequest dto = new SubjectAreaRequest(updateSubject);
+
+        // 업데이트 수행
+        findEntity.update(dto);
+
+        // 업데이트 내용 저장
+        SubjectArea updatedEntity = subjectAreaRepository.save(findEntity);
+
+        // 변경된 subject 값 검증
+        assertThat(updatedEntity.getSubject()).isEqualTo(updateSubject);
     }
 
+    // 삭제(Delete) 테스트
     @Test
     void delete() {
+        // 삭제 전 주제 영역 레코드 수 확인
         long beforeCount = subjectAreaRepository.count();
+
+        // 테스트용 주제 영역 생성 및 저장
         SubjectArea entity = SubjectArea.builder()
                 .subject(Subject.IT)
                 .build();
-
-//        InterestedSubject interestedSubject = InterestedSubject.builder()
-//                .subjectArea(entity) // ?????????
-//                .build();
-
-
-        // 관심주제
         SubjectArea savedEntity = subjectAreaRepository.save(entity);
 
-        SubjectArea findEntity = subjectAreaRepository.findById(savedEntity.getSubjectAreaId())
-                .orElseThrow(() -> new EntityNotFoundException());
-        System.out.println("entity : " + entity);
-        System.out.println("newEntity : " + savedEntity);
+        // 해당 엔티티 존재 시 삭제 수행
+        subjectAreaRepository.findById(savedEntity.getId())
+                .ifPresent(subjectAreaRepository::delete);
 
-        assertThat(entity == savedEntity).isTrue();
+        // 삭제 후 주제 영역 수 확인
+        long afterCount = subjectAreaRepository.count(); // 수정: interestedSubjectRepository -> subjectAreaRepository
 
-        // assertThat(savedEntity.isDeleted()).isFalse(); // 엥....???
+        // 삭제 전후 개수가 동일해야 함 (1개 추가 후 삭제 → 원래대로)
+        assertThat(beforeCount).isEqualTo(afterCount);
     }
-
 }
