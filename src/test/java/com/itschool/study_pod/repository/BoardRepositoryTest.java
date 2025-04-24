@@ -43,7 +43,7 @@ class BoardRepositoryTest extends StudyPodApplicationTests {
         System.out.println("entity : " + entity);
         System.out.println("savedEntity : " + savedEntity);
 
-        assertThat(entity == savedEntity).isTrue();
+        assertThat(entity).isEqualTo(savedEntity);
         assertThat(savedEntity.isDeleted()).isFalse();
     }
 
@@ -71,7 +71,7 @@ class BoardRepositoryTest extends StudyPodApplicationTests {
         Board findEntity = boardRepository.findById(savedEntity.getId())
                 .orElseThrow(() -> new EntityNotFoundException());
 
-        assertThat(entity == savedEntity).isTrue();
+        assertThat(entity).isEqualTo(findEntity);
     }
 
     @Test
@@ -99,9 +99,9 @@ class BoardRepositoryTest extends StudyPodApplicationTests {
                 .orElseThrow(() -> new EntityNotFoundException());
 
         findEntity.softDelete();
-        boardRepository.save(findEntity);
+        Board updatedEntity = boardRepository.save(findEntity);
 
-        assertThat(findEntity.isDeleted()).isTrue();
+        assertThat(updatedEntity.isDeleted()).isTrue();
     }
 
     @Test
