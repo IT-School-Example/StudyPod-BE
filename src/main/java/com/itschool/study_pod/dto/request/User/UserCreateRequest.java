@@ -1,6 +1,5 @@
-package com.itschool.study_pod.dto.request;
+package com.itschool.study_pod.dto.request.User;
 
-import com.itschool.study_pod.entity.User;
 import com.itschool.study_pod.enumclass.AccountRole;
 import lombok.*;
 

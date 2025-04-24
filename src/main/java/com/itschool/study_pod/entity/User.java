@@ -1,14 +1,13 @@
 package com.itschool.study_pod.entity;
 
-import com.itschool.study_pod.dto.request.UserCreateRequest;
-import com.itschool.study_pod.dto.request.UserInformationRequest;
-import com.itschool.study_pod.dto.request.UserPasswordRequest;
-import com.itschool.study_pod.dto.request.UserRequest;
+import com.itschool.study_pod.dto.request.User.UserCreateRequest;
+import com.itschool.study_pod.dto.request.User.UserInformationRequest;
+import com.itschool.study_pod.dto.request.User.UserPasswordRequest;
+import com.itschool.study_pod.dto.request.User.UserRequest;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.enumclass.AccountRole;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Getter
@@ -55,6 +54,8 @@ public class User extends BaseEntity {
             this.name = informationRequest.getName();
         } else if(request instanceof UserPasswordRequest passwordRequest) {
             this.password = passwordRequest.getPassword();
+        } else {
+            throw new IllegalArgumentException("지원하지 않는 요청 타입입니다: " + request.getClass().getSimpleName());
         }
     }
 }
