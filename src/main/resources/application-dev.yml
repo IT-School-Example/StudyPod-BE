@@ -10,13 +10,17 @@ spring:
     username: postgres
     password: 1234
   jpa:
-    show-sql: true # 전송 쿼리 확인, 애플리케이션 실행과정에 쿼리의 실행 구문을 모두 보여줌
+    #show-sql: true # 전송 쿼리 확인, 애플리케이션 실행과정에 쿼리의 실행 구문을 모두 보여줌
     hibernate:
       ddl-auto: validate  # 개발 환경에서는 담당자 외 'validate'로 변경
     properties:
       hibernate:
         format_sql: true
+        highlight_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect  # PostgreSQL 방언 사용
+logging.level:
+  org.hibernate.SQL: debug
+  org.hibernate.orm.jdbc.bind: trace
 
 #springdoc:
 #  swagger-ui:
