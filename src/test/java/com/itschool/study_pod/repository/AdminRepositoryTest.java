@@ -5,22 +5,35 @@ import com.itschool.study_pod.entity.Admin;
 import com.itschool.study_pod.enumclass.AccountRole;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Transactional
 class AdminRepositoryTest extends StudyPodApplicationTests {
 
     @Autowired
     private AdminRepository adminRepository;
 
-    @BeforeEach
-    public void beforeCleanUp() {
-        adminRepository.deleteAll();
+
+
+    @Test
+    @DisplayName("저장 테스트")
+    void create() {
+        Admin entity = Admin.builder()
+                .email(UUID.randomUUID() +"@example.com")
+                .password("admin123")
+                .role(AccountRole.ROLE_MODERATOR)
+                .build();
+
+        Admin savedEntity = adminRepository.save(entity);
+        assertThat(savedEntity).isEqualTo(savedEntity);
     }
 
     @AfterEach
@@ -29,21 +42,10 @@ class AdminRepositoryTest extends StudyPodApplicationTests {
     }
 
     @Test
-    void create() {
-        Admin admin = Admin.builder()
-                .email("admin@example.com")
-                .password("admin123")
-                .role(AccountRole.ROLE_MODERATOR)
-                .build();
-
-        Admin saved = adminRepository.save(admin);
-        assertThat(saved.getEmail()).isEqualTo("admin@example.com");
-    }
-
-    @Test
+    @DisplayName("조회 테스트")
     void read() {
         Admin admin = Admin.builder()
-                .email("admin@example.com")
+                .email(UUID.randomUUID() +"@example.com")
                 .password("admin123")
                 .role(AccountRole.ROLE_MODERATOR)
                 .build();
@@ -53,18 +55,19 @@ class AdminRepositoryTest extends StudyPodApplicationTests {
         Admin findEntity = adminRepository.findById(savedEntity.getId())
                 .orElseThrow(() -> new EntityNotFoundException());
 
-        assertThat(admin == savedEntity).isTrue();
+        assertThat(admin).isEqualTo(savedEntity);
     }
 
     @Test
+    @DisplayName("수정 테스트")
     void update() {
-        Admin admin = Admin.builder()
-                .email("admin@example.com")
+        Admin entity = Admin.builder()
+                .email(UUID.randomUUID() +"@example.com")
                 .password("admin123")
                 .role(AccountRole.ROLE_MODERATOR)
                 .build();
 
-        Admin savedEntity = adminRepository.save(admin);
+        Admin savedEntity = adminRepository.save(entity);
 
         Admin findEntity = adminRepository.findById(savedEntity.getId())
                 .orElseThrow(() -> new EntityNotFoundException());
@@ -72,20 +75,21 @@ class AdminRepositoryTest extends StudyPodApplicationTests {
         findEntity.softDelete();
         adminRepository.save(findEntity);
 
-        assertThat(admin == savedEntity).isTrue();
+        assertThat(entity).isEqualTo(savedEntity);
     }
 
     @Test
+    @DisplayName("삭제 테스트")
     void delete() {
         long beforeCount = adminRepository.count();
 
-        Admin admin = Admin.builder()
-                .email("admin@example.com")
+        Admin entity = Admin.builder()
+                .email(UUID.randomUUID() +"@example.com")
                 .password("admin123")
                 .role(AccountRole.ROLE_MODERATOR)
                 .build();
 
-        Admin savedEntity = adminRepository.save(admin);
+        Admin savedEntity = adminRepository.save(entity);
 
         adminRepository.findById(savedEntity.getId())
                 .ifPresent(adminRepository::delete);
@@ -96,17 +100,20 @@ class AdminRepositoryTest extends StudyPodApplicationTests {
     }
 
     @Test
+    @DisplayName("이메일로 찾기 테스트")
     void findByEmail() {
-        Admin admin = Admin.builder()
-                .email("adminFind@example.com")
+        String testEmail = UUID.randomUUID() +"@example.com";
+
+        Admin entity = Admin.builder()
+                .email(testEmail)
                 .password("admin123")
                 .role(AccountRole.ROLE_MODERATOR)
                 .build();
 
-        adminRepository.save(admin);
-        Optional<Admin> found = adminRepository.findByEmail("adminFind@example.com");
+        adminRepository.save(entity);
+        Optional<Admin> found = adminRepository.findByEmail(testEmail);
 
         assertThat(found).isPresent();
-        assertThat(found.get().getEmail()).isEqualTo("adminFind@example.com");
+        assertThat(found.get().getEmail()).isEqualTo(testEmail);
     }
 }

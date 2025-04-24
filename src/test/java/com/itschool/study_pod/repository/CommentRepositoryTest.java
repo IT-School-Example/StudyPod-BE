@@ -7,12 +7,18 @@ import com.itschool.study_pod.entity.User;
 import com.itschool.study_pod.enumclass.AccountRole;
 import com.itschool.study_pod.enumclass.BoardCategory;
 import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Transactional
 public class CommentRepositoryTest extends StudyPodApplicationTests {
 
     @Autowired
@@ -24,18 +30,26 @@ public class CommentRepositoryTest extends StudyPodApplicationTests {
     @Autowired
     private UserRepository userRepository;
 
-    @Test
-    @Transactional
-    void create() {
+
+
+    private User savedUser;
+
+    private Board savedBoard;
+
+
+
+    @BeforeEach
+    public void beforeSetUp() {
+
         User user = User.builder()
-                .email("create-test@subject.com")
+                .email(UUID.randomUUID() + "@subject.com")
                 .password("1234")
                 .role(AccountRole.ROLE_USER)
                 .name("abc")
-                .nickname("create-subject-test")
+                .nickname(UUID.randomUUID().toString())
                 .build();
 
-        User savedUser = userRepository.save(user);
+        savedUser = userRepository.save(user);
 
         Board board = Board.builder()
                 .title("제목")
@@ -44,8 +58,18 @@ public class CommentRepositoryTest extends StudyPodApplicationTests {
                 .user(savedUser)
                 .build();
 
-        Board savedBoard = boardRepository.save(board);
+        savedBoard = boardRepository.save(board);
+    }
 
+    @AfterEach
+    public void afterCleanUp() {
+        boardRepository.deleteAll();
+        userRepository.deleteAll();
+    }
+
+    @Test
+    @DisplayName("저장 테스트")
+    void create() {
         Comment comment = Comment.builder()
                 .content("댓글")
                 .board(savedBoard)
@@ -58,27 +82,8 @@ public class CommentRepositoryTest extends StudyPodApplicationTests {
     }
 
     @Test
-    @Transactional
+    @DisplayName("조회 테스트")
     void read() {
-        User user = User.builder()
-                .email("read-test@subject.com")
-                .password("1234")
-                .role(AccountRole.ROLE_USER)
-                .name("abc")
-                .nickname("read-subject-test")
-                .build();
-
-        User savedUser = userRepository.save(user);
-
-        Board board = Board.builder()
-                .title("제목")
-                .content("내용")
-                .category(BoardCategory.FREE)
-                .user(savedUser)
-                .build();
-
-        Board savedBoard = boardRepository.save(board);
-
         Comment comment = Comment.builder()
                 .content("댓글")
                 .board(savedBoard)
@@ -93,26 +98,8 @@ public class CommentRepositoryTest extends StudyPodApplicationTests {
     }
 
     @Test
-    @Transactional
+    @DisplayName("수정 테스트")
     void update() {
-        User user = User.builder()
-                .email("update-test@subject.com")
-                .password("1234")
-                .role(AccountRole.ROLE_USER)
-                .name("abc")
-                .nickname("update-subject-test")
-                .build();
-
-        User savedUser = userRepository.save(user);
-
-        Board board = Board.builder()
-                .title("제목")
-                .content("내용")
-                .category(BoardCategory.FREE)
-                .user(savedUser)
-                .build();
-
-        Board savedBoard = boardRepository.save(board);
 
         Comment comment = Comment.builder()
                 .content("댓글")
@@ -131,28 +118,10 @@ public class CommentRepositoryTest extends StudyPodApplicationTests {
     }
 
     @Test
-    @Transactional
+    @DisplayName("삭제 테스트")
     void delete() {
+
         long beforeCount = commentRepository.count();
-
-        User user = User.builder()
-                .email("delete-test@subject.com")
-                .password("1234")
-                .role(AccountRole.ROLE_USER)
-                .name("abc")
-                .nickname("delete-subject-test")
-                .build();
-
-        User savedUser = userRepository.save(user);
-
-        Board board = Board.builder()
-                .title("제목")
-                .content("내용")
-                .category(BoardCategory.FREE)
-                .user(savedUser)
-                .build();
-
-        Board savedBoard = boardRepository.save(board);
 
         Comment comment = Comment.builder()
                 .content("댓글")

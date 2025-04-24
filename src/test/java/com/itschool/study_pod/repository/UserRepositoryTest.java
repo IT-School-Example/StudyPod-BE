@@ -8,23 +8,25 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Transactional
 class UserRepositoryTest extends StudyPodApplicationTests {
 
     @Autowired
     private UserRepository userRepository;
 
     @Test
-    @Transactional
     void create() {
         // 사용자 객체 생성
         User entity = User.builder()
-                .email("create-test@user.com")
+                .email(UUID.randomUUID() +"@example.com")
                 .password("1234")
                 .role(AccountRole.ROLE_USER)
                 .name("abc")
-                .nickname("create-user-test")
+                .nickname(UUID.randomUUID().toString())
                 .build();
 
         // 사용자 저장
@@ -40,16 +42,15 @@ class UserRepositoryTest extends StudyPodApplicationTests {
     }
 
     @Test
-    @Transactional
     void read() {
 
         // 사용자 객체 생성
         User entity = User.builder()
-                .email("read-test@user.com")
+                .email(UUID.randomUUID() +"@example.com")
                 .password("1234")
                 .role(AccountRole.ROLE_USER)
                 .name("abc")
-                .nickname("read-user-test")
+                .nickname(UUID.randomUUID().toString())
                 .build();
 
         // 저장 후 저장된 객체 return
@@ -65,16 +66,15 @@ class UserRepositoryTest extends StudyPodApplicationTests {
     }
 
     @Test
-    @Transactional
     void update() {
 
         // 사용자 객체 생성
         User entity = User.builder()
-                .email("update-test@user.com")
+                .email(UUID.randomUUID() +"@example.com")
                 .password("1234")
                 .role(AccountRole.ROLE_USER)
                 .name("abc")
-                .nickname("update-user-test")
+                .nickname(UUID.randomUUID().toString())
                 .build();
 
         // 저장
@@ -93,17 +93,16 @@ class UserRepositoryTest extends StudyPodApplicationTests {
     }
 
     @Test
-    @Transactional
     void delete() {
         long beforeCount = userRepository.count();
 
         // 사용자 객체 생성
         User entity = User.builder()
-                .email("delete-test@user.com")
+                .email(UUID.randomUUID() +"@example.com")
                 .password("1234")
                 .role(AccountRole.ROLE_USER)
                 .name("abc")
-                .nickname("delete-user-test")
+                .nickname(UUID.randomUUID().toString())
                 .build();
 
         // 저장

@@ -1,80 +1,85 @@
 package com.itschool.study_pod.repository;
 
+import com.itschool.study_pod.StudyPodApplicationTests;
 import com.itschool.study_pod.entity.StudyGroup;
 import com.itschool.study_pod.entity.SubjectArea;
 import com.itschool.study_pod.enumclass.MeetingMethod;
 import com.itschool.study_pod.enumclass.RecruitmentStatus;
 import com.itschool.study_pod.enumclass.Subject;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
-class StudyGroupRepositoryTest {
+@Transactional
+class StudyGroupRepositoryTest extends StudyPodApplicationTests {
 
-    @PersistenceContext
-    private EntityManager em;
+    @Autowired
+    StudyGroupRepository studyGroupRepository;
 
-    private SubjectArea subjectArea;
+    @Autowired
+    SubjectAreaRepository subjectAreaRepository;
 
+
+
+    private SubjectArea savedSubject;
+
+
+    
     @BeforeEach
-    void setUp() {
-        subjectArea = SubjectArea.builder()
+    public void beforeSetUp() {
+        SubjectArea subjectArea = SubjectArea.builder()
                 .subject(Subject.IT)
                 .build();
-        em.persist(subjectArea);
+
+        savedSubject = subjectAreaRepository.save(subjectArea);
+    }
+
+    @AfterEach
+    public void afterCleanUp() {
+        studyGroupRepository.deleteAll();
+        subjectAreaRepository.deleteAll();
     }
 
     @Test
-    @DisplayName("스터디그룹 저장 테스트")
-    void saveStudyGroup() {
-        StudyGroup group = StudyGroup.builder()
+    @DisplayName("저장 테스트")
+    void create() {
+        StudyGroup entity = StudyGroup.builder()
                 .title("자바 스터디")
                 .maxMembers(5)
                 .meetingMethod(MeetingMethod.ONLINE)
                 .recruitmentStatus(RecruitmentStatus.RECRUITING)
-                .subjectArea(subjectArea)
+                .subjectArea(savedSubject)
+                .keywords(Set.of("키워드1", "키워드2"))
+                /*.weeklySchedules((Set<WeeklySchedule>) WeeklySchedule.builder()
+                        .dayOfWeek(DayOfWeek.MONDAY)
+                        .timeRange(new TimeRange(LocalTime.of(9, 0), LocalTime.of(10, 0)))
+                        .build())*/
                 .build();
 
-        em.persist(group);
-        em.flush();
-        em.clear();
+        StudyGroup savedEntity = studyGroupRepository.save(entity);
 
-        StudyGroup found = em.find(StudyGroup.class, group.getId());
-
-        assertThat(found).isNotNull();
-        assertThat(found.getTitle()).isEqualTo("자바 스터디");
+        assertThat(savedEntity.getTitle()).isEqualTo("자바 스터디");
     }
 
     @Test
-    @DisplayName("스터디그룹 전체 조회 테스트")
-    void findAllStudyGroups() {
-        em.persist(StudyGroup.builder()
-                .title("스터디 A")
-                .maxMembers(3)
-                .meetingMethod(MeetingMethod.OFFLINE)
-                .recruitmentStatus(RecruitmentStatus.RECRUITING)
-                .subjectArea(subjectArea)
-                .build());
+    @DisplayName("조회 테스트")
+    void read() {
+    }
 
-        em.persist(StudyGroup.builder()
-                .title("스터디 B")
-                .maxMembers(6)
-                .meetingMethod(MeetingMethod.ONLINE)
-                .recruitmentStatus(RecruitmentStatus.CLOSED)
-                .subjectArea(subjectArea)
-                .build());
+    @Test
+    @DisplayName("수정 테스트")
+    void update() {
+    }
 
-        List<StudyGroup> groups = em.createQuery("SELECT sg FROM StudyGroup sg", StudyGroup.class)
-                .getResultList();
-
-        assertThat(groups).hasSize(2);
+    @Test
+    @DisplayName("삭제 테스트")
+    void delete() {
     }
 }

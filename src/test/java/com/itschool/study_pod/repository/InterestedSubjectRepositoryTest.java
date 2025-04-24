@@ -7,9 +7,14 @@ import com.itschool.study_pod.entity.User;
 import com.itschool.study_pod.enumclass.AccountRole;
 import com.itschool.study_pod.enumclass.Subject;
 import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,31 +30,45 @@ class InterestedSubjectRepositoryTest extends StudyPodApplicationTests {
     @Autowired
     private SubjectAreaRepository subjectAreaRepository;
 
-    // region CRUD 테스트
 
-    // 생성(Create) 테스트
-    @Test
-    void create() {
-        // 사용자 생성
+
+    private User savedUser;
+
+    private SubjectArea savedSubject;
+
+
+
+    @BeforeEach
+    public void beforeSetUp() {
+
         User user = User.builder()
-                .email("create-test@example.com")
+                .email(UUID.randomUUID() + "@subject.com")
                 .password("1234")
-                .role(AccountRole.ROLE_SUPER)
+                .role(AccountRole.ROLE_USER)
                 .name("abc")
-                .nickname("create-subject-test")
+                .nickname(UUID.randomUUID().toString())
                 .build();
 
-        // 주제 영역 생성
+        savedUser = userRepository.save(user);
+
         SubjectArea subjectArea = SubjectArea.builder()
                 .subject(Subject.IT)
                 .build();
 
-        // 사용자 저장
-        User savedUser = userRepository.save(user);
+        savedSubject = subjectAreaRepository.save(subjectArea);
+    }
 
-        // 주제 영역 저장
-        SubjectArea savedSubject = subjectAreaRepository.save(subjectArea);
+    @AfterEach
+    public void afterCleanUp() {
+        interestedSubjectRepository.deleteAll();
+        userRepository.deleteAll();
+        subjectAreaRepository.deleteAll();
+    }
 
+    // 생성(Create) 테스트
+    @Test
+    @DisplayName("저장 테스트")
+    void create() {
         // 관심 주제 생성 및 저장
         InterestedSubject entity = InterestedSubject.builder()
                 .user(savedUser)
@@ -65,24 +84,8 @@ class InterestedSubjectRepositoryTest extends StudyPodApplicationTests {
 
     // 조회(Read) 테스트
     @Test
+    @DisplayName("조회 테스트")
     void read() {
-        // 사용자 생성
-        User user = User.builder()
-                .email("read-test@example.com")
-                .password("1234")
-                .role(AccountRole.ROLE_SUPER)
-                .name("abc")
-                .nickname("read-subject-test")
-                .build();
-
-        // 주제 영역 생성
-        SubjectArea subjectArea = SubjectArea.builder()
-                .subject(Subject.IT)
-                .build();
-
-        // 사용자 및 주제 영역 저장
-        User savedUser = userRepository.save(user);
-        SubjectArea savedSubject = subjectAreaRepository.save(subjectArea);
 
         // 관심 주제 저장
         InterestedSubject entity = InterestedSubject.builder()
@@ -105,20 +108,6 @@ class InterestedSubjectRepositoryTest extends StudyPodApplicationTests {
     // 수정(Update) 테스트
     @Test
     void update() {
-        // 사용자 및 주제 영역 생성 및 저장
-        User user = User.builder()
-                .email("update-test@example.com")
-                .password("1234")
-                .role(AccountRole.ROLE_SUPER)
-                .name("abc")
-                .nickname("update-subject-test")
-                .build();
-        User savedUser = userRepository.save(user);
-
-        SubjectArea subjectArea = SubjectArea.builder()
-                .subject(Subject.IT)
-                .build();
-        SubjectArea savedSubject = subjectAreaRepository.save(subjectArea);
 
         // 관심 주제 저장
         InterestedSubject entity = InterestedSubject.builder()
@@ -142,21 +131,6 @@ class InterestedSubjectRepositoryTest extends StudyPodApplicationTests {
     void delete() {
         // 삭제 전 개수 저장
         long beforeCount = interestedSubjectRepository.count();
-
-        // 사용자 및 주제 영역 생성 및 저장
-        User user = User.builder()
-                .email("delete-test@example.com")
-                .password("1234")
-                .role(AccountRole.ROLE_SUPER)
-                .name("abc")
-                .nickname("delete-subject-test")
-                .build();
-        User savedUser = userRepository.save(user);
-
-        SubjectArea subjectArea = SubjectArea.builder()
-                .subject(Subject.IT)
-                .build();
-        SubjectArea savedSubject = subjectAreaRepository.save(subjectArea);
 
         // 관심 주제 저장
         InterestedSubject entity = InterestedSubject.builder()

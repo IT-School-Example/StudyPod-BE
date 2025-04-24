@@ -1,11 +1,12 @@
 package com.itschool.study_pod.repository;
 
 import com.itschool.study_pod.StudyPodApplicationTests;
-import com.itschool.study_pod.dto.request.SubjectAreaRequest;
-import com.itschool.study_pod.entity.InterestedSubject;
+import com.itschool.study_pod.dto.request.SubjectArea.SubjectAreaRequest;
 import com.itschool.study_pod.entity.SubjectArea;
 import com.itschool.study_pod.enumclass.Subject;
 import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,13 +19,15 @@ class SubjectAreaRepositoryTest extends StudyPodApplicationTests {
     @Autowired
     private SubjectAreaRepository subjectAreaRepository;
 
-    @Autowired
-    private InterestedSubjectRepository interestedSubjectRepository;
 
-    // region CRUD 테스트
+    @AfterEach
+    public void afterCleanUp() {
+        subjectAreaRepository.deleteAll();
+    }
 
     // 생성(Create) 테스트
     @Test
+    @DisplayName("저장 테스트")
     void create() {
         // 주제 영역 객체 생성
         SubjectArea entity = SubjectArea.builder()
@@ -40,6 +43,7 @@ class SubjectAreaRepositoryTest extends StudyPodApplicationTests {
 
     // 조회(Read) 테스트
     @Test
+    @DisplayName("조회 테스트")
     void read() {
         // 주제 영역 객체 생성 및 저장
         SubjectArea entity = SubjectArea.builder()
@@ -57,6 +61,7 @@ class SubjectAreaRepositoryTest extends StudyPodApplicationTests {
 
     // 수정(Update) 테스트
     @Test
+    @DisplayName("수정 테스트")
     void update() {
         // 초기 주제 영역 생성 및 저장
         SubjectArea entity = SubjectArea.builder()
@@ -86,6 +91,7 @@ class SubjectAreaRepositoryTest extends StudyPodApplicationTests {
 
     // 삭제(Delete) 테스트
     @Test
+    @DisplayName("삭제 테스트")
     void delete() {
         // 삭제 전 주제 영역 레코드 수 확인
         long beforeCount = subjectAreaRepository.count();

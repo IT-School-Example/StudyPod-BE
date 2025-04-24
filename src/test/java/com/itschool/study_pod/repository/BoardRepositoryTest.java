@@ -1,12 +1,19 @@
 package com.itschool.study_pod.repository;
 
 import com.itschool.study_pod.StudyPodApplicationTests;
-import com.itschool.study_pod.entity.*;
-import com.itschool.study_pod.enumclass.*;
+import com.itschool.study_pod.entity.Board;
+import com.itschool.study_pod.entity.User;
+import com.itschool.study_pod.enumclass.AccountRole;
+import com.itschool.study_pod.enumclass.BoardCategory;
 import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,17 +26,34 @@ class BoardRepositoryTest extends StudyPodApplicationTests {
     @Autowired
     private UserRepository userRepository;
 
-    @Test
-    void create() {
+
+
+    private User savedUser;
+
+
+
+    @BeforeEach
+    public void beforeSetUp() {
         User user = User.builder()
-                .email("create-test@subject.com")
+                .email("create-board-test@subject.com")
                 .password("1234")
                 .role(AccountRole.ROLE_USER)
                 .name("abc")
-                .nickname("create-subject-test")
+                .nickname(UUID.randomUUID().toString())
                 .build();
 
-        User savedUser = userRepository.save(user);
+        savedUser = userRepository.save(user);
+    }
+
+    @AfterEach
+    public void afterCleanUp() {
+        boardRepository.deleteAll();
+        userRepository.deleteAll();
+    }
+
+    @Test
+    @DisplayName("저장 테스트")
+    void create() {
 
         Board entity = Board.builder()
                 .title("제목")
@@ -48,16 +72,8 @@ class BoardRepositoryTest extends StudyPodApplicationTests {
     }
 
     @Test
+    @DisplayName("조회 테스트")
     void read() {
-        User user = User.builder()
-                .email("read-test@subject.com")
-                .password("1234")
-                .role(AccountRole.ROLE_USER)
-                .name("abc")
-                .nickname("read-subject-test")
-                .build();
-
-        User savedUser = userRepository.save(user);
 
         Board entity = Board.builder()
                 .title("제목")
@@ -75,16 +91,8 @@ class BoardRepositoryTest extends StudyPodApplicationTests {
     }
 
     @Test
+    @DisplayName("수정 테스트")
     void update() {
-        User user = User.builder()
-                .email("update-test@subject.com")
-                .password("1234")
-                .role(AccountRole.ROLE_USER)
-                .name("abc")
-                .nickname("update-subject-test")
-                .build();
-
-        User savedUser = userRepository.save(user);
 
         Board entity = Board.builder()
                 .title("제목")
@@ -105,18 +113,9 @@ class BoardRepositoryTest extends StudyPodApplicationTests {
     }
 
     @Test
+    @DisplayName("삭제 테스트")
     void delete() {
         long beforeCount = boardRepository.count();
-
-        User user = User.builder()
-                .email("delete-test@subject.com")
-                .password("1234")
-                .role(AccountRole.ROLE_USER)
-                .name("abc")
-                .nickname("delete-subject-test")
-                .build();
-
-        User savedUser = userRepository.save(user);
 
         Board entity = Board.builder()
                 .title("제목")
