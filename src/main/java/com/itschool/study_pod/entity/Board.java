@@ -5,6 +5,7 @@ import com.itschool.study_pod.dto.request.Board.BoardRequest;
 import com.itschool.study_pod.dto.request.Board.BoardUpdateRequest;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.enumclass.BoardCategory;
+import com.itschool.study_pod.ifs.Updatable;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,7 +15,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Table(name = "boards")
-public class Board extends BaseEntity {
+public class Board extends BaseEntity implements Updatable<BoardUpdateRequest> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_id")
@@ -60,12 +61,9 @@ public class Board extends BaseEntity {
     }
 
     // update용
-    public void update(BoardRequest request) {
-        if(request instanceof BoardUpdateRequest informationRequest) {
-            this.title = informationRequest.getTitle();
-            this.content = informationRequest.getContent();
-        } else {
-            throw new IllegalArgumentException("지원하지 않는 요청 타입입니다: " + request.getClass().getSimpleName());
-        }
+    @Override
+    public void update(BoardUpdateRequest request) {
+        this.title = request.getTitle();
+        this.content = request.getContent();
     }
 }

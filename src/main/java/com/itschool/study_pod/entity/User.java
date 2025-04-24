@@ -6,6 +6,7 @@ import com.itschool.study_pod.dto.request.User.UserPasswordRequest;
 import com.itschool.study_pod.dto.request.User.UserRequest;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.enumclass.AccountRole;
+import com.itschool.study_pod.ifs.Updatable;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,7 +16,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Table(name = "users")
-public class User extends BaseEntity {
+public class User extends BaseEntity implements Updatable<UserRequest> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,6 +49,7 @@ public class User extends BaseEntity {
     }
 
     // update용
+    @Override
     public void update(UserRequest request) {
         if(request instanceof UserInformationRequest informationRequest) {
             this.email = informationRequest.getEmail();
