@@ -43,20 +43,15 @@ public class Board extends BaseEntity implements Updatable<BoardUpdateRequest> {
     @JoinColumn(name = "study_group_id")
     private StudyGroup studyGroup;
 
-    public static Board of (BoardCreateRequest request) { // create용
+    // create용, User, Admin, StudyGroup 객체는 서비스 계층에서 주입
+    public static Board of (BoardCreateRequest request, User user, Admin admin, StudyGroup studyGroup) {
         return Board.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
                 .category(request.getCategory())
-                .user(User.builder()
-                        .id(request.getUserId())
-                        .build())
-                .admin(Admin.builder()
-                        .id(request.getAdminId())
-                        .build())
-                .studyGroup(StudyGroup.builder()
-                        .id(request.getStudyGroupId())
-                        .build())
+                .user(user)
+                .admin(admin)
+                .studyGroup(studyGroup)
                 .build();
     }
 
