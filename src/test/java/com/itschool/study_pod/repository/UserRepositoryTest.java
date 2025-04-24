@@ -6,7 +6,6 @@ import com.itschool.study_pod.enumclass.AccountRole;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -119,10 +118,3 @@ class UserRepositoryTest extends StudyPodApplicationTests {
         assertThat(afterCount).isEqualTo(beforeCount);
     }
 }
-
-/*@BeforeEach
-public void beforeCleanUp() {
-    System.out.println("User 테이블 전부 delete 시작");
-    userRepository.deleteAll(); // 테스트 전 데이터 초기화
-    System.out.println("User 테이블 전부 delete 완료");
-}*/

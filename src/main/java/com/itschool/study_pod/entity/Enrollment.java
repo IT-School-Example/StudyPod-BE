@@ -8,17 +8,15 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
-@EntityListeners(AuditingEntityListener.class)
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 @Table(name = "enrollments")
 public class Enrollment extends BaseEntity {
-
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "enrollment_id")
     private Long id;
 
@@ -34,8 +32,9 @@ public class Enrollment extends BaseEntity {
     @Column(nullable = false)
     private EnrollmentStatus status;
 
-    @Column(name = "study_group_id", nullable = false)
-    private Long studyGroupId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "study_group_id", nullable = false)
+    private StudyGroup studyGroup;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

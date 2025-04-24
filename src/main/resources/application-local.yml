@@ -1,20 +1,28 @@
 # 스프링 프로필 : local (본인 로컬 컴퓨터로 톰캣 실행, 원내 Postgresql DB)
 spring:
   jackson:
-    default-property-inclusion: non_null;
+    default-property-inclusion: non_null
   h2:
     console:
       enabled: true # /h2-console 설정
   datasource:
     url: jdbc:h2:mem:testdb # 메모리 H2 DB 경로 설정
   jpa:
-    show-sql: true # 전송 쿼리 확인, 애플리케이션 실행과정에 쿼리의 실행 구문을 모두 보여줌
+    #show-sql: true # 전송 쿼리 확인, 애플리케이션 실행과정에 쿼리의 실행 구문을 모두 보여줌
     hibernate:
       ddl-auto: create  # 매번 스키마 생성 (개발/로컬 환경에 적합)
     properties:
       hibernate:
         format_sql: true
+        highlight_sql: true
         dialect: org.hibernate.dialect.H2Dialect  # H2 방언 사용
+        use_sql_comments: true
+logging.level:
+  org.hibernate.SQL: debug
+  # 하이버네이트 6 이상
+  org.hibernate.orm.jdbc.bind: trace
+  # 하이버네이트 5 이하
+  #org.hibernate.type.descriptor.sql.BasicBinder: trace
 
 #springdoc:
 #  swagger-ui:
