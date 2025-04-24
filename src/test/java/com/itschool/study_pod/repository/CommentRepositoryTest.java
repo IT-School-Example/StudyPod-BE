@@ -53,7 +53,7 @@ public class CommentRepositoryTest extends StudyPodApplicationTests {
 
         Comment savedComment = commentRepository.save(comment);
 
-        assertThat(comment == savedComment).isTrue();
+        assertThat(comment).isEqualTo(savedComment);
         assertThat(savedComment.isDeleted()).isFalse();
     }
 
@@ -89,7 +89,7 @@ public class CommentRepositoryTest extends StudyPodApplicationTests {
         Comment findParent = commentRepository.findById(savedComment.getId())
                 .orElseThrow(() -> new EntityNotFoundException());
 
-        assertThat(comment == savedComment).isTrue();
+        assertThat(comment).isEqualTo(savedComment);
     }
 
     @Test
@@ -121,13 +121,13 @@ public class CommentRepositoryTest extends StudyPodApplicationTests {
 
         Comment savedComment = commentRepository.save(comment);
 
-        Comment findParent = commentRepository.findById(savedComment.getId())
+        Comment findComment = commentRepository.findById(savedComment.getId())
                 .orElseThrow(() -> new EntityNotFoundException());
 
-        findParent.softDelete();
-        commentRepository.save(findParent);
+        findComment.softDelete();
+        commentRepository.save(findComment);
 
-        assertThat(findParent.isDeleted()).isTrue();
+        assertThat(findComment.isDeleted()).isTrue();
     }
 
     @Test
