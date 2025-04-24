@@ -1,7 +1,7 @@
 package com.itschool.study_pod.controller.base;
 
 import com.itschool.study_pod.ifs.CrudInterface;
-import com.itschool.study_pod.ifs.Updatable;
+import com.itschool.study_pod.ifs.Convertible;
 import com.itschool.study_pod.dto.ApiResponse;
 import com.itschool.study_pod.service.CrudService;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public abstract class CrudController<ReqDto, ResDto, Entity extends Updatable> implements CrudInterface<ReqDto, ResDto> {
+public abstract class CrudController<ReqDto, ResDto, Entity extends Convertible> implements CrudInterface<ReqDto, ResDto> {
 
     protected final CrudService<ReqDto, ResDto, Entity> baseService;
 

@@ -4,9 +4,10 @@ import com.itschool.study_pod.dto.request.User.UserCreateRequest;
 import com.itschool.study_pod.dto.request.User.UserInformationRequest;
 import com.itschool.study_pod.dto.request.User.UserPasswordRequest;
 import com.itschool.study_pod.dto.request.User.UserRequest;
+import com.itschool.study_pod.dto.response.UserResponse;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.enumclass.AccountRole;
-import com.itschool.study_pod.ifs.Updatable;
+import com.itschool.study_pod.ifs.Convertible;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,7 +17,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Table(name = "users")
-public class User extends BaseEntity implements Updatable<UserRequest> {
+public class User extends BaseEntity implements Convertible<UserRequest, UserResponse> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +40,7 @@ public class User extends BaseEntity implements Updatable<UserRequest> {
     @Column(unique = true)
     private String nickname;
 
-    public static User of (UserCreateRequest request) { // create용
+    public static User of(UserCreateRequest request) { // create용
         return User.builder()
                 .email(request.getName())
                 .password(request.getPassword())
@@ -59,5 +60,16 @@ public class User extends BaseEntity implements Updatable<UserRequest> {
         } else {
             throw new IllegalArgumentException("지원하지 않는 요청 타입입니다: " + request.getClass().getSimpleName());
         }
+    }
+
+    @Override
+    public UserResponse response() {
+        return UserResponse.builder()
+                .id(this.id)
+                .email(this.email)
+                .role(this.role)
+                .name(this.name)
+                .nickname(this.nickname)
+                .build();
     }
 }

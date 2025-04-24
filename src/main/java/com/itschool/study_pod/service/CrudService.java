@@ -2,7 +2,7 @@ package com.itschool.study_pod.service;
 
 
 import com.itschool.study_pod.ifs.CrudInterface;
-import com.itschool.study_pod.ifs.Updatable;
+import com.itschool.study_pod.ifs.Convertible;
 import com.itschool.study_pod.dto.ApiResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public abstract class CrudService<ReqDto, ResDto, Entity extends Updatable> implements CrudInterface<ReqDto, ResDto> {
+public abstract class CrudService<ReqDto, ResDto, Entity extends Convertible> implements CrudInterface<ReqDto, ResDto> {
 
     protected final JpaRepository<Entity, Long> baseRepository;
 
@@ -64,7 +64,7 @@ public abstract class CrudService<ReqDto, ResDto, Entity extends Updatable> impl
         List<ResDto> responseList = new ArrayList<>();
 
         for(Entity entity : entities){
-            responseList.add(toResponseDto(entity));
+            responseList.add((ResDto) entity.response());
         }
 
         return responseList;
@@ -78,10 +78,10 @@ public abstract class CrudService<ReqDto, ResDto, Entity extends Updatable> impl
 
     protected abstract Entity toEntity(ReqDto requestEntity);
 
-    protected abstract ResDto toResponseDto(Entity entity);
+    // protected abstract ResDto toResponseDto(Entity entity);
 
     protected ResponseEntity<ApiResponse<ResDto>> apiResponse(Entity entity) {
-        return ResponseEntity.ok(ApiResponse.OK(toResponseDto(entity)));
+        return ResponseEntity.ok(ApiResponse.OK((ResDto) entity.response()));
     }
 
     /*public final ResponseEntity<ApiResponse<List<Res>>> convertPageToList(Page<Entity> entityPage) {
