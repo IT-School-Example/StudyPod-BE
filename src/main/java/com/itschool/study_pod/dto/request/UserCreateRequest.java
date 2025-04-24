@@ -20,13 +20,4 @@ public class UserCreateRequest extends UserRequest {
 
     // nickname 필수 값 아니니 필드 추가, 삭제 가능
     private String nickname;
-
-    public User toEntity() { // create용
-        return User.builder()
-                .email(email)
-                .password(password)
-                .role(role)
-                .name(name)
-                .build();
-    }
 }

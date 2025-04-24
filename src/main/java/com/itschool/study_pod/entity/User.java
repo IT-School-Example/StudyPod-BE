@@ -1,5 +1,6 @@
 package com.itschool.study_pod.entity;
 
+import com.itschool.study_pod.dto.request.UserCreateRequest;
 import com.itschool.study_pod.dto.request.UserInformationRequest;
 import com.itschool.study_pod.dto.request.UserPasswordRequest;
 import com.itschool.study_pod.dto.request.UserRequest;
@@ -38,6 +39,15 @@ public class User extends BaseEntity {
     @Column(unique = true)
     private String nickname;
 
+    public static User of (UserCreateRequest request) { // create용
+        return User.builder()
+                .email(request.getName())
+                .password(request.getPassword())
+                .role(request.getRole())
+                .name(request.getName())
+                .build();
+    }
+
     // update용
     public void update(UserRequest request) {
         if(request instanceof UserInformationRequest informationRequest) {
@@ -47,13 +57,4 @@ public class User extends BaseEntity {
             this.password = passwordRequest.getPassword();
         }
     }
-
-    /*public void updateInformation(UserInformationRequest request) {
-        this.email = request.getEmail();
-        this.name = request.getName();
-    }
-
-    public void updatePassword(UserPasswordRequest request) {
-        this.password = request.getPassword();
-    }*/
 }
