@@ -65,6 +65,7 @@ public class StudyGroup extends BaseEntity {
     private Set<String> keywords = new HashSet<>();
 
     @Builder.Default
+    @ElementCollection
     @CollectionTable(name = "study_group_weekly_schedules",
             joinColumns = @JoinColumn(name = "study_group_id"))
     private Set<WeeklySchedule> weeklySchedules = new HashSet<>();
