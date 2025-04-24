@@ -1,6 +1,10 @@
 package com.itschool.study_pod.entity;
 
+import com.itschool.study_pod.dto.request.Comment.CommentRequest;
+import com.itschool.study_pod.dto.request.Enrollment.EnrollmentRequest;
+import com.itschool.study_pod.dto.response.CommentResponse;
 import com.itschool.study_pod.entity.base.BaseEntity;
+import com.itschool.study_pod.ifs.Convertible;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,7 +14,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Table(name = "comments")
-public class Comment extends BaseEntity {
+public class Comment extends BaseEntity implements Convertible<CommentRequest, CommentResponse> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
@@ -26,4 +30,19 @@ public class Comment extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private Comment parentComment;
+
+    public static Comment of(CommentRequest request) { // create용
+        return Comment.builder()
+                .build();
+    }
+
+    @Override
+    public void update(CommentRequest request) {
+
+    }
+
+    @Override
+    public CommentResponse response() {
+        return null;
+    }
 }

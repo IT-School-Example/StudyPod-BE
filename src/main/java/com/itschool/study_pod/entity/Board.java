@@ -3,9 +3,10 @@ package com.itschool.study_pod.entity;
 import com.itschool.study_pod.dto.request.Board.BoardCreateRequest;
 import com.itschool.study_pod.dto.request.Board.BoardRequest;
 import com.itschool.study_pod.dto.request.Board.BoardUpdateRequest;
+import com.itschool.study_pod.dto.response.BoardResponse;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.enumclass.BoardCategory;
-import com.itschool.study_pod.ifs.Updatable;
+import com.itschool.study_pod.ifs.Convertible;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,7 +16,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Table(name = "boards")
-public class Board extends BaseEntity implements Updatable<BoardUpdateRequest> {
+public class Board extends BaseEntity implements Convertible<BoardRequest, BoardResponse> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_id")
@@ -55,10 +56,23 @@ public class Board extends BaseEntity implements Updatable<BoardUpdateRequest> {
                 .build();
     }
 
-    // update용
+    public static Board of(BoardRequest request) { // create용
+        return Board.builder()
+                .build();
+    }
+
     @Override
-    public void update(BoardUpdateRequest request) {
-        this.title = request.getTitle();
-        this.content = request.getContent();
+    public void update(BoardRequest request) {
+        if(request instanceof BoardUpdateRequest updateRequest) {
+            this.title = updateRequest.getTitle();
+            this.content = updateRequest.getContent();
+        } else {
+            throw new IllegalArgumentException("지원하지 않는 요청 타입입니다: " + request.getClass().getSimpleName());
+        }
+    }
+
+    @Override
+    public BoardResponse response() {
+        return null;
     }
 }

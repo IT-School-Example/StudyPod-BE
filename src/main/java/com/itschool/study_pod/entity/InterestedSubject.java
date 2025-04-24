@@ -1,6 +1,10 @@
 package com.itschool.study_pod.entity;
 
+import com.itschool.study_pod.dto.request.InterestedSubject.InterestedSubjectRequest;
+import com.itschool.study_pod.dto.request.StudyGroup.StudyGroupRequest;
+import com.itschool.study_pod.dto.response.InterestedSubjectResponse;
 import com.itschool.study_pod.entity.base.BaseEntity;
+import com.itschool.study_pod.ifs.Convertible;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,7 +14,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Table(name = "interested_subjects")
-public class InterestedSubject extends BaseEntity {
+public class InterestedSubject extends BaseEntity implements Convertible<InterestedSubjectRequest, InterestedSubjectResponse> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "interested_subject_id", nullable = false)
@@ -24,4 +28,18 @@ public class InterestedSubject extends BaseEntity {
     @JoinColumn(name = "subject_area_id", nullable = false)
     private SubjectArea subjectArea;
 
+    public static InterestedSubject of(InterestedSubjectRequest request) { // create용
+        return InterestedSubject.builder()
+                .build();
+    }
+
+    @Override
+    public void update(InterestedSubjectRequest request) {
+
+    }
+
+    @Override
+    public InterestedSubjectResponse response() {
+        return null;
+    }
 }

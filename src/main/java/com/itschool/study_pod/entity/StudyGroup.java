@@ -1,11 +1,15 @@
 package com.itschool.study_pod.entity;
 
+import com.itschool.study_pod.dto.request.StudyGroup.StudyGroupRequest;
+import com.itschool.study_pod.dto.request.User.UserCreateRequest;
+import com.itschool.study_pod.dto.response.StudyGroupResponse;
 import com.itschool.study_pod.embedable.WeeklySchedule;
 import com.itschool.study_pod.entity.address.Sgg;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.enumclass.FeeType;
 import com.itschool.study_pod.enumclass.MeetingMethod;
 import com.itschool.study_pod.enumclass.RecruitmentStatus;
+import com.itschool.study_pod.ifs.Convertible;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,7 +22,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Table(name = "study_groups")
-public class StudyGroup extends BaseEntity {
+public class StudyGroup extends BaseEntity implements Convertible<StudyGroupRequest, StudyGroupResponse> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "study_group_id")
@@ -68,4 +72,19 @@ public class StudyGroup extends BaseEntity {
     @CollectionTable(name = "study_group_weekly_schedules",
             joinColumns = @JoinColumn(name = "study_group_id"))
     private Set<WeeklySchedule> weeklySchedules = new HashSet<>();
+
+    public static StudyGroup of(StudyGroupRequest request) { // create용
+        return StudyGroup.builder()
+                .build();
+    }
+
+    @Override
+    public void update(StudyGroupRequest request) {
+
+    }
+
+    @Override
+    public StudyGroupResponse response() {
+        return null;
+    }
 }
