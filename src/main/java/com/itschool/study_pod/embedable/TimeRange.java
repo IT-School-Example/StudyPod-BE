@@ -42,4 +42,8 @@ public class TimeRange {
         }
         return Duration.between(startTime, endTime);
     }
+
+    public static TimeRange of(int sHour, int sMinute, int eHour, int eMinute) {
+        return new TimeRange(LocalTime.of(sHour, sMinute), LocalTime.of(eHour, eMinute));
+    }
 }
