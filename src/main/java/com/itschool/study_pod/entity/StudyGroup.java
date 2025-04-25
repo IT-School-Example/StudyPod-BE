@@ -72,6 +72,11 @@ public class StudyGroup extends BaseEntity implements Convertible<StudyGroupRequ
     @ElementCollection
     @CollectionTable(name = "study_group_weekly_schedules",
             joinColumns = @JoinColumn(name = "study_group_id"))
+    @AttributeOverrides({
+            @AttributeOverride(name = "dayOfWeek", column = @Column(name = "day_of_week")),
+            @AttributeOverride(name = "timeRange.startTime", column = @Column(name = "start_time")),
+            @AttributeOverride(name = "timeRange.endTime", column = @Column(name = "end_time"))
+    })
     private Set<WeeklySchedule> weeklySchedules = new HashSet<>();
 
     public static StudyGroup of(StudyGroupRequest request) { // create용
