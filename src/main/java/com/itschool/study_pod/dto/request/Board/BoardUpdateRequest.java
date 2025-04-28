@@ -1,5 +1,6 @@
 package com.itschool.study_pod.dto.request.Board;
 
+import com.itschool.study_pod.enumclass.BoardCategory;
 import lombok.*;
 
 @Data // 종합선물세트 : @Getter, @Setter, @ToString, @EqualsAndHashCode, @RequiredArgsConstructor
@@ -11,4 +12,6 @@ public class BoardUpdateRequest extends BoardRequest {
     private String title;
 
     private String content;
+
+    private BoardCategory category;
 }

@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class BoardCreateRequest {
+public class BoardCreateRequest extends BoardRequest{
 
     private String title;
 
