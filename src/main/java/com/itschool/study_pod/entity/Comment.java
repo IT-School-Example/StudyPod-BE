@@ -57,6 +57,6 @@ public class Comment extends BaseEntity implements Convertible<CommentRequest, C
 
     @Override
     public void update(CommentRequest request) {
-
+        this.content = request.getContent();
     }
 }

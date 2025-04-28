@@ -2,8 +2,12 @@ package com.itschool.study_pod.service;
 
 import com.itschool.study_pod.dto.request.Comment.CommentRequest;
 import com.itschool.study_pod.dto.response.CommentResponse;
+import com.itschool.study_pod.entity.Board;
 import com.itschool.study_pod.entity.Comment;
+import com.itschool.study_pod.entity.User;
+import com.itschool.study_pod.repository.BoardRepository;
 import com.itschool.study_pod.repository.CommentRepository;
+import com.itschool.study_pod.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,8 +18,27 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentService {
     private final CommentRepository commentRepository;
 
+    private final BoardRepository boardRepository;
+
+    private final UserRepository userRepository;
+
     public CommentResponse create(CommentRequest request) {
-        return commentRepository.save(Comment.of(request))
+
+        Board board = boardRepository.findById(request.getBoardId())
+                .orElseThrow(()-> new EntityNotFoundException());
+
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(()-> new EntityNotFoundException());
+
+        Long commentId = request.getParentCommentId();
+        Comment comment = null;
+
+        if(request.getParentCommentId() != null) {
+            comment = commentRepository.findById(commentId)
+                    .orElseThrow(()-> new EntityNotFoundException());
+        }
+
+        return commentRepository.save(Comment.of(request, board, user, comment))
                 .response();
     }
 
