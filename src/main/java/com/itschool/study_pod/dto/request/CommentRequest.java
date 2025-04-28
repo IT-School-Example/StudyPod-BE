@@ -1,17 +1,21 @@
-package com.itschool.study_pod.dto.request.Board;
+package com.itschool.study_pod.dto.request;
 
-import com.itschool.study_pod.enumclass.BoardCategory;
 import lombok.*;
 
 @Data // 종합선물세트 : @Getter, @Setter, @ToString, @EqualsAndHashCode, @RequiredArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class BoardUpdateRequest extends BoardRequest {
+public class CommentRequest {
 
-    private String title;
+    // fk용으로 필요
+    private Long id;
 
     private String content;
 
-    private BoardCategory category;
+    private BoardRequest board;
+
+    private UserRequest user;
+
+    private CommentRequest parentComment;
 }

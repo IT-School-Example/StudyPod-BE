@@ -1,4 +1,4 @@
-package com.itschool.study_pod.dto.request.User;
+package com.itschool.study_pod.dto.request;
 
 import com.itschool.study_pod.enumclass.AccountRole;
 import lombok.*;
@@ -7,7 +7,10 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class UserCreateRequest extends UserRequest {
+public class UserRequest {
+
+    // fk용으로 필요
+    private Long id;
 
     private String email;
 

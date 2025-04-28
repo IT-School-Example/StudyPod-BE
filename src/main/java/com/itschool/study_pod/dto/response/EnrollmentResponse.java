@@ -24,4 +24,14 @@ public class EnrollmentResponse {
     private StudyGroupResponse studyGroup;
 
     private UserResponse user;
+
+    private boolean isDeleted;
+
+    private String createdBy;
+
+    private LocalDateTime createdAt;
+
+    private String updatedBy;
+
+    private LocalDateTime updatedAt;
 }

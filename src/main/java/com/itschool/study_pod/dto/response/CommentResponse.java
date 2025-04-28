@@ -21,6 +21,8 @@ public class CommentResponse {
 
     private UserResponse user;
 
+    private boolean isDeleted;
+
     private String createdBy;
 
     private LocalDateTime createdAt;
@@ -28,6 +30,4 @@ public class CommentResponse {
     private String updatedBy;
 
     private LocalDateTime updatedAt;
-
-    private boolean isDeleted;
 }

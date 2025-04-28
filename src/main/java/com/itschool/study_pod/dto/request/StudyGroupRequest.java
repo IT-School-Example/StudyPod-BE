@@ -1,22 +1,25 @@
-package com.itschool.study_pod.dto.response;
+package com.itschool.study_pod.dto.request;
 
-import com.itschool.study_pod.dto.response.address.SggResponse;
+import com.itschool.study_pod.dto.request.address.SggRequest;
 import com.itschool.study_pod.embedable.WeeklySchedule;
-import com.itschool.study_pod.entity.SubjectArea;
+import com.itschool.study_pod.entity.address.Sgg;
 import com.itschool.study_pod.enumclass.FeeType;
 import com.itschool.study_pod.enumclass.MeetingMethod;
 import com.itschool.study_pod.enumclass.RecruitmentStatus;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.Set;
 
-@Data
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
-public class StudyGroupResponse {
+@Getter
+@Setter
+@NoArgsConstructor
+public class StudyGroupRequest {
+
+    // fk용으로 필요
     private Long id;
+
     private String title;
     private String description;
     private Integer maxMembers;
@@ -24,19 +27,10 @@ public class StudyGroupResponse {
     private RecruitmentStatus recruitmentStatus; // Enum (RECRUITING, CLOSED)
     private FeeType feeType; // Enum (MONTHLY, YEARLY, PER_EVENT, ONE_TIME)
     private Long amount;
-    private UserResponse leader;
-    private SggResponse address;
-    private SubjectAreaResponse subjectArea;
+    private UserRequest leader;
+    private SggRequest address;
+    private SubjectAreaRequest subjectArea;
     private Set<String> keywords;
     private Set<WeeklySchedule> weeklySchedules;
 
-    private boolean isDeleted;
-
-    private String createdBy;
-
-    private LocalDateTime createdAt;
-
-    private String updatedBy;
-
-    private LocalDateTime updatedAt;
 }

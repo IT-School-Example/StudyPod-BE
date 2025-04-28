@@ -1,4 +1,4 @@
-package com.itschool.study_pod.dto.request.Board;
+package com.itschool.study_pod.dto.request;
 
 import com.itschool.study_pod.enumclass.BoardCategory;
 import lombok.*;
@@ -7,7 +7,10 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class BoardCreateRequest extends BoardRequest{
+public class BoardRequest {
+
+    // fk용으로 필요
+    private Long id;
 
     private String title;
 
@@ -15,10 +18,10 @@ public class BoardCreateRequest extends BoardRequest{
 
     private BoardCategory category;
 
-    private Long userId;
+    private UserRequest user;
 
-    private Long adminId;
+    private AdminRequest admin;
 
-    private Long studyGroupId;
+    private StudyGroupRequest studyGroup;
 
 }

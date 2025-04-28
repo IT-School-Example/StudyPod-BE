@@ -1,4 +1,4 @@
-package com.itschool.study_pod.dto.request.Enrollment;
+package com.itschool.study_pod.dto.request;
 
 import com.itschool.study_pod.enumclass.EnrollmentStatus;
 import lombok.*;
@@ -9,7 +9,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class EnrollmentUpdateRequest extends EnrollmentRequest {
+public class EnrollmentRequest {
+
+    // fk용으로 필요
+    private Long id;
 
     private LocalDateTime appliedAt;
 
@@ -18,4 +21,8 @@ public class EnrollmentUpdateRequest extends EnrollmentRequest {
     private LocalDateTime joinedAt;
 
     private EnrollmentStatus status;
+
+    private StudyGroupRequest studyGroup;
+
+    private UserRequest user;
 }
