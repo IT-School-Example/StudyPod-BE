@@ -65,7 +65,7 @@ class SubjectAreaRepositoryTest extends StudyPodApplicationTests {
     void update() {
         // 초기 주제 영역 생성 및 저장
         SubjectArea entity = SubjectArea.builder()
-                .subject(Subject.IT)
+                .subject(Subject.ETC) // 수정
                 .build();
         SubjectArea savedEntity = subjectAreaRepository.save(entity);
 
@@ -74,7 +74,7 @@ class SubjectAreaRepositoryTest extends StudyPodApplicationTests {
                 .orElseThrow(EntityNotFoundException::new);
 
         // 변경할 주제 값
-        Subject updateSubject = Subject.BUSINESS;
+        Subject updateSubject = Subject.ETC; // 수정
 
         // 요청 DTO 생성
         SubjectAreaRequest dto = new SubjectAreaRequest(updateSubject);
