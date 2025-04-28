@@ -4,6 +4,7 @@ import com.itschool.study_pod.dto.request.Board.BoardCreateRequest;
 import com.itschool.study_pod.dto.request.Board.BoardRequest;
 import com.itschool.study_pod.dto.request.Board.BoardUpdateRequest;
 import com.itschool.study_pod.dto.response.BoardResponse;
+import com.itschool.study_pod.dto.response.UserResponse;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.enumclass.BoardCategory;
 import com.itschool.study_pod.ifs.Convertible;
@@ -44,7 +45,7 @@ public class Board extends BaseEntity implements Convertible<BoardRequest, Board
     @JoinColumn(name = "study_group_id")
     private StudyGroup studyGroup;
 
-    // create용, User, Admin, StudyGroup 객체는 서비스 계층에서 주입
+    // 요청 DTO -> Entity 로 변환하는 메서드
     public static Board of (BoardCreateRequest request, User user, Admin admin, StudyGroup studyGroup) {
         return Board.builder()
                 .title(request.getTitle())
@@ -62,6 +63,19 @@ public class Board extends BaseEntity implements Convertible<BoardRequest, Board
     }
 
     @Override
+    public BoardResponse response() {
+        return BoardResponse.builder()
+                .id(this.id)
+                .title(this.title)
+                .content(this.content)
+                .category(BoardCategory.FREE)
+                .user(this.user.response())
+                .admin(this.admin.response())
+                .studyGroup(this.studyGroup.response())
+                .build();
+    }
+
+    @Override
     public void update(BoardRequest request) {
         if(request instanceof BoardUpdateRequest updateRequest) {
             this.title = updateRequest.getTitle();
@@ -69,10 +83,5 @@ public class Board extends BaseEntity implements Convertible<BoardRequest, Board
         } else {
             throw new IllegalArgumentException("지원하지 않는 요청 타입입니다: " + request.getClass().getSimpleName());
         }
-    }
-
-    @Override
-    public BoardResponse response() {
-        return null;
     }
 }

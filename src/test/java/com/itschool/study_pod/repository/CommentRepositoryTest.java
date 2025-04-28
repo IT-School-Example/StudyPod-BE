@@ -73,6 +73,7 @@ public class CommentRepositoryTest extends StudyPodApplicationTests {
         Comment comment = Comment.builder()
                 .content("댓글")
                 .board(savedBoard)
+                .user(savedUser)
                 .build();
 
         Comment savedComment = commentRepository.save(comment);
@@ -87,6 +88,7 @@ public class CommentRepositoryTest extends StudyPodApplicationTests {
         Comment comment = Comment.builder()
                 .content("댓글")
                 .board(savedBoard)
+                .user(savedUser)
                 .build();
 
         Comment savedComment = commentRepository.save(comment);
@@ -104,6 +106,7 @@ public class CommentRepositoryTest extends StudyPodApplicationTests {
         Comment comment = Comment.builder()
                 .content("댓글")
                 .board(savedBoard)
+                .user(savedUser)
                 .build();
 
         Comment savedComment = commentRepository.save(comment);
@@ -126,6 +129,7 @@ public class CommentRepositoryTest extends StudyPodApplicationTests {
         Comment comment = Comment.builder()
                 .content("댓글")
                 .board(savedBoard)
+                .user(savedUser)
                 .build();
 
         Comment savedComment = commentRepository.save(comment);
