@@ -1,4 +1,4 @@
-package com.itschool.study_pod.service;
+package com.itschool.study_pod.service.base;
 
 
 import com.itschool.study_pod.ifs.CrudInterface;
@@ -12,18 +12,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@Component
 @RequiredArgsConstructor
-public abstract class CrudService<ReqDto, ResDto, Entity extends Convertible> implements CrudInterface<ReqDto, ResDto> {
+public abstract class CrudService<Req, Res, Entity extends Convertible<Req, Res>> implements CrudInterface<Req, Res> {
 
     protected final JpaRepository<Entity, Long> baseRepository;
 
 
-
-    public ResponseEntity<ApiResponse<ResDto>> create(RequestEntity<ReqDto> request) {
+    public ApiResponse<Res> create(RequestEntity<Req> request) {
 
         Entity entity = toEntity(request.getBody());
 
@@ -32,15 +27,15 @@ public abstract class CrudService<ReqDto, ResDto, Entity extends Convertible> im
         return apiResponse(entity);
     }
 
-    public final ResponseEntity<ApiResponse<ResDto>> read(Long id) {
+    public final ApiResponse<Res> read(Long id) {
         return apiResponse(baseRepository.findById(id)
                 .orElseThrow(()-> new EntityNotFoundException()));
     }
 
 
     @Transactional
-    public ResponseEntity<ApiResponse<ResDto>> update(Long id, RequestEntity<ReqDto> request) {
-        ReqDto requestEntity = request.getBody();
+    public ApiResponse<Res> update(Long id, RequestEntity<Req> request) {
+        Req requestEntity = request.getBody();
 
         Entity entity = baseRepository.findById(id).orElseThrow(() -> new EntityNotFoundException());
 
@@ -59,30 +54,27 @@ public abstract class CrudService<ReqDto, ResDto, Entity extends Convertible> im
         return ResponseEntity.ok().build();
     }
 
+    protected abstract Entity toEntity(Req requestEntity);
 
-    protected final List<ResDto> responseList(List<Entity> entities) {
-        List<ResDto> responseList = new ArrayList<>();
+    protected ApiResponse<Res> apiResponse(Entity entity) {
+        return (ApiResponse<Res>) ApiResponse.OK(entity.response());
+    }
+
+    /*protected final List<Res> responseList(List<Entity> entities) {
+        List<Res> responseList = new ArrayList<>();
 
         for(Entity entity : entities){
-            responseList.add((ResDto) entity.response());
+            responseList.add((Res) entity.response());
         }
 
         return responseList;
-    }
+    }*/
 
     /*public final ResponseEntity<ApiResponse<List<Res>>> getPaginatedList(Pageable pageable) {
         Page<Entity> entities = getBaseRepository().findAll(pageable);
 
         return convertPageToList(entities);
     }*/
-
-    protected abstract Entity toEntity(ReqDto requestEntity);
-
-    // protected abstract ResDto toResponseDto(Entity entity);
-
-    protected ResponseEntity<ApiResponse<ResDto>> apiResponse(Entity entity) {
-        return ResponseEntity.ok(ApiResponse.OK((ResDto) entity.response()));
-    }
 
     /*public final ResponseEntity<ApiResponse<List<Res>>> convertPageToList(Page<Entity> entityPage) {
 

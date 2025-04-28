@@ -1,29 +1,34 @@
 package com.itschool.study_pod.service;
 
-import com.itschool.study_pod.dto.request.InterestedSubject.InterestedSubjectRequest;
+import com.itschool.study_pod.dto.request.InterestedSubjectRequest;
 import com.itschool.study_pod.dto.response.InterestedSubjectResponse;
 import com.itschool.study_pod.entity.InterestedSubject;
-import com.itschool.study_pod.entity.SubjectArea;
-import com.itschool.study_pod.entity.User;
 import com.itschool.study_pod.repository.InterestedSubjectRepository;
 import com.itschool.study_pod.repository.SubjectAreaRepository;
 import com.itschool.study_pod.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
+import com.itschool.study_pod.service.base.CrudService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
-public class InterestedSubjectService {
-
-    private final InterestedSubjectRepository interestedSubjectRepository;
+public class InterestedSubjectService extends CrudService<InterestedSubjectRequest, InterestedSubjectResponse, InterestedSubject> {
 
     private final UserRepository userRepository;
 
     private final SubjectAreaRepository subjectAreaRepository;
 
-    public InterestedSubjectResponse create(InterestedSubjectRequest request) {
+
+    public InterestedSubjectService(InterestedSubjectRepository baseRepository, UserRepository userRepository, SubjectAreaRepository subjectAreaRepository) {
+        super(baseRepository);
+        this.userRepository = userRepository;
+        this.subjectAreaRepository = subjectAreaRepository;
+    }
+
+    @Override
+    protected InterestedSubject toEntity(InterestedSubjectRequest requestEntity) {
+        return InterestedSubject.of(requestEntity);
+    }
+
+    /*public InterestedSubjectResponse create(InterestedSubjectRequest request) {
         return interestedSubjectRepository.save(InterestedSubject.of(request))
                 .response();
     }
@@ -67,5 +72,5 @@ public class InterestedSubjectService {
 //                    .response();
 
         interestedSubjectRepository.delete(findEntity);
-    }
+    }*/
 }

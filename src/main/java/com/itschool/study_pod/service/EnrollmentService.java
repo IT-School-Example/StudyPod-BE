@@ -1,25 +1,28 @@
 package com.itschool.study_pod.service;
 
-import com.itschool.study_pod.dto.request.Enrollment.EnrollmentCreateRequest;
-import com.itschool.study_pod.dto.request.Enrollment.EnrollmentRequest;
+import com.itschool.study_pod.dto.request.EnrollmentRequest;
 import com.itschool.study_pod.dto.response.EnrollmentResponse;
 import com.itschool.study_pod.entity.Enrollment;
-import com.itschool.study_pod.entity.StudyGroup;
-import com.itschool.study_pod.entity.User;
 import com.itschool.study_pod.repository.EnrollmentRepository;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
+import com.itschool.study_pod.service.base.CrudService;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
-public class EnrollmentService {
+public class EnrollmentService extends CrudService<EnrollmentRequest, EnrollmentResponse, Enrollment> {
 
-    private final EnrollmentRepository enrollmentRepository;
+    public EnrollmentService(EnrollmentRepository baseRepository) {
+        super(baseRepository);
+    }
 
-    public EnrollmentResponse create(EnrollmentCreateRequest request, User user, StudyGroup studyGroup) {
-        return enrollmentRepository.save(Enrollment.of(request, user, studyGroup)).response();
+    @Override
+    protected Enrollment toEntity(EnrollmentRequest requestEntity) {
+        return Enrollment.of(requestEntity);
+    }
+
+    /*private final EnrollmentRepository enrollmentRepository;
+
+    public EnrollmentResponse create(EnrollmentRequest request) {
+        return enrollmentRepository.save(Enrollment.of(request)).response();
     }
 
     public EnrollmentResponse read(Long id) {
@@ -42,6 +45,5 @@ public class EnrollmentService {
         Enrollment findEntity = enrollmentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException());
         enrollmentRepository.delete(findEntity);
-    }
-
+    }*/
 }

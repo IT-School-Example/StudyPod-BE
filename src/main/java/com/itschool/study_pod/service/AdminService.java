@@ -1,22 +1,27 @@
 package com.itschool.study_pod.service;
 
-import com.itschool.study_pod.dto.request.Admin.AdminCreateRequest;
-import com.itschool.study_pod.dto.request.Admin.AdminRequest;
+import com.itschool.study_pod.dto.request.AdminRequest;
 import com.itschool.study_pod.dto.response.AdminResponse;
 import com.itschool.study_pod.entity.Admin;
 import com.itschool.study_pod.repository.AdminRepository;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
+import com.itschool.study_pod.service.base.CrudService;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
-public class AdminService {
+public class AdminService extends CrudService<AdminRequest, AdminResponse, Admin> {
 
-    private final AdminRepository adminRepository;
+    public AdminService(AdminRepository baseRepository) {
+        super(baseRepository);
+    }
 
-    public AdminResponse create(AdminCreateRequest request) {
+    @Override
+    protected Admin toEntity(AdminRequest requestEntity) {
+        return Admin.of(requestEntity);
+    }
+
+    /*private final AdminRepository adminRepository;
+
+    public AdminResponse create(AdminRequest request) {
         return adminRepository.save(Admin.of(request)).response();
     }
 
@@ -40,6 +45,6 @@ public class AdminService {
         Admin findEntity = adminRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException());
         adminRepository.delete(findEntity);
-    }
+    }*/
 
 }

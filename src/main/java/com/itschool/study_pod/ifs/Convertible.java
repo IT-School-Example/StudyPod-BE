@@ -1,7 +1,7 @@
 package com.itschool.study_pod.ifs;
 
-public interface Convertible <ReqDto, ResDto> {
-    void update(ReqDto request);
+public interface Convertible <Req, Res> {
+    void update(Req request);
 
-    ResDto response();
+    Res response();
 }

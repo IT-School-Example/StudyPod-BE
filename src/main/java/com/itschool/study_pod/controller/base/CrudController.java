@@ -3,47 +3,45 @@ package com.itschool.study_pod.controller.base;
 import com.itschool.study_pod.ifs.CrudInterface;
 import com.itschool.study_pod.ifs.Convertible;
 import com.itschool.study_pod.dto.ApiResponse;
-import com.itschool.study_pod.service.CrudService;
+import com.itschool.study_pod.service.base.CrudService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
-@Component
-@RequiredArgsConstructor
 @Slf4j
-public abstract class CrudController<ReqDto, ResDto, Entity extends Convertible> implements CrudInterface<ReqDto, ResDto> {
+@RequiredArgsConstructor
+public abstract class CrudController<Req, Res, Entity extends Convertible<Req, Res>> implements CrudInterface<Req, Res> {
 
-    protected final CrudService<ReqDto, ResDto, Entity> baseService;
+    protected final CrudService<Req, Res, Entity> baseService;
 
-    // 요청 DTO 클래스 타입 반환용 (리플렉션 등에서 활용 가능)
-    protected abstract Class<ReqDto> getRequestClass();
 
     @Override
     // Swagger 문서 생성을 위한 어노테이션 예시
     // @Operation(summary = "생성", description = "새로운 엔티티를 생성")
     @PostMapping("")
-    public ResponseEntity<ApiResponse<ResDto>> create(@RequestBody /*@Valid*/ RequestEntity<ReqDto> request) {
-        log.info("{}","{}", "create : ", request);
+    public ApiResponse<Res> create(@RequestBody /*@Valid*/ RequestEntity<Req> request) {
+        log.info("create: {}에서 객체 {} 생성 요청", this.getClass().getSimpleName(), request);
         return baseService.create(request);
     }
 
     @Override
     // @Operation(summary = "읽기", description = "ID로 엔티티를 조회")
     @GetMapping("{id}")
-    public ResponseEntity<ApiResponse<ResDto>> read(@PathVariable(name = "id") Long id) {
-        log.info("{}","{}","read: ", id);
+    public ApiResponse<Res> read(@PathVariable(name = "id") Long id) {
+        log.info("read: {}에서 id={}로 조회 요청", this.getClass().getSimpleName(), id);
         return baseService.read(id);
     }
 
     @Override
     // @Operation(summary = "수정", description = "ID로 엔티티를 업데이트")
     @PutMapping("{id}")
-    public ResponseEntity<ApiResponse<ResDto>> update(@PathVariable(name = "id") Long id,
-                                                      @RequestBody /*@Valid*/ RequestEntity<ReqDto> request) {
-        log.info("{}","{}","{}", "update: ", id, request);
+    public ApiResponse<Res> update(@PathVariable(name = "id") Long id,
+                                                   @RequestBody /*@Valid*/ RequestEntity<Req> request) {
+        log.info("readAll: {}에서 전체 조회 요청", this.getClass().getSimpleName());
         return baseService.update(id, request);
     }
 
@@ -51,7 +49,7 @@ public abstract class CrudController<ReqDto, ResDto, Entity extends Convertible>
     @DeleteMapping("{id}")
     // @Operation(summary = "삭제", description = "ID로 엔티티를 삭제")
     public ResponseEntity delete(@PathVariable(name = "id") Long id) {
-        log.info("{}","{}","delete: ", id);
+        log.info("delete: {}에서 id={}인 객체 삭제 요청", this.getClass().getSimpleName(), id);
         return baseService.delete(id);
     }
 
@@ -70,12 +68,22 @@ public abstract class CrudController<ReqDto, ResDto, Entity extends Convertible>
     }
     */
 
-    /*
+    // 요청 DTO 클래스 타입 반환용 (리플렉션 등에서 활용 가능)
+    // protected abstract Class<CreateReq> getRequestClass();
+
     // 전역 예외 핸들링용 핸들러 (Controller 내에서 발생하는 예외 처리)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse> handleException(Exception e) {
-        log.error(e.getClass().getSimpleName() + " : " + e.getMessage() + "\n" + e.getCause() + ExceptionUtils.getStackTrace(e));
-        return Header.ERROR(e.getClass().getSimpleName() + " : " + e.getCause());
+        // 예외 정보 로그
+        log.error("Exception Occurred: ", e);
+
+        // 클라이언트에게 반환할 메시지 생성
+        String errorMessage = e.getClass().getSimpleName() + " : " + e.getMessage();
+
+        // 에러 응답 본문 생성
+        ApiResponse errorResponse = ApiResponse.ERROR(errorMessage);
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(errorResponse);
     }
-    */
 }

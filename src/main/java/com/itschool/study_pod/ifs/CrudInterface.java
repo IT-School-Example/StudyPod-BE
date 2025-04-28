@@ -4,13 +4,13 @@ import com.itschool.study_pod.dto.ApiResponse;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
-public interface CrudInterface <ReqDto, ResDto> {
+public interface CrudInterface <Req, Res> {
 
-    ResponseEntity<ApiResponse<ResDto>> create(RequestEntity<ReqDto> request);
+    ApiResponse<Res> create(RequestEntity<Req> request);
 
-    ResponseEntity<ApiResponse<ResDto>> read(Long id);
+    ApiResponse<Res> read(Long id);
 
-    ResponseEntity<ApiResponse<ResDto>> update(Long id, RequestEntity<ReqDto>  request);
+    ApiResponse<Res> update(Long id, RequestEntity<Req>  request);
 
     ResponseEntity delete(Long id);
 
