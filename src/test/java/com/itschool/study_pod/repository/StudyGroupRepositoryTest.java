@@ -1,7 +1,6 @@
 package com.itschool.study_pod.repository;
 
 import com.itschool.study_pod.StudyPodApplicationTests;
-import com.itschool.study_pod.embedable.TimeRange;
 import com.itschool.study_pod.embedable.WeeklySchedule;
 import com.itschool.study_pod.entity.StudyGroup;
 import com.itschool.study_pod.entity.SubjectArea;

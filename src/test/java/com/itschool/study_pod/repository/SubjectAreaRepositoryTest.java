@@ -1,7 +1,7 @@
 package com.itschool.study_pod.repository;
 
 import com.itschool.study_pod.StudyPodApplicationTests;
-import com.itschool.study_pod.dto.request.SubjectArea.SubjectAreaRequest;
+import com.itschool.study_pod.dto.request.SubjectAreaRequest;
 import com.itschool.study_pod.entity.SubjectArea;
 import com.itschool.study_pod.enumclass.Subject;
 import jakarta.persistence.EntityNotFoundException;
@@ -74,10 +74,12 @@ class SubjectAreaRepositoryTest extends StudyPodApplicationTests {
                 .orElseThrow(EntityNotFoundException::new);
 
         // 변경할 주제 값
-        Subject updateSubject = Subject.ETC; // 수정
+        Subject updatedSubject = Subject.ETC; // 수정
 
         // 요청 DTO 생성
-        SubjectAreaRequest dto = new SubjectAreaRequest(updateSubject);
+        SubjectAreaRequest dto = SubjectAreaRequest.builder()
+                .subject(updatedSubject)
+                .build();
 
         // 업데이트 수행
         findEntity.update(dto);
@@ -86,7 +88,7 @@ class SubjectAreaRepositoryTest extends StudyPodApplicationTests {
         SubjectArea updatedEntity = subjectAreaRepository.save(findEntity);
 
         // 변경된 subject 값 검증
-        assertThat(updatedEntity.getSubject()).isEqualTo(updateSubject);
+        assertThat(updatedEntity.getSubject()).isEqualTo(updatedSubject);
     }
 
     // 삭제(Delete) 테스트
