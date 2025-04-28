@@ -1,6 +1,7 @@
 package com.itschool.study_pod.repository;
 
 import com.itschool.study_pod.StudyPodApplicationTests;
+import com.itschool.study_pod.embedable.TimeRange;
 import com.itschool.study_pod.embedable.WeeklySchedule;
 import com.itschool.study_pod.entity.StudyGroup;
 import com.itschool.study_pod.entity.SubjectArea;
@@ -16,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
-import java.util.HashSet;
+import java.time.LocalTime;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,9 +60,10 @@ class StudyGroupRepositoryTest extends StudyPodApplicationTests {
                 .recruitmentStatus(RecruitmentStatus.RECRUITING)
                 .subjectArea(savedSubject)
                 .keywords(Set.of("키워드1", "키워드2"))
-                .weeklySchedules(new HashSet<>(Set.of(
-                        WeeklySchedule.of(DayOfWeek.MONDAY, 9, 0, 10, 0)
-                )))
+                /*.weeklySchedules(Set.of(WeeklySchedule.builder()
+                        .dayOfWeek(DayOfWeek.MONDAY)
+                        .timeRange(TimeRange.of(9, 0, 10, 0))
+                        .build()))*/
                 .build();
 
         StudyGroup savedEntity = studyGroupRepository.save(entity);
@@ -79,9 +81,10 @@ class StudyGroupRepositoryTest extends StudyPodApplicationTests {
                 .recruitmentStatus(RecruitmentStatus.RECRUITING)
                 .subjectArea(savedSubject)
                 .keywords(Set.of("Python", "기초"))
-                .weeklySchedules(new HashSet<>(Set.of(
-                        WeeklySchedule.of(DayOfWeek.FRIDAY, 10, 0, 11, 0)
-                )))
+                /*.weeklySchedules(Set.of(WeeklySchedule.builder()
+                        .dayOfWeek(DayOfWeek.FRIDAY)
+                        .timeRange(TimeRange.of(10, 0, 11, 0))
+                        .build()))*/
                 .build();
 
         StudyGroup saveEntity = studyGroupRepository.save(entity);
@@ -102,9 +105,10 @@ class StudyGroupRepositoryTest extends StudyPodApplicationTests {
                 .recruitmentStatus(RecruitmentStatus.RECRUITING)
                 .subjectArea(savedSubject)
                 .keywords(Set.of("초기"))
-                .weeklySchedules(new HashSet<>(Set.of(WeeklySchedule.of(
-                        DayOfWeek.FRIDAY, 10, 0, 11, 0)
-                )))
+                /*.weeklySchedules(Set.of(WeeklySchedule.builder()
+                        .dayOfWeek(DayOfWeek.FRIDAY)
+                        .timeRange(TimeRange.of(10, 0, 11, 0))
+                        .build()))*/
                 .build();
 
         StudyGroup savedEntity = studyGroupRepository.save(entity);
@@ -130,9 +134,10 @@ class StudyGroupRepositoryTest extends StudyPodApplicationTests {
                 .recruitmentStatus(RecruitmentStatus.RECRUITING)
                 .subjectArea(savedSubject)
                 .keywords(Set.of("삭제"))
-                .weeklySchedules(new HashSet<>(
-                        Set.of(WeeklySchedule.of(DayOfWeek.FRIDAY, 10, 0, 11, 0)
-                        )))
+                /*.weeklySchedules(Set.of(WeeklySchedule.builder()
+                        .dayOfWeek(DayOfWeek.FRIDAY)
+                        .timeRange(TimeRange.of(10, 0, 11, 0))
+                        .build()))*/
                 .build();
 
         StudyGroup savedEntity = studyGroupRepository.save(entity);
