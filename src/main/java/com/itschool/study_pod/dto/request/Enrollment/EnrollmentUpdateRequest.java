@@ -1,17 +1,15 @@
-package com.itschool.study_pod.dto.response;
+package com.itschool.study_pod.dto.request.Enrollment;
 
 import com.itschool.study_pod.enumclass.EnrollmentStatus;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
+@Data // 종합선물세트 : @Getter, @Setter, @ToString, @EqualsAndHashCode, @RequiredArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class EnrollmentResponse {
-
-    private Long id;
+public class EnrollmentUpdateRequest extends EnrollmentRequest {
 
     private LocalDateTime appliedAt;
 
@@ -20,8 +18,4 @@ public class EnrollmentResponse {
     private LocalDateTime joinedAt;
 
     private EnrollmentStatus status;
-
-    private StudyGroupResponse studyGroup;
-
-    private UserResponse user;
 }
