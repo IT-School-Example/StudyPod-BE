@@ -26,6 +26,7 @@ public class SubjectArea implements Convertible<SubjectAreaRequest, SubjectAreaR
 
     public static SubjectArea of(SubjectAreaRequest request) { // create용
         return SubjectArea.builder()
+                .subject(request.getSubject())
                 .build();
     }
 
@@ -36,6 +37,10 @@ public class SubjectArea implements Convertible<SubjectAreaRequest, SubjectAreaR
 
     @Override
     public SubjectAreaResponse response() {
-        return null;
+        return SubjectAreaResponse.builder()
+                .id(this.id)
+                .subject(this.subject)
+                .build();
+//        return null;
     }
 }

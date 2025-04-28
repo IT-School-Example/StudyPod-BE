@@ -28,18 +28,26 @@ public class InterestedSubject extends BaseEntity implements Convertible<Interes
     @JoinColumn(name = "subject_area_id", nullable = false)
     private SubjectArea subjectArea;
 
-    public static InterestedSubject of(InterestedSubjectRequest request) { // create용
+    // 욫청 DTO -> Entity로 변환하는 메서드
+    public static InterestedSubject of(InterestedSubjectRequest request, User user, SubjectArea subjectArea) { // create용
         return InterestedSubject.builder()
+                .user(user)
+                .subjectArea(subjectArea)
                 .build();
     }
 
     @Override
     public void update(InterestedSubjectRequest request) {
-
+        this.subjectArea = request.getSubjectArea();
     }
 
     @Override
     public InterestedSubjectResponse response() {
-        return null;
+        return InterestedSubjectResponse.builder()
+                .id(this.id)
+                .user(this.user.response())
+                .subjectArea(this.subjectArea.response())
+                .build();
+//        return null;
     }
 }
