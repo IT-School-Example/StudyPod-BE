@@ -46,6 +46,7 @@ public class User extends BaseEntity implements Convertible<UserRequest, UserRes
                 .password(request.getPassword())
                 .role(request.getRole())
                 .name(request.getName())
+                .nickname(request.getNickname())
                 .build();
     }
 
