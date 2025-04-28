@@ -1,7 +1,6 @@
 package com.itschool.study_pod.entity;
 
-import com.itschool.study_pod.dto.request.InterestedSubject.InterestedSubjectRequest;
-import com.itschool.study_pod.dto.request.StudyGroup.StudyGroupRequest;
+import com.itschool.study_pod.dto.request.InterestedSubjectRequest;
 import com.itschool.study_pod.dto.response.InterestedSubjectResponse;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.ifs.Convertible;
@@ -28,17 +27,18 @@ public class InterestedSubject extends BaseEntity implements Convertible<Interes
     @JoinColumn(name = "subject_area_id", nullable = false)
     private SubjectArea subjectArea;
 
-    // 욫청 DTO -> Entity로 변환하는 메서드
-    public static InterestedSubject of(InterestedSubjectRequest request, User user, SubjectArea subjectArea) { // create용
+    // 요청청 DTO -> Entity로 변환하는 메서드
+    public static InterestedSubject of(InterestedSubjectRequest request) { // create용
         return InterestedSubject.builder()
-                .user(user)
-                .subjectArea(subjectArea)
+                .user(User.of(request.getUser()))
+                .subjectArea(SubjectArea.of(request.getSubjectArea()))
                 .build();
     }
 
     @Override
     public void update(InterestedSubjectRequest request) {
-        this.subjectArea = request.getSubjectArea();
+        throw new IllegalArgumentException("연결 테이블에서 업데이트는 허용하지 않습니다.");
+        // this.subjectArea = SubjectArea.of(request.getSubjectArea());
     }
 
     @Override
@@ -47,6 +47,11 @@ public class InterestedSubject extends BaseEntity implements Convertible<Interes
                 .id(this.id)
                 .user(this.user.response())
                 .subjectArea(this.subjectArea.response())
+                .isDeleted(this.isDeleted)
+                .createdAt(this.createdAt)
+                .createdBy(this.createdBy)
+                .updatedAt(this.updatedAt)
+                .updatedBy(this.updatedBy)
                 .build();
 //        return null;
     }

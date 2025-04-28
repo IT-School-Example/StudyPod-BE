@@ -1,7 +1,6 @@
 package com.itschool.study_pod.entity;
 
-import com.itschool.study_pod.dto.request.StudyGroup.StudyGroupRequest;
-import com.itschool.study_pod.dto.request.User.UserCreateRequest;
+import com.itschool.study_pod.dto.request.StudyGroupRequest;
 import com.itschool.study_pod.dto.response.StudyGroupResponse;
 import com.itschool.study_pod.embedable.WeeklySchedule;
 import com.itschool.study_pod.entity.address.Sgg;
@@ -56,7 +55,7 @@ public class StudyGroup extends BaseEntity implements Convertible<StudyGroupRequ
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id", referencedColumnName = "sgg_id")
-    private Sgg addressId;
+    private Sgg address;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_area_id", nullable = false)
@@ -81,16 +80,58 @@ public class StudyGroup extends BaseEntity implements Convertible<StudyGroupRequ
 
     public static StudyGroup of(StudyGroupRequest request) { // create용
         return StudyGroup.builder()
+                .title(request.getTitle())
+                .description(request.getDescription())
+                .maxMembers(request.getMaxMembers())
+                .meetingMethod(request.getMeetingMethod())
+                .recruitmentStatus(request.getRecruitmentStatus())
+                .feeType(request.getFeeType())
+                .amount(request.getAmount())
+                .leader(User.of(request.getLeader()))
+                .address(Sgg.of(request.getAddress()))
+                .subjectArea(SubjectArea.of(request.getSubjectArea()))
+                .keywords(request.getKeywords())
+                .weeklySchedules(request.getWeeklySchedules())
                 .build();
     }
 
     @Override
     public void update(StudyGroupRequest request) {
-
+        this.title = request.getTitle();
+        this.description = request.getDescription();
+        this.maxMembers = request.getMaxMembers();
+        this.meetingMethod = request.getMeetingMethod();
+        this.recruitmentStatus = request.getRecruitmentStatus();
+        this.feeType = request.getFeeType();
+        this.amount = request.getAmount();
+        // this.leader = User.of(request.getLeader());
+        this.address = Sgg.of(request.getAddress());
+        this.subjectArea = SubjectArea.of(request.getSubjectArea());
+        this.keywords = request.getKeywords();
+        this.weeklySchedules = request.getWeeklySchedules();
     }
 
     @Override
     public StudyGroupResponse response() {
-        return null;
+        return StudyGroupResponse.builder()
+                .id(this.id)
+                .title(this.title)
+                .description(this.description)
+                .maxMembers(this.maxMembers)
+                .meetingMethod(this.meetingMethod)
+                .recruitmentStatus(this.recruitmentStatus)
+                .feeType(this.feeType)
+                .amount(this.amount)
+                .leader(this.leader.response())
+                .address(this.address.response())
+                .subjectArea(this.subjectArea.response())
+                .keywords(this.keywords)
+                .weeklySchedules(this.weeklySchedules)
+                .isDeleted(this.isDeleted)
+                .createdAt(this.createdAt)
+                .createdBy(this.createdBy)
+                .updatedAt(this.updatedAt)
+                .updatedBy(this.updatedBy)
+                .build();
     }
 }

@@ -1,9 +1,6 @@
 package com.itschool.study_pod.entity;
 
-import com.itschool.study_pod.dto.request.Admin.AdminCreateRequest;
-import com.itschool.study_pod.dto.request.Admin.AdminInformationRequest;
-import com.itschool.study_pod.dto.request.Admin.AdminPasswordRequest;
-import com.itschool.study_pod.dto.request.Admin.AdminRequest;
+import com.itschool.study_pod.dto.request.AdminRequest;
 import com.itschool.study_pod.dto.response.AdminResponse;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.enumclass.AccountRole;
@@ -34,7 +31,7 @@ public class Admin extends BaseEntity implements Convertible<AdminRequest, Admin
     @Column(nullable = false)
     private AccountRole role;
 
-    public static Admin of(AdminCreateRequest request) { // create용
+    public static Admin of(AdminRequest request) { // create용
         return Admin.builder()
                 .email(request.getEmail())
                 .password(request.getPassword())
@@ -43,14 +40,13 @@ public class Admin extends BaseEntity implements Convertible<AdminRequest, Admin
     }
 
     @Override
+    @Deprecated
     public void update(AdminRequest request) {
-        if(request instanceof AdminInformationRequest informationRequest) {
-            this.email = informationRequest.getEmail();
-        } else if(request instanceof AdminPasswordRequest passwordRequest) {
-            this.password = passwordRequest.getPassword();
-        } else {
-            throw new IllegalArgumentException("지원하지 않는 요청 타입입니다: " + request.getClass().getSimpleName());
-        }
+        updatePassword(request.getPassword());
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
     }
 
     @Override
@@ -60,6 +56,11 @@ public class Admin extends BaseEntity implements Convertible<AdminRequest, Admin
                 .email(this.email)
                 .password(this.password)
                 .role(this.role)
+                .isDeleted(this.isDeleted)
+                .createdAt(this.createdAt)
+                .createdBy(this.createdBy)
+                .updatedAt(this.updatedAt)
+                .updatedBy(this.updatedBy)
                 .build();
     }
 }

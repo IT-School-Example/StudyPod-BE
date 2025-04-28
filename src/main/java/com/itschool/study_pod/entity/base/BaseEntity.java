@@ -18,22 +18,22 @@ import java.time.LocalDateTime;
 public abstract class BaseEntity {
     @CreatedBy
     @Column(updatable = false, nullable = false)
-    private String createdBy;
+    protected String createdBy;
 
     @CreatedDate
     @Column(updatable = false, nullable = false) // , columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
-    private LocalDateTime createdAt;
+    protected LocalDateTime createdAt;
 
     @LastModifiedBy
     @Column(nullable = false)
-    private String updatedBy;
+    protected String updatedBy;
 
     @LastModifiedDate
     @Column(nullable = false) // , columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
-    private LocalDateTime updatedAt;
+    protected LocalDateTime updatedAt;
 
     @Column(nullable = false) // , columnDefinition = "BOOLEAN DEFAULT FALSE"
-    private boolean isDeleted;
+    protected boolean isDeleted;
 
     public void softDelete() {
         this.isDeleted = true;

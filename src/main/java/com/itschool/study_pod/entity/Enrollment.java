@@ -1,8 +1,6 @@
 package com.itschool.study_pod.entity;
 
-import com.itschool.study_pod.dto.request.Enrollment.EnrollmentCreateRequest;
-import com.itschool.study_pod.dto.request.Enrollment.EnrollmentRequest;
-import com.itschool.study_pod.dto.request.Enrollment.EnrollmentUpdateRequest;
+import com.itschool.study_pod.dto.request.EnrollmentRequest;
 import com.itschool.study_pod.dto.response.EnrollmentResponse;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.enumclass.EnrollmentStatus;
@@ -44,26 +42,22 @@ public class Enrollment extends BaseEntity implements Convertible<EnrollmentRequ
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public static Enrollment of(EnrollmentCreateRequest request, User user, StudyGroup studyGroup) { // create용
+    public static Enrollment of(EnrollmentRequest request) { // create용
         return Enrollment.builder()
                 .appliedAt(request.getAppliedAt())
                 .introduce(request.getIntroduce())
                 .status(request.getStatus())
-                .user(user)
-                .studyGroup(studyGroup)
+                .user(User.of(request.getUser()))
+                .studyGroup(StudyGroup.of(request.getStudyGroup()))
                 .build();
     }
 
     @Override
     public void update(EnrollmentRequest request) {
-        if(request instanceof EnrollmentUpdateRequest updateRequest) {
-            this.appliedAt = updateRequest.getAppliedAt();
-            this.introduce = updateRequest.getIntroduce();
-            this.joinedAt = updateRequest.getJoinedAt();
-            this.status = updateRequest.getStatus();
-        } else {
-            throw new IllegalArgumentException("지원하지 않는 요청 타입입니다: " + request.getClass().getSimpleName());
-        }
+        this.appliedAt = request.getAppliedAt();
+        this.introduce = request.getIntroduce();
+        this.joinedAt = request.getJoinedAt();
+        this.status = request.getStatus();
     }
 
     @Override
@@ -76,6 +70,11 @@ public class Enrollment extends BaseEntity implements Convertible<EnrollmentRequ
                 .status(this.status)
                 .user(this.user.response())
                 .studyGroup(this.studyGroup.response())
+                .isDeleted(this.isDeleted)
+                .createdAt(this.createdAt)
+                .createdBy(this.createdBy)
+                .updatedAt(this.updatedAt)
+                .updatedBy(this.updatedBy)
                 .build();
     }
 

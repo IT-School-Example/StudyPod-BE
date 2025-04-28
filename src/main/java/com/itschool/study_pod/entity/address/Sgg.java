@@ -1,6 +1,13 @@
 package com.itschool.study_pod.entity.address;
 
+import com.itschool.study_pod.dto.request.AdminRequest;
+import com.itschool.study_pod.dto.request.address.SggRequest;
+import com.itschool.study_pod.dto.response.address.SggResponse;
+import com.itschool.study_pod.entity.Admin;
+import com.itschool.study_pod.ifs.Convertible;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -9,8 +16,10 @@ import org.hibernate.type.SqlTypes;
 @Entity
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(schema = "address")
-public class Sgg {
+public class Sgg implements Convertible<SggRequest, SggResponse> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "sgg_id", insertable = false, updatable = false)
@@ -26,4 +35,27 @@ public class Sgg {
 
     @Column(columnDefinition = "character varying(100)")
     private String sggNm;
+
+    public static Sgg of(SggRequest request) { // create용
+        return Sgg.builder()
+                .sido(Sido.of(request.getSido()))
+                .sggCd(request.getSggCd())
+                .sggNm(request.getSggNm())
+                .build();
+    }
+
+    @Override
+    public void update(SggRequest request) {
+        this.sggNm = request.getSggNm();
+    }
+
+    @Override
+    public SggResponse response() {
+        return SggResponse.builder()
+                .id(this.id)
+                .sido(this.sido.response())
+                .sggCd(this.sggCd)
+                .sggNm(this.sggNm)
+                .build();
+    }
 }

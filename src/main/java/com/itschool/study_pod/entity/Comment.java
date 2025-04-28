@@ -1,7 +1,6 @@
 package com.itschool.study_pod.entity;
 
-import com.itschool.study_pod.dto.request.Comment.CommentRequest;
-import com.itschool.study_pod.dto.request.Enrollment.EnrollmentRequest;
+import com.itschool.study_pod.dto.request.CommentRequest;
 import com.itschool.study_pod.dto.response.CommentResponse;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.ifs.Convertible;
@@ -35,12 +34,12 @@ public class Comment extends BaseEntity implements Convertible<CommentRequest, C
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public static Comment of(CommentRequest request, Board board, User user, Comment parentComment) { // create용
+    public static Comment of(CommentRequest request) { // create용
         return Comment.builder()
                 .content(request.getContent())
-                .board(board)
-                .user(user)
-                .parentComment(parentComment)
+                .board(Board.of(request.getBoard()))
+                .user(User.of(request.getUser()))
+                .parentComment(Comment.of(request.getParentComment()))
                 .build();
     }
 
@@ -52,6 +51,11 @@ public class Comment extends BaseEntity implements Convertible<CommentRequest, C
                 .board(this.board.response())
                 .user(this.user.response())
                 .parentComment(this.parentComment.response())
+                .isDeleted(this.isDeleted)
+                .createdAt(this.createdAt)
+                .createdBy(this.createdBy)
+                .updatedAt(this.updatedAt)
+                .updatedBy(this.updatedBy)
                 .build();
     }
 

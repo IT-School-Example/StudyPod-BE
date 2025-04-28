@@ -1,10 +1,7 @@
 package com.itschool.study_pod.entity;
 
-import com.itschool.study_pod.dto.request.Board.BoardCreateRequest;
-import com.itschool.study_pod.dto.request.Board.BoardRequest;
-import com.itschool.study_pod.dto.request.Board.BoardUpdateRequest;
+import com.itschool.study_pod.dto.request.BoardRequest;
 import com.itschool.study_pod.dto.response.BoardResponse;
-import com.itschool.study_pod.dto.response.UserResponse;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.enumclass.BoardCategory;
 import com.itschool.study_pod.ifs.Convertible;
@@ -46,19 +43,14 @@ public class Board extends BaseEntity implements Convertible<BoardRequest, Board
     private StudyGroup studyGroup;
 
     // 요청 DTO -> Entity 로 변환하는 메서드
-    public static Board of (BoardCreateRequest request, User user, Admin admin, StudyGroup studyGroup) {
+    public static Board of (BoardRequest request) {
         return Board.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
                 .category(request.getCategory())
-                .user(user)
-                .admin(admin)
-                .studyGroup(studyGroup)
-                .build();
-    }
-
-    public static Board of(BoardRequest request) { // create용
-        return Board.builder()
+                .user(User.of(request.getUser()))
+                .admin(Admin.of(request.getAdmin()))
+                .studyGroup(StudyGroup.of(request.getStudyGroup()))
                 .build();
     }
 
@@ -72,16 +64,17 @@ public class Board extends BaseEntity implements Convertible<BoardRequest, Board
                 .user(this.user.response())
                 .admin(this.admin.response())
                 .studyGroup(this.studyGroup.response())
+                .isDeleted(this.isDeleted)
+                .createdAt(this.createdAt)
+                .createdBy(this.createdBy)
+                .updatedAt(this.updatedAt)
+                .updatedBy(this.updatedBy)
                 .build();
     }
 
     @Override
     public void update(BoardRequest request) {
-        if(request instanceof BoardUpdateRequest updateRequest) {
-            this.title = updateRequest.getTitle();
-            this.content = updateRequest.getContent();
-        } else {
-            throw new IllegalArgumentException("지원하지 않는 요청 타입입니다: " + request.getClass().getSimpleName());
-        }
+        this.title = request.getTitle();
+        this.content = request.getContent();
     }
 }

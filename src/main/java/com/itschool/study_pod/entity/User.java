@@ -1,9 +1,6 @@
 package com.itschool.study_pod.entity;
 
-import com.itschool.study_pod.dto.request.User.UserCreateRequest;
-import com.itschool.study_pod.dto.request.User.UserInformationRequest;
-import com.itschool.study_pod.dto.request.User.UserPasswordRequest;
-import com.itschool.study_pod.dto.request.User.UserRequest;
+import com.itschool.study_pod.dto.request.UserRequest;
 import com.itschool.study_pod.dto.response.UserResponse;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.enumclass.AccountRole;
@@ -40,7 +37,7 @@ public class User extends BaseEntity implements Convertible<UserRequest, UserRes
     @Column(unique = true)
     private String nickname;
 
-    public static User of(UserCreateRequest request) { // create용
+    public static User of(UserRequest request) { // create용
         return User.builder()
                 .email(request.getName())
                 .password(request.getPassword())
@@ -52,15 +49,18 @@ public class User extends BaseEntity implements Convertible<UserRequest, UserRes
 
     // update용
     @Override
+    @Deprecated
     public void update(UserRequest request) {
-        if(request instanceof UserInformationRequest informationRequest) {
-            this.email = informationRequest.getEmail();
-            this.name = informationRequest.getName();
-        } else if(request instanceof UserPasswordRequest passwordRequest) {
-            this.password = passwordRequest.getPassword();
-        } else {
-            throw new IllegalArgumentException("지원하지 않는 요청 타입입니다: " + request.getClass().getSimpleName());
-        }
+        updatePassword(request.getPassword());
+        updateNickName(request.getNickname());
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
+    public void updateNickName(String nickname) {
+        this.nickname = nickname;
     }
 
     @Override
@@ -71,6 +71,11 @@ public class User extends BaseEntity implements Convertible<UserRequest, UserRes
                 .role(this.role)
                 .name(this.name)
                 .nickname(this.nickname)
+                .isDeleted(this.isDeleted)
+                .createdAt(this.createdAt)
+                .createdBy(this.createdBy)
+                .updatedAt(this.updatedAt)
+                .updatedBy(this.updatedBy)
                 .build();
     }
 }

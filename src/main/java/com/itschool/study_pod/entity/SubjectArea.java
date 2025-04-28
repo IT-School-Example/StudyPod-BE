@@ -1,7 +1,6 @@
 package com.itschool.study_pod.entity;
 
-import com.itschool.study_pod.dto.request.SubjectArea.SubjectAreaRequest;
-import com.itschool.study_pod.dto.request.User.UserCreateRequest;
+import com.itschool.study_pod.dto.request.SubjectAreaRequest;
 import com.itschool.study_pod.dto.response.SubjectAreaResponse;
 import com.itschool.study_pod.enumclass.Subject;
 import com.itschool.study_pod.ifs.Convertible;
@@ -41,6 +40,5 @@ public class SubjectArea implements Convertible<SubjectAreaRequest, SubjectAreaR
                 .id(this.id)
                 .subject(this.subject)
                 .build();
-//        return null;
     }
 }
