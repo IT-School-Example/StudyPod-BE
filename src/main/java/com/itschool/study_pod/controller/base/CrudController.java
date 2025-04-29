@@ -47,7 +47,7 @@ public abstract class CrudController<Req, Res, Entity extends Convertible<Req, R
     @Override
     @DeleteMapping("{id}")
     // @Operation(summary = "삭제", description = "ID로 엔티티를 삭제")
-    public ResponseEntity delete(@PathVariable(name = "id") Long id) {
+    public ApiResponse<Void> delete(@PathVariable(name = "id") Long id) {
         log.info("delete: {}에서 id={}인 객체 삭제 요청", this.getClass().getSimpleName(), id);
         return getBaseService().delete(id);
     }
