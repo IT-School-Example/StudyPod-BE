@@ -25,8 +25,6 @@ public class BoardResponse {
 
     private StudyGroupResponse studyGroup;
 
-    private Boolean isDeleted;
-
     private String createdBy;
 
     private LocalDateTime createdAt;

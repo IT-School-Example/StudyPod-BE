@@ -8,6 +8,8 @@ import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.ifs.Convertible;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
@@ -15,6 +17,8 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Table(name = "comments")
+@SQLDelete(sql = "UPDATE comments SET is_deleted = true WHERE comment_id = ?")
+@Where(clause = "is_deleted = false")
 public class Comment extends BaseEntity implements Convertible<CommentRequest, CommentResponse> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,10 +64,12 @@ public class Comment extends BaseEntity implements Convertible<CommentRequest, C
                 .user(UserResponse.builder()
                         .id(this.user.getId())
                         .build())
-                .parentComment(CommentResponse.builder()
-                        .id(this.parentComment.getId())
-                        .build())
-                .isDeleted(this.isDeleted)
+                .parentComment(
+                        this.parentComment != null?
+                            CommentResponse.builder()
+                                .id(this.parentComment.getId())
+                                .build()
+                        : null)
                 .createdAt(this.createdAt)
                 .createdBy(this.createdBy)
                 .updatedAt(this.updatedAt)

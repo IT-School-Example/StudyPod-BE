@@ -39,7 +39,7 @@ public class SggController extends CrudController<SggRequest, SggResponse, Sgg> 
 
     @Override
     @Deprecated
-    public Header<Void> delete(Long id) {
+    public Header<Void> softDelete(Long id) {
         throw new RuntimeException("Sgg 삭제 접근 불가");
     }
 }

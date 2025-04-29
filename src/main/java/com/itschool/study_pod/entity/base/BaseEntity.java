@@ -33,7 +33,7 @@ public abstract class BaseEntity {
     protected LocalDateTime updatedAt;
 
     @Column(nullable = false) // , columnDefinition = "Boolean DEFAULT FALSE"
-    protected Boolean isDeleted;
+    protected boolean isDeleted;
 
     public void softDelete() {
         this.isDeleted = true;

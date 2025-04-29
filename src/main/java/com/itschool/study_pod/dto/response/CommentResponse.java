@@ -21,8 +21,6 @@ public class CommentResponse {
 
     private UserResponse user;
 
-    private Boolean isDeleted;
-
     private String createdBy;
 
     private LocalDateTime createdAt;

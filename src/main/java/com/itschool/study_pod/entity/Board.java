@@ -10,6 +10,8 @@ import com.itschool.study_pod.enumclass.BoardCategory;
 import com.itschool.study_pod.ifs.Convertible;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
@@ -17,6 +19,8 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Table(name = "boards")
+@SQLDelete(sql = "UPDATE boards SET is_deleted = true WHERE board_id = ?")
+@Where(clause = "is_deleted = false")
 public class Board extends BaseEntity implements Convertible<BoardRequest, BoardResponse> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -83,7 +87,6 @@ public class Board extends BaseEntity implements Convertible<BoardRequest, Board
                                 .id(this.studyGroup.getId())
                                 .build()
                         : null)
-                .isDeleted(this.isDeleted)
                 .createdAt(this.createdAt)
                 .createdBy(this.createdBy)
                 .updatedAt(this.updatedAt)

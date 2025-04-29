@@ -18,8 +18,6 @@ public class AdminResponse {
 
     private AccountRole role;
 
-    private Boolean isDeleted;
-
     private String createdBy;
 
     private LocalDateTime createdAt;

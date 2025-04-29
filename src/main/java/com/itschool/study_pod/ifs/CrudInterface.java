@@ -10,7 +10,7 @@ public interface CrudInterface <Req, Res> {
 
     Header<Res> update(Long id, Header<Req> request);
 
-    Header<Void> delete(Long id);
+    Header<Void> softDelete(Long id);
 
     // ResponseEntity<ApiResponse<List<Res>>> getPaginatedList(Pageable pageable);
 }

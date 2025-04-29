@@ -6,6 +6,8 @@ import com.itschool.study_pod.enumclass.Subject;
 import com.itschool.study_pod.ifs.Convertible;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
@@ -13,6 +15,8 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Table(name = "subject_areas")
+@SQLDelete(sql = "UPDATE subject_areas SET is_deleted = true WHERE subject_area_id = ?")
+@Where(clause = "is_deleted = false")
 public class SubjectArea implements Convertible<SubjectAreaRequest, SubjectAreaResponse> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

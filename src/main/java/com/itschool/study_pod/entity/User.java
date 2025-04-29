@@ -7,6 +7,8 @@ import com.itschool.study_pod.enumclass.AccountRole;
 import com.itschool.study_pod.ifs.Convertible;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
@@ -14,6 +16,8 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Table(name = "users")
+@SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE user_id = ?")
+@Where(clause = "is_deleted = false")
 public class User extends BaseEntity implements Convertible<UserRequest, UserResponse> {
 
     @Id
@@ -75,7 +79,6 @@ public class User extends BaseEntity implements Convertible<UserRequest, UserRes
                 .role(this.role)
                 .name(this.name)
                 .nickname(this.nickname)
-                .isDeleted(this.isDeleted)
                 .createdAt(this.createdAt)
                 .createdBy(this.createdBy)
                 .updatedAt(this.updatedAt)

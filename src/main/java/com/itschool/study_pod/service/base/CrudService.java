@@ -56,7 +56,7 @@ public abstract class CrudService<Req, Res, Entity extends Convertible<Req, Res>
     }
 
     @Override
-    public Header<Void> delete(Long id) {
+    public Header<Void> softDelete(Long id) {
         Entity entity = getBaseRepository().findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("해당 id " + id + "에 해당하는 객체가 없습니다."));
 

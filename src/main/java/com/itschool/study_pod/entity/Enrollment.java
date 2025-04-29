@@ -9,6 +9,8 @@ import com.itschool.study_pod.enumclass.EnrollmentStatus;
 import com.itschool.study_pod.ifs.Convertible;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 
@@ -18,6 +20,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Table(name = "enrollments")
+@SQLDelete(sql = "UPDATE enrollments SET is_deleted = true WHERE enrollment_id = ?")
+@Where(clause = "is_deleted = false")
 public class Enrollment extends BaseEntity implements Convertible<EnrollmentRequest, EnrollmentResponse> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -80,7 +84,6 @@ public class Enrollment extends BaseEntity implements Convertible<EnrollmentRequ
                 .studyGroup(StudyGroupResponse.builder()
                         .id(this.studyGroup.getId())
                         .build())
-                .isDeleted(this.isDeleted)
                 .createdAt(this.createdAt)
                 .createdBy(this.createdBy)
                 .updatedAt(this.updatedAt)

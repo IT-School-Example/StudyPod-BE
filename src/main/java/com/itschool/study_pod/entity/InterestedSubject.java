@@ -8,6 +8,8 @@ import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.ifs.Convertible;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
@@ -15,6 +17,8 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Table(name = "interested_subjects")
+@SQLDelete(sql = "UPDATE interested_subjects SET is_deleted = true WHERE interested_subject_id = ?")
+@Where(clause = "is_deleted = false")
 public class InterestedSubject extends BaseEntity implements Convertible<InterestedSubjectRequest, InterestedSubjectResponse> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,7 +61,6 @@ public class InterestedSubject extends BaseEntity implements Convertible<Interes
                 .subjectArea(SubjectAreaResponse.builder()
                         .id(this.subjectArea.getId())
                         .build())
-                .isDeleted(this.isDeleted)
                 .createdAt(this.createdAt)
                 .createdBy(this.createdBy)
                 .updatedAt(this.updatedAt)

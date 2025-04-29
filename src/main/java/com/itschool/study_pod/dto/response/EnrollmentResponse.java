@@ -25,8 +25,6 @@ public class EnrollmentResponse {
 
     private UserResponse user;
 
-    private Boolean isDeleted;
-
     private String createdBy;
 
     private LocalDateTime createdAt;

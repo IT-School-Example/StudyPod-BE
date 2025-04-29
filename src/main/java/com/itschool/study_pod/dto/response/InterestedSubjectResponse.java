@@ -16,8 +16,6 @@ public class InterestedSubjectResponse {
 
     private SubjectAreaResponse subjectArea;
 
-    private Boolean isDeleted;
-
     private String createdBy;
 
     private LocalDateTime createdAt;

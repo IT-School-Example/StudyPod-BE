@@ -14,6 +14,8 @@ import com.itschool.study_pod.enumclass.RecruitmentStatus;
 import com.itschool.study_pod.ifs.Convertible;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,6 +26,8 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Table(name = "study_groups")
+@SQLDelete(sql = "UPDATE study_groups SET is_deleted = true WHERE study_group_id = ?")
+@Where(clause = "is_deleted = false")
 public class StudyGroup extends BaseEntity implements Convertible<StudyGroupRequest, StudyGroupResponse> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -141,7 +145,6 @@ public class StudyGroup extends BaseEntity implements Convertible<StudyGroupRequ
                         .build())
                 .keywords(this.keywords)
                 .weeklySchedules(this.weeklySchedules)
-                .isDeleted(this.isDeleted)
                 .createdAt(this.createdAt)
                 .createdBy(this.createdBy)
                 .updatedAt(this.updatedAt)

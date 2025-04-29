@@ -21,8 +21,6 @@ public class UserResponse {
 
     private String nickname;
 
-    private Boolean isDeleted;
-
     private String createdBy;
 
     private LocalDateTime createdAt;
