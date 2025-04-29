@@ -25,6 +25,7 @@ public class SubjectArea implements Convertible<SubjectAreaRequest, SubjectAreaR
 
     public static SubjectArea of(SubjectAreaRequest request) { // create용
         return SubjectArea.builder()
+                .id(request.getId())
                 .subject(request.getSubject())
                 .build();
     }

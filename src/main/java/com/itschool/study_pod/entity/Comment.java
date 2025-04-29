@@ -36,6 +36,7 @@ public class Comment extends BaseEntity implements Convertible<CommentRequest, C
 
     public static Comment of(CommentRequest request) { // create용
         return Comment.builder()
+                .id(request.getId())
                 .content(request.getContent())
                 .board(Board.of(request.getBoard()))
                 .user(User.of(request.getUser()))

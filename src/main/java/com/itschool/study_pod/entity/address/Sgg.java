@@ -38,7 +38,12 @@ public class Sgg implements Convertible<SggRequest, SggResponse> {
 
     @Deprecated
     public static Sgg of(SggRequest request) { // create용
-        throw new RuntimeException("사용하지 않음");
+        return Sgg.builder()
+                .id(request.getId())
+                .sido(Sido.of(request.getSido()))
+                .sggCd(request.getSggCd())
+                .sggNm(request.getSggNm())
+                .build();
     }
 
     @Deprecated

@@ -30,6 +30,7 @@ public class InterestedSubject extends BaseEntity implements Convertible<Interes
     // 요청청 DTO -> Entity로 변환하는 메서드
     public static InterestedSubject of(InterestedSubjectRequest request) { // create용
         return InterestedSubject.builder()
+                .id(request.getId())
                 .user(User.of(request.getUser()))
                 .subjectArea(SubjectArea.of(request.getSubjectArea()))
                 .build();

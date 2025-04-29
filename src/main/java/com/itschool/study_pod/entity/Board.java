@@ -45,6 +45,7 @@ public class Board extends BaseEntity implements Convertible<BoardRequest, Board
     // 요청 DTO -> Entity 로 변환하는 메서드
     public static Board of (BoardRequest request) {
         return Board.builder()
+                .id(request.getId())
                 .title(request.getTitle())
                 .content(request.getContent())
                 .category(request.getCategory())

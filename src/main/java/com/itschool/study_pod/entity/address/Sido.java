@@ -36,7 +36,10 @@ public class Sido implements Convertible<SidoRequest, SidoResponse> {
 
     @Deprecated
     public static Sido of(SidoRequest request) { // create용
-        throw new RuntimeException("사용하지 않음");
+        return Sido.builder()
+                .sidoCd(request.getSidoCd())
+                .sidoNm(request.getSidoNm())
+                .build();
     }
 
     @Deprecated

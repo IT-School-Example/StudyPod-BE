@@ -80,6 +80,7 @@ public class StudyGroup extends BaseEntity implements Convertible<StudyGroupRequ
 
     public static StudyGroup of(StudyGroupRequest request) { // create용
         return StudyGroup.builder()
+                .id(request.getId())
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .maxMembers(request.getMaxMembers())

@@ -39,6 +39,7 @@ public class User extends BaseEntity implements Convertible<UserRequest, UserRes
 
     public static User of(UserRequest request) { // create용
         return User.builder()
+                .id(request.getId())
                 .email(request.getName())
                 .password(request.getPassword())
                 .role(request.getRole())
