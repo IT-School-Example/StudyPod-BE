@@ -6,6 +6,7 @@ import com.itschool.study_pod.dto.response.StudyGroupResponse;
 import com.itschool.study_pod.entity.StudyGroup;
 import com.itschool.study_pod.service.StudyGroupService;
 import com.itschool.study_pod.service.base.CrudService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "스터디 그룹", description = "스터디 그룹 API")
 @RequestMapping("/api/study-groups")
 public class StudyGroupController extends CrudController<StudyGroupRequest, StudyGroupResponse, StudyGroup> {
 

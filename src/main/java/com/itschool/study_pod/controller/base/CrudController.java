@@ -4,6 +4,7 @@ import com.itschool.study_pod.ifs.CrudInterface;
 import com.itschool.study_pod.ifs.Convertible;
 import com.itschool.study_pod.dto.Header;
 import com.itschool.study_pod.service.base.CrudService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public abstract class CrudController<Req, Res, Entity extends Convertible<Req, R
 
     @Override
     // Swagger 문서 생성을 위한 어노테이션 예시
-    // @Operation(summary = "생성", description = "새로운 엔티티를 생성")
+    @Operation(summary = "생성", description = "새로운 엔티티를 생성")
     @PostMapping("")
     public Header<Res> create(@RequestBody /*@Valid*/ Header<Req> request) {
         log.info("create: {}에서 객체 {} 생성 요청", this.getClass().getSimpleName(), request);
@@ -25,7 +26,7 @@ public abstract class CrudController<Req, Res, Entity extends Convertible<Req, R
     }
 
     @Override
-    // @Operation(summary = "읽기", description = "ID로 엔티티를 조회")
+    @Operation(summary = "조회", description = "ID로 엔티티를 조회")
     @GetMapping("{id}")
     public Header<Res> read(@PathVariable(name = "id") Long id) {
         log.info("read: {}에서 id={}로 조회 요청", this.getClass().getSimpleName(), id);
@@ -33,7 +34,7 @@ public abstract class CrudController<Req, Res, Entity extends Convertible<Req, R
     }
 
     @Override
-    // @Operation(summary = "수정", description = "ID로 엔티티를 업데이트")
+    @Operation(summary = "수정", description = "ID로 엔티티를 업데이트")
     @PutMapping("{id}")
     public Header<Res> update(@PathVariable(name = "id") Long id,
                               @RequestBody /*@Valid*/ Header<Req> request) {
@@ -43,7 +44,7 @@ public abstract class CrudController<Req, Res, Entity extends Convertible<Req, R
 
     @Override
     @DeleteMapping("{id}")
-    // @Operation(summary = "삭제", description = "ID로 엔티티를 삭제")
+    @Operation(summary = "삭제", description = "ID로 엔티티를 삭제")
     public Header<Void> delete(@PathVariable(name = "id") Long id) {
         log.info("delete: {}에서 id={}인 객체 삭제 요청", this.getClass().getSimpleName(), id);
         return getBaseService().delete(id);
