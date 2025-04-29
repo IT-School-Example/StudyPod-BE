@@ -13,10 +13,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
-@RequiredArgsConstructor
 public abstract class CrudController<Req, Res, Entity extends Convertible<Req, Res>> implements CrudInterface<Req, Res> {
 
-    protected final CrudService<Req, Res, Entity> baseService;
+    protected abstract CrudService<Req, Res, Entity> getBaseService();
 
 
     @Override
@@ -25,7 +24,7 @@ public abstract class CrudController<Req, Res, Entity extends Convertible<Req, R
     @PostMapping("")
     public ApiResponse<Res> create(@RequestBody /*@Valid*/ RequestEntity<Req> request) {
         log.info("create: {}에서 객체 {} 생성 요청", this.getClass().getSimpleName(), request);
-        return baseService.create(request);
+        return getBaseService().create(request);
     }
 
     @Override
@@ -33,7 +32,7 @@ public abstract class CrudController<Req, Res, Entity extends Convertible<Req, R
     @GetMapping("{id}")
     public ApiResponse<Res> read(@PathVariable(name = "id") Long id) {
         log.info("read: {}에서 id={}로 조회 요청", this.getClass().getSimpleName(), id);
-        return baseService.read(id);
+        return getBaseService().read(id);
     }
 
     @Override
@@ -42,7 +41,7 @@ public abstract class CrudController<Req, Res, Entity extends Convertible<Req, R
     public ApiResponse<Res> update(@PathVariable(name = "id") Long id,
                                                    @RequestBody /*@Valid*/ RequestEntity<Req> request) {
         log.info("readAll: {}에서 전체 조회 요청", this.getClass().getSimpleName());
-        return baseService.update(id, request);
+        return getBaseService().update(id, request);
     }
 
     @Override
@@ -50,7 +49,7 @@ public abstract class CrudController<Req, Res, Entity extends Convertible<Req, R
     // @Operation(summary = "삭제", description = "ID로 엔티티를 삭제")
     public ResponseEntity delete(@PathVariable(name = "id") Long id) {
         log.info("delete: {}에서 id={}인 객체 삭제 요청", this.getClass().getSimpleName(), id);
-        return baseService.delete(id);
+        return getBaseService().delete(id);
     }
 
     /*

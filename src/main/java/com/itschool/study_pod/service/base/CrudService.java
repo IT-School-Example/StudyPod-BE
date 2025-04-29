@@ -15,20 +15,20 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public abstract class CrudService<Req, Res, Entity extends Convertible<Req, Res>> implements CrudInterface<Req, Res> {
 
-    protected final JpaRepository<Entity, Long> baseRepository;
+    protected abstract JpaRepository<Entity, Long> getBaseRepository();
 
 
     public ApiResponse<Res> create(RequestEntity<Req> request) {
 
         Entity entity = toEntity(request.getBody());
 
-        baseRepository.save(entity);
+        getBaseRepository().save(entity);
 
         return apiResponse(entity);
     }
 
     public final ApiResponse<Res> read(Long id) {
-        return apiResponse(baseRepository.findById(id)
+        return apiResponse(getBaseRepository().findById(id)
                 .orElseThrow(()-> new EntityNotFoundException()));
     }
 
@@ -37,7 +37,7 @@ public abstract class CrudService<Req, Res, Entity extends Convertible<Req, Res>
     public ApiResponse<Res> update(Long id, RequestEntity<Req> request) {
         Req requestEntity = request.getBody();
 
-        Entity entity = baseRepository.findById(id).orElseThrow(() -> new EntityNotFoundException());
+        Entity entity = getBaseRepository().findById(id).orElseThrow(() -> new EntityNotFoundException());
 
         entity.update(requestEntity);
 
@@ -46,10 +46,10 @@ public abstract class CrudService<Req, Res, Entity extends Convertible<Req, Res>
 
 
     public ResponseEntity delete(Long id) {
-        Entity entity = baseRepository.findById(id)
+        Entity entity = getBaseRepository().findById(id)
                 .orElseThrow(() -> new EntityNotFoundException());
 
-        baseRepository.delete(entity);
+        getBaseRepository().delete(entity);
 
         return ResponseEntity.ok().build();
     }
