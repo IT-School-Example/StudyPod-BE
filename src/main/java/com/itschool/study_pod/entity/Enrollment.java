@@ -2,6 +2,8 @@ package com.itschool.study_pod.entity;
 
 import com.itschool.study_pod.dto.request.EnrollmentRequest;
 import com.itschool.study_pod.dto.response.EnrollmentResponse;
+import com.itschool.study_pod.dto.response.StudyGroupResponse;
+import com.itschool.study_pod.dto.response.UserResponse;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.enumclass.EnrollmentStatus;
 import com.itschool.study_pod.ifs.Convertible;
@@ -72,8 +74,12 @@ public class Enrollment extends BaseEntity implements Convertible<EnrollmentRequ
                 .introduce(this.introduce)
                 .joinedAt(this.joinedAt)
                 .status(this.status)
-                .user(this.user.response())
-                .studyGroup(this.studyGroup.response())
+                .user(UserResponse.builder()
+                        .id(this.user.getId())
+                        .build())
+                .studyGroup(StudyGroupResponse.builder()
+                        .id(this.studyGroup.getId())
+                        .build())
                 .isDeleted(this.isDeleted)
                 .createdAt(this.createdAt)
                 .createdBy(this.createdBy)

@@ -16,7 +16,7 @@ public class InterestedSubjectResponse {
 
     private SubjectAreaResponse subjectArea;
 
-    private boolean isDeleted;
+    private Boolean isDeleted;
 
     private String createdBy;
 

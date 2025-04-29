@@ -18,7 +18,7 @@ public class AdminResponse {
 
     private AccountRole role;
 
-    private boolean isDeleted;
+    private Boolean isDeleted;
 
     private String createdBy;
 

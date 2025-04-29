@@ -21,7 +21,7 @@ public class UserResponse {
 
     private String nickname;
 
-    private boolean isDeleted;
+    private Boolean isDeleted;
 
     private String createdBy;
 

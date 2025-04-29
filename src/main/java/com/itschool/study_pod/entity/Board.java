@@ -1,7 +1,10 @@
 package com.itschool.study_pod.entity;
 
 import com.itschool.study_pod.dto.request.BoardRequest;
+import com.itschool.study_pod.dto.response.AdminResponse;
 import com.itschool.study_pod.dto.response.BoardResponse;
+import com.itschool.study_pod.dto.response.StudyGroupResponse;
+import com.itschool.study_pod.dto.response.UserResponse;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.enumclass.BoardCategory;
 import com.itschool.study_pod.ifs.Convertible;
@@ -65,9 +68,21 @@ public class Board extends BaseEntity implements Convertible<BoardRequest, Board
                 .title(this.title)
                 .content(this.content)
                 .category(BoardCategory.FREE)
-                .user(this.user.response())
-                .admin(this.admin.response())
-                .studyGroup(this.studyGroup.response())
+                .user(this.user != null?
+                        UserResponse.builder()
+                                .id(this.user.getId())
+                                .build()
+                        : null)
+                .admin(this.admin != null?
+                        AdminResponse.builder()
+                                .id(this.admin.getId())
+                                .build()
+                        : null)
+                .studyGroup(this.studyGroup != null?
+                        StudyGroupResponse.builder()
+                                .id(this.studyGroup.getId())
+                                .build()
+                        : null)
                 .isDeleted(this.isDeleted)
                 .createdAt(this.createdAt)
                 .createdBy(this.createdBy)

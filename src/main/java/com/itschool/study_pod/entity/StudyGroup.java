@@ -2,6 +2,9 @@ package com.itschool.study_pod.entity;
 
 import com.itschool.study_pod.dto.request.StudyGroupRequest;
 import com.itschool.study_pod.dto.response.StudyGroupResponse;
+import com.itschool.study_pod.dto.response.SubjectAreaResponse;
+import com.itschool.study_pod.dto.response.UserResponse;
+import com.itschool.study_pod.dto.response.address.SggResponse;
 import com.itschool.study_pod.embedable.WeeklySchedule;
 import com.itschool.study_pod.entity.address.Sgg;
 import com.itschool.study_pod.entity.base.BaseEntity;
@@ -62,6 +65,7 @@ public class StudyGroup extends BaseEntity implements Convertible<StudyGroupRequ
     private SubjectArea subjectArea;
 
     @Builder.Default
+    @ElementCollection
     @CollectionTable(name = "study_group_keywords",
             joinColumns = @JoinColumn(name = "study_group_id"))
     @Column(name = "keyword_name", nullable = false)
@@ -126,9 +130,15 @@ public class StudyGroup extends BaseEntity implements Convertible<StudyGroupRequ
                 .recruitmentStatus(this.recruitmentStatus)
                 .feeType(this.feeType)
                 .amount(this.amount)
-                .leader(this.leader.response())
-                .address(this.address.response())
-                .subjectArea(this.subjectArea.response())
+                .leader(UserResponse.builder()
+                        .id(this.leader.getId())
+                        .build())
+                .address(SggResponse.builder()
+                        .id(this.address.getId())
+                        .build())
+                .subjectArea(SubjectAreaResponse.builder()
+                        .id(this.subjectArea.getId())
+                        .build())
                 .keywords(this.keywords)
                 .weeklySchedules(this.weeklySchedules)
                 .isDeleted(this.isDeleted)

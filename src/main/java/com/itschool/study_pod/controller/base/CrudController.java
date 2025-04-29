@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 public abstract class CrudController<Req, Res, Entity extends Convertible<Req, Res>> implements CrudInterface<Req, Res> {
 
@@ -48,6 +50,12 @@ public abstract class CrudController<Req, Res, Entity extends Convertible<Req, R
     public Header<Void> delete(@PathVariable(name = "id") Long id) {
         log.info("delete: {}에서 id={}인 객체 삭제 요청", this.getClass().getSimpleName(), id);
         return getBaseService().delete(id);
+    }
+
+    @GetMapping("all")
+    @Operation(summary = "전체 조회", description = "임시 조회")
+    public Header<List<Res>> findAll() {
+        return getBaseService().findAll();
     }
 
     /*

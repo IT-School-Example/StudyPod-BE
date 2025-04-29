@@ -32,8 +32,8 @@ public abstract class BaseEntity {
     @Column(nullable = false) // , columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
     protected LocalDateTime updatedAt;
 
-    @Column(nullable = false) // , columnDefinition = "BOOLEAN DEFAULT FALSE"
-    protected boolean isDeleted;
+    @Column(nullable = false) // , columnDefinition = "Boolean DEFAULT FALSE"
+    protected Boolean isDeleted;
 
     public void softDelete() {
         this.isDeleted = true;

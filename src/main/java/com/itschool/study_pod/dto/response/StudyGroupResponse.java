@@ -30,7 +30,7 @@ public class StudyGroupResponse {
     private Set<String> keywords;
     private Set<WeeklySchedule> weeklySchedules;
 
-    private boolean isDeleted;
+    private Boolean isDeleted;
 
     private String createdBy;
 

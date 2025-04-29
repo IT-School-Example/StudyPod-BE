@@ -1,7 +1,9 @@
 package com.itschool.study_pod.entity;
 
 import com.itschool.study_pod.dto.request.CommentRequest;
+import com.itschool.study_pod.dto.response.BoardResponse;
 import com.itschool.study_pod.dto.response.CommentResponse;
+import com.itschool.study_pod.dto.response.UserResponse;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.ifs.Convertible;
 import jakarta.persistence.*;
@@ -52,9 +54,15 @@ public class Comment extends BaseEntity implements Convertible<CommentRequest, C
         return CommentResponse.builder()
                 .id(this.id)
                 .content(this.content)
-                .board(this.board.response())
-                .user(this.user.response())
-                .parentComment(this.parentComment.response())
+                .board(BoardResponse.builder()
+                        .id(this.board.getId())
+                        .build())
+                .user(UserResponse.builder()
+                        .id(this.user.getId())
+                        .build())
+                .parentComment(CommentResponse.builder()
+                        .id(this.parentComment.getId())
+                        .build())
                 .isDeleted(this.isDeleted)
                 .createdAt(this.createdAt)
                 .createdBy(this.createdBy)

@@ -25,7 +25,7 @@ public class BoardResponse {
 
     private StudyGroupResponse studyGroup;
 
-    private boolean isDeleted;
+    private Boolean isDeleted;
 
     private String createdBy;
 

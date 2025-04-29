@@ -2,6 +2,8 @@ package com.itschool.study_pod.entity;
 
 import com.itschool.study_pod.dto.request.InterestedSubjectRequest;
 import com.itschool.study_pod.dto.response.InterestedSubjectResponse;
+import com.itschool.study_pod.dto.response.SubjectAreaResponse;
+import com.itschool.study_pod.dto.response.UserResponse;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.ifs.Convertible;
 import jakarta.persistence.*;
@@ -49,8 +51,12 @@ public class InterestedSubject extends BaseEntity implements Convertible<Interes
     public InterestedSubjectResponse response() {
         return InterestedSubjectResponse.builder()
                 .id(this.id)
-                .user(this.user.response())
-                .subjectArea(this.subjectArea.response())
+                .user(UserResponse.builder()
+                        .id(this.user.getId())
+                        .build())
+                .subjectArea(SubjectAreaResponse.builder()
+                        .id(this.subjectArea.getId())
+                        .build())
                 .isDeleted(this.isDeleted)
                 .createdAt(this.createdAt)
                 .createdBy(this.createdBy)

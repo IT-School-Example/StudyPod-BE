@@ -21,7 +21,7 @@ public class CommentResponse {
 
     private UserResponse user;
 
-    private boolean isDeleted;
+    private Boolean isDeleted;
 
     private String createdBy;
 
