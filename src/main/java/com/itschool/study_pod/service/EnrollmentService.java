@@ -13,9 +13,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class EnrollmentService {
+public class EnrollmentService extends CrudService<EnrollmentRequest, EnrollmentResponse, Enrollment> {
 
     private final EnrollmentRepository enrollmentRepository;
+
+    @Override
+    protected JpaRepository<Enrollment, Long> getBaseRepository() {
+        return enrollmentRepository;
+    }
+
+    @Override
+    protected Enrollment toEntity(EnrollmentRequest requestEntity) {
+        return Enrollment.of(requestEntity);
+    }
+
+    /*private final EnrollmentRepository enrollmentRepository;
 
     public EnrollmentResponse create(EnrollmentRequest request) {
         return enrollmentRepository.save(Enrollment.of(request)).response();
@@ -41,5 +53,5 @@ public class EnrollmentService {
         Enrollment findEntity = enrollmentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException());
         enrollmentRepository.delete(findEntity);
-    }
+    }*/
 }

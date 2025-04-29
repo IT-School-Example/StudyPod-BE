@@ -7,21 +7,50 @@ import com.itschool.study_pod.repository.BoardRepository;
 import com.itschool.study_pod.repository.CommentRepository;
 import com.itschool.study_pod.repository.UserRepository;
 import com.itschool.study_pod.service.base.CrudService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class CommentService {
+public class CommentService extends CrudService<CommentRequest, CommentResponse, Comment> {
 
     private final CommentRepository commentRepository;
 
+    private final BoardRepository boardRepository;
+
+    private final UserRepository userRepository;
+
+
+    @Override
+    protected JpaRepository<Comment, Long> getBaseRepository() {
+        return commentRepository;
+    }
+
+    @Override
+    protected Comment toEntity(CommentRequest requestEntity) {
+        return Comment.of(requestEntity);
+    }
+
+    /*private final CommentRepository commentRepository;
+
     public CommentResponse create(CommentRequest request) {
 
-        return commentRepository.save(Comment.of(request))
+        Board board = boardRepository.findById(request.getBoardId())
+                .orElseThrow(()-> new EntityNotFoundException());
+
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(()-> new EntityNotFoundException());
+
+        Long commentId = request.getParentCommentId();
+        Comment comment = null;
+
+        if(request.getParentCommentId() != null) {
+            comment = commentRepository.findById(commentId)
+                    .orElseThrow(()-> new EntityNotFoundException());
+        }
+
+        return commentRepository.save(Comment.of(request, board, user, comment))
                 .response();
     }
 
@@ -49,5 +78,5 @@ public class CommentService {
                 .orElseThrow(() -> new EntityNotFoundException());
 
         commentRepository.delete(findEntity);
-    }
+    }*/
 }

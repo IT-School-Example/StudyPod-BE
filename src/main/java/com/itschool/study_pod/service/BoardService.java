@@ -5,17 +5,27 @@ import com.itschool.study_pod.dto.response.BoardResponse;
 import com.itschool.study_pod.entity.Board;
 import com.itschool.study_pod.repository.BoardRepository;
 import com.itschool.study_pod.service.base.CrudService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class BoardService {
+public class BoardService extends CrudService<BoardRequest, BoardResponse, Board> {
 
     private final BoardRepository boardRepository;
+
+    @Override
+    protected JpaRepository<Board, Long> getBaseRepository() {
+        return boardRepository;
+    }
+
+    @Override
+    protected Board toEntity(BoardRequest requestEntity) {
+        return Board.of(requestEntity);
+    }
+
+    /*private final BoardRepository boardRepository;
 
     public BoardResponse create(BoardRequest request) {
         return boardRepository.save(Board.of(request))
@@ -46,5 +56,5 @@ public class BoardService {
                 .orElseThrow(() -> new EntityNotFoundException());
 
         boardRepository.delete(findEntity);
-    }
+    }*/
 }

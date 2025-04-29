@@ -4,16 +4,30 @@ import com.itschool.study_pod.dto.request.UserRequest;
 import com.itschool.study_pod.dto.response.UserResponse;
 import com.itschool.study_pod.entity.User;
 import com.itschool.study_pod.repository.UserRepository;
+import com.itschool.study_pod.service.base.CrudService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService extends CrudService<UserRequest, UserResponse, User> {
 
     private final UserRepository userRepository;
+
+    @Override
+    protected JpaRepository<User, Long> getBaseRepository() {
+        return userRepository;
+    }
+
+    @Override
+    protected User toEntity(UserRequest requestEntity) {
+        return User.of(requestEntity);
+    }
+
+    /*private final UserRepository userRepository;
 
     public UserResponse create(UserRequest request) {
         return userRepository.save(User.of(request)).response();
@@ -40,5 +54,5 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException());
         userRepository.delete(findEntity);
     }
-
+    */
 }

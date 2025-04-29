@@ -27,4 +27,30 @@ public class AdminService extends CrudService<AdminRequest, AdminResponse, Admin
     protected Admin toEntity(AdminRequest requestEntity) {
         return Admin.of(requestEntity);
     }
+
+    /*public AdminResponse create(AdminRequest request) {
+        return adminRepository.save(Admin.of(request)).response();
+    }
+
+    public AdminResponse read(Long id) {
+        return adminRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException())
+                .response();
+    }
+
+    @Transactional
+    public AdminResponse update(Long id, AdminRequest adminRequest) {
+        Admin entity = adminRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException());
+
+        entity.update(adminRequest);
+
+        return entity.response();
+    }
+
+    public void delete(Long id) {
+        Admin findEntity = adminRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException());
+        adminRepository.delete(findEntity);
+    }*/
 }

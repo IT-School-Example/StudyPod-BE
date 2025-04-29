@@ -4,18 +4,37 @@ import com.itschool.study_pod.dto.request.InterestedSubjectRequest;
 import com.itschool.study_pod.dto.response.InterestedSubjectResponse;
 import com.itschool.study_pod.entity.InterestedSubject;
 import com.itschool.study_pod.repository.InterestedSubjectRepository;
+import com.itschool.study_pod.repository.SubjectAreaRepository;
+import com.itschool.study_pod.repository.UserRepository;
+import com.itschool.study_pod.service.base.CrudService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class InterestedSubjectService {
+public class InterestedSubjectService extends CrudService<InterestedSubjectRequest, InterestedSubjectResponse, InterestedSubject> {
 
     private final InterestedSubjectRepository interestedSubjectRepository;
 
-    public InterestedSubjectResponse create(InterestedSubjectRequest request) {
+    private final UserRepository userRepository;
+
+    private final SubjectAreaRepository subjectAreaRepository;
+
+
+    @Override
+    protected JpaRepository<InterestedSubject, Long> getBaseRepository() {
+        return interestedSubjectRepository;
+    }
+
+    @Override
+    protected InterestedSubject toEntity(InterestedSubjectRequest requestEntity) {
+        return InterestedSubject.of(requestEntity);
+    }
+
+    /*public InterestedSubjectResponse create(InterestedSubjectRequest request) {
         return interestedSubjectRepository.save(InterestedSubject.of(request))
                 .response();
     }
@@ -46,5 +65,5 @@ public class InterestedSubjectService {
                 .orElseThrow(() -> new EntityNotFoundException());
 
         interestedSubjectRepository.delete(findEntity);
-    }
+    }*/
 }
