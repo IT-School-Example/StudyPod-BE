@@ -2,14 +2,11 @@ package com.itschool.study_pod.controller.base;
 
 import com.itschool.study_pod.ifs.CrudInterface;
 import com.itschool.study_pod.ifs.Convertible;
-import com.itschool.study_pod.dto.ApiResponse;
+import com.itschool.study_pod.dto.Header;
 import com.itschool.study_pod.service.base.CrudService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -22,7 +19,7 @@ public abstract class CrudController<Req, Res, Entity extends Convertible<Req, R
     // Swagger 문서 생성을 위한 어노테이션 예시
     // @Operation(summary = "생성", description = "새로운 엔티티를 생성")
     @PostMapping("")
-    public ApiResponse<Res> create(@RequestBody /*@Valid*/ RequestEntity<Req> request) {
+    public Header<Res> create(@RequestBody /*@Valid*/ Header<Req> request) {
         log.info("create: {}에서 객체 {} 생성 요청", this.getClass().getSimpleName(), request);
         return getBaseService().create(request);
     }
@@ -30,7 +27,7 @@ public abstract class CrudController<Req, Res, Entity extends Convertible<Req, R
     @Override
     // @Operation(summary = "읽기", description = "ID로 엔티티를 조회")
     @GetMapping("{id}")
-    public ApiResponse<Res> read(@PathVariable(name = "id") Long id) {
+    public Header<Res> read(@PathVariable(name = "id") Long id) {
         log.info("read: {}에서 id={}로 조회 요청", this.getClass().getSimpleName(), id);
         return getBaseService().read(id);
     }
@@ -38,8 +35,8 @@ public abstract class CrudController<Req, Res, Entity extends Convertible<Req, R
     @Override
     // @Operation(summary = "수정", description = "ID로 엔티티를 업데이트")
     @PutMapping("{id}")
-    public ApiResponse<Res> update(@PathVariable(name = "id") Long id,
-                                                   @RequestBody /*@Valid*/ RequestEntity<Req> request) {
+    public Header<Res> update(@PathVariable(name = "id") Long id,
+                              @RequestBody /*@Valid*/ Header<Req> request) {
         log.info("readAll: {}에서 전체 조회 요청", this.getClass().getSimpleName());
         return getBaseService().update(id, request);
     }
@@ -47,7 +44,7 @@ public abstract class CrudController<Req, Res, Entity extends Convertible<Req, R
     @Override
     @DeleteMapping("{id}")
     // @Operation(summary = "삭제", description = "ID로 엔티티를 삭제")
-    public ApiResponse<Void> delete(@PathVariable(name = "id") Long id) {
+    public Header<Void> delete(@PathVariable(name = "id") Long id) {
         log.info("delete: {}에서 id={}인 객체 삭제 요청", this.getClass().getSimpleName(), id);
         return getBaseService().delete(id);
     }
@@ -72,7 +69,7 @@ public abstract class CrudController<Req, Res, Entity extends Convertible<Req, R
 
     // 전역 예외 핸들링용 핸들러 (Controller 내에서 발생하는 예외 처리)
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse> handleException(Exception e) {
+    public ResponseEntity<Header> handleException(Exception e) {
         // 예외 정보 로그
         log.error("Exception Occurred: ", e);
 
@@ -80,7 +77,7 @@ public abstract class CrudController<Req, Res, Entity extends Convertible<Req, R
         String errorMessage = e.getClass().getSimpleName() + " : " + e.getMessage();
 
         // 에러 응답 본문 생성
-        ApiResponse errorResponse = ApiResponse.ERROR(errorMessage);
+        Header errorResponse = Header.ERROR(errorMessage);
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(errorResponse);

@@ -1,17 +1,16 @@
 package com.itschool.study_pod.ifs;
 
-import com.itschool.study_pod.dto.ApiResponse;
-import org.springframework.http.RequestEntity;
+import com.itschool.study_pod.dto.Header;
 
 public interface CrudInterface <Req, Res> {
 
-    ApiResponse<Res> create(RequestEntity<Req> request);
+    Header<Res> create(Header<Req> request);
 
-    ApiResponse<Res> read(Long id);
+    Header<Res> read(Long id);
 
-    ApiResponse<Res> update(Long id, RequestEntity<Req>  request);
+    Header<Res> update(Long id, Header<Req> request);
 
-    ApiResponse<Void> delete(Long id);
+    Header<Void> delete(Long id);
 
     // ResponseEntity<ApiResponse<List<Res>>> getPaginatedList(Pageable pageable);
 }
