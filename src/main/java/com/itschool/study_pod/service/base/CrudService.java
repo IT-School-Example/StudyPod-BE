@@ -3,13 +3,10 @@ package com.itschool.study_pod.service.base;
 
 import com.itschool.study_pod.ifs.CrudInterface;
 import com.itschool.study_pod.ifs.Convertible;
-import com.itschool.study_pod.dto.ApiResponse;
+import com.itschool.study_pod.dto.Header;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
@@ -21,57 +18,45 @@ public abstract class CrudService<Req, Res, Entity extends Convertible<Req, Res>
     protected abstract Entity toEntity(Req requestEntity);
 
     // 응답 처리(응답 DTO를 ApiResponse에 감싸서 return)
-    protected ApiResponse<Res> apiResponse(Entity entity) {
-        return ApiResponse.OK(entity.response());
+    protected Header<Res> apiResponse(Entity entity) {
+        return Header.OK(entity.response());
     }
 
-    public ApiResponse<Res> create(RequestEntity<Req> request) {
+    public Header<Res> create(Header<Req> request) {
 
-        Entity entity = toEntity(request.getBody());
+        Entity entity = toEntity(request.getData());
 
         getBaseRepository().save(entity);
 
         return apiResponse(entity);
     }
 
-    public final ApiResponse<Res> read(Long id) {
+    public final Header<Res> read(Long id) {
         return apiResponse(getBaseRepository().findById(id)
-                .orElseThrow(()-> new EntityNotFoundException()));
+                .orElseThrow(()-> new EntityNotFoundException("해당 id " + id + "에 해당하는 객체가 없습니다.")));
     }
 
 
     @Transactional
-    public ApiResponse<Res> update(Long id, RequestEntity<Req> request) {
-        Req requestEntity = request.getBody();
+    public Header<Res> update(Long id, Header<Req> request) {
 
-        Entity entity = getBaseRepository().findById(id).orElseThrow(() -> new EntityNotFoundException());
+        Entity entity = getBaseRepository().findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당 id " + id + "에 해당하는 객체가 없습니다."));
 
-        entity.update(requestEntity);
+        entity.update(request.getData());
 
         return apiResponse(entity);
     }
 
 
-    public ApiResponse<Void> delete(Long id) {
+    public Header<Void> delete(Long id) {
         Entity entity = getBaseRepository().findById(id)
-                .orElseThrow(() -> new EntityNotFoundException());
+                .orElseThrow(() -> new EntityNotFoundException("해당 id " + id + "에 해당하는 객체가 없습니다."));
 
         getBaseRepository().delete(entity);
 
-        return ApiResponse.OK();
+        return Header.OK();
     }
-
-
-
-    /*protected final List<Res> responseList(List<Entity> entities) {
-        List<Res> responseList = new ArrayList<>();
-
-        for(Entity entity : entities){
-            responseList.add((Res) entity.response());
-        }
-
-        return responseList;
-    }*/
 
     /*public final ResponseEntity<ApiResponse<List<Res>>> getPaginatedList(Pageable pageable) {
         Page<Entity> entities = getBaseRepository().findAll(pageable);
@@ -93,6 +78,16 @@ public abstract class CrudService<Req, Res, Entity extends Convertible<Req, Res>
                 .build();
 
         return ResponseEntity.ok(ApiResponse.OK(entities));
+    }*/
+
+    /*protected final List<Res> responseList(List<Entity> entities) {
+        List<Res> responseList = new ArrayList<>();
+
+        for(Entity entity : entities){
+            responseList.add((Res) entity.response());
+        }
+
+        return responseList;
     }*/
 
     /*public List<Res> createByList(List<Req> requestList) {
