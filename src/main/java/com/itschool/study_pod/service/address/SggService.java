@@ -45,7 +45,7 @@ public class SggService extends CrudService<SggRequest, SggResponse, Sgg> {
 
     @Override
     @Deprecated
-    public ResponseEntity delete(Long id) {
+    public ApiResponse<Void> delete(Long id) {
         throw new RuntimeException("Sgg 삭제 허용 불가");
     }
 }

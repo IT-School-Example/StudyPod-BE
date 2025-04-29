@@ -9,14 +9,20 @@ import com.itschool.study_pod.entity.address.Sgg;
 import com.itschool.study_pod.entity.address.Sido;
 import com.itschool.study_pod.service.address.SggService;
 import com.itschool.study_pod.service.address.SidoService;
+import com.itschool.study_pod.service.base.CrudService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("sgg")
 public class SggController extends CrudController<SggRequest, SggResponse, Sgg> {
 
-    public SggController(SggService baseService) {
-        super(baseService);
+    private final SggService sggService;
+
+    @Override
+    protected CrudService<SggRequest, SggResponse, Sgg> getBaseService() {
+        return sggService;
     }
 }

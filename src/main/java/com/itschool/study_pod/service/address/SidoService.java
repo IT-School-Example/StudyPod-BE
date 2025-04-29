@@ -39,7 +39,7 @@ public class SidoService extends CrudService<SidoRequest, SidoResponse, Sido> {
     }
 
     @Override
-    public ResponseEntity delete(Long id) {
+    public ApiResponse<Void> delete(Long id) {
         throw new RuntimeException("Sido 삭제 허용 불가");
     }
 }
