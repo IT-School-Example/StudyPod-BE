@@ -38,12 +38,15 @@ public class Sgg implements Convertible<SggRequest, SggResponse> {
 
     @Deprecated
     public static Sgg of(SggRequest request) { // create용
-        return Sgg.builder()
-                .id(request.getId())
-                .sido(Sido.of(request.getSido()))
-                .sggCd(request.getSggCd())
-                .sggNm(request.getSggNm())
-                .build();
+        if(request != null) {
+            return Sgg.builder()
+                    .id(request.getId())
+                    .sido(Sido.of(request.getSido()))
+                    .sggCd(request.getSggCd())
+                    .sggNm(request.getSggNm())
+                    .build();
+        }
+        return null;
     }
 
     @Deprecated

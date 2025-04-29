@@ -6,6 +6,9 @@ import com.itschool.study_pod.dto.request.address.SidoRequest;
 import com.itschool.study_pod.dto.response.address.SggResponse;
 import com.itschool.study_pod.dto.response.address.SidoResponse;
 import com.itschool.study_pod.entity.Admin;
+import com.itschool.study_pod.entity.Board;
+import com.itschool.study_pod.entity.StudyGroup;
+import com.itschool.study_pod.entity.User;
 import com.itschool.study_pod.ifs.Convertible;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -36,10 +39,13 @@ public class Sido implements Convertible<SidoRequest, SidoResponse> {
 
     @Deprecated
     public static Sido of(SidoRequest request) { // create용
-        return Sido.builder()
-                .sidoCd(request.getSidoCd())
-                .sidoNm(request.getSidoNm())
-                .build();
+        if(request != null) {
+            return Sido.builder()
+                    .sidoCd(request.getSidoCd())
+                    .sidoNm(request.getSidoNm())
+                    .build();
+        }
+        return null;
     }
 
     @Deprecated

@@ -79,21 +79,24 @@ public class StudyGroup extends BaseEntity implements Convertible<StudyGroupRequ
     private Set<WeeklySchedule> weeklySchedules = new HashSet<>();
 
     public static StudyGroup of(StudyGroupRequest request) { // create용
-        return StudyGroup.builder()
-                .id(request.getId())
-                .title(request.getTitle())
-                .description(request.getDescription())
-                .maxMembers(request.getMaxMembers())
-                .meetingMethod(request.getMeetingMethod())
-                .recruitmentStatus(request.getRecruitmentStatus())
-                .feeType(request.getFeeType())
-                .amount(request.getAmount())
-                .leader(User.of(request.getLeader()))
-                .address(Sgg.of(request.getAddress()))
-                .subjectArea(SubjectArea.of(request.getSubjectArea()))
-                .keywords(request.getKeywords())
-                .weeklySchedules(request.getWeeklySchedules())
-                .build();
+        if(request != null) {
+            return StudyGroup.builder()
+                    .id(request.getId())
+                    .title(request.getTitle())
+                    .description(request.getDescription())
+                    .maxMembers(request.getMaxMembers())
+                    .meetingMethod(request.getMeetingMethod())
+                    .recruitmentStatus(request.getRecruitmentStatus())
+                    .feeType(request.getFeeType())
+                    .amount(request.getAmount())
+                    .leader(User.of(request.getLeader()))
+                    .address(Sgg.of(request.getAddress()))
+                    .subjectArea(SubjectArea.of(request.getSubjectArea()))
+                    .keywords(request.getKeywords())
+                    .weeklySchedules(request.getWeeklySchedules())
+                    .build();
+        }
+        return null;
     }
 
     @Override

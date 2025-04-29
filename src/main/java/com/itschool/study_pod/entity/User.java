@@ -38,14 +38,17 @@ public class User extends BaseEntity implements Convertible<UserRequest, UserRes
     private String nickname;
 
     public static User of(UserRequest request) { // create용
-        return User.builder()
-                .id(request.getId())
-                .email(request.getName())
-                .password(request.getPassword())
-                .role(request.getRole())
-                .name(request.getName())
-                .nickname(request.getNickname())
-                .build();
+        if(request != null) {
+            return User.builder()
+                    .id(request.getId())
+                    .email(request.getName())
+                    .password(request.getPassword())
+                    .role(request.getRole())
+                    .name(request.getName())
+                    .nickname(request.getNickname())
+                    .build();
+        }
+        return null;
     }
 
     // update용

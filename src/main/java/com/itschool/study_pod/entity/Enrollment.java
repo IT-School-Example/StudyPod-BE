@@ -43,14 +43,17 @@ public class Enrollment extends BaseEntity implements Convertible<EnrollmentRequ
     private User user;
 
     public static Enrollment of(EnrollmentRequest request) { // create용
-        return Enrollment.builder()
-                .id(request.getId())
-                .appliedAt(request.getAppliedAt())
-                .introduce(request.getIntroduce())
-                .status(request.getStatus())
-                .user(User.of(request.getUser()))
-                .studyGroup(StudyGroup.of(request.getStudyGroup()))
-                .build();
+        if(request != null) {
+            return Enrollment.builder()
+                    .id(request.getId())
+                    .appliedAt(request.getAppliedAt())
+                    .introduce(request.getIntroduce())
+                    .status(request.getStatus())
+                    .user(User.of(request.getUser()))
+                    .studyGroup(StudyGroup.of(request.getStudyGroup()))
+                    .build();
+        }
+        return null;
     }
 
     @Override

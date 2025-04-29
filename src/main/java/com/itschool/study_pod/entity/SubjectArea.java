@@ -24,10 +24,13 @@ public class SubjectArea implements Convertible<SubjectAreaRequest, SubjectAreaR
     private Subject subject;
 
     public static SubjectArea of(SubjectAreaRequest request) { // create용
-        return SubjectArea.builder()
-                .id(request.getId())
-                .subject(request.getSubject())
-                .build();
+        if(request != null) {
+            return SubjectArea.builder()
+                    .id(request.getId())
+                    .subject(request.getSubject())
+                    .build();
+        }
+        return null;
     }
 
     @Override
