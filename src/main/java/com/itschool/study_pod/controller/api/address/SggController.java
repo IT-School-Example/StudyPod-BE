@@ -1,22 +1,19 @@
 package com.itschool.study_pod.controller.api.address;
 
 import com.itschool.study_pod.controller.base.CrudController;
+import com.itschool.study_pod.dto.Header;
 import com.itschool.study_pod.dto.request.address.SggRequest;
-import com.itschool.study_pod.dto.request.address.SidoRequest;
 import com.itschool.study_pod.dto.response.address.SggResponse;
-import com.itschool.study_pod.dto.response.address.SidoResponse;
 import com.itschool.study_pod.entity.address.Sgg;
-import com.itschool.study_pod.entity.address.Sido;
 import com.itschool.study_pod.service.address.SggService;
-import com.itschool.study_pod.service.address.SidoService;
 import com.itschool.study_pod.service.base.CrudService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
-@RequestMapping("sgg")
+@RequestMapping("/api/sgg")
 public class SggController extends CrudController<SggRequest, SggResponse, Sgg> {
 
     private final SggService sggService;
@@ -24,5 +21,23 @@ public class SggController extends CrudController<SggRequest, SggResponse, Sgg> 
     @Override
     protected CrudService<SggRequest, SggResponse, Sgg> getBaseService() {
         return sggService;
+    }
+
+    @Override
+    @Deprecated
+    public Header<SggResponse> create(Header<SggRequest> request) {
+        throw new RuntimeException("Sgg 생성 접근 불가");
+    }
+
+    @Override
+    @Deprecated
+    public Header<SggResponse> update(Long id, Header<SggRequest> request) {
+        throw new RuntimeException("Sgg 수정 접근 불가");
+    }
+
+    @Override
+    @Deprecated
+    public Header<Void> delete(Long id) {
+        throw new RuntimeException("Sgg 삭제 접근 불가");
     }
 }

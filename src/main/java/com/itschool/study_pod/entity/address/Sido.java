@@ -34,19 +34,23 @@ public class Sido implements Convertible<SidoRequest, SidoResponse> {
     @Column(columnDefinition = "character varying(100)", insertable = false, updatable = false)
     private String sidoNm;
 
+    @Deprecated
     public static Sido of(SidoRequest request) { // create용
-        return Sido.builder()
-
-                .build();
+        throw new RuntimeException("사용하지 않음");
     }
 
+    @Deprecated
     @Override
     public void update(SidoRequest request) {
-
+        throw new RuntimeException("사용하지 않음");
     }
 
+    // 조회만 허용
     @Override
     public SidoResponse response() {
-        return null;
+        return SidoResponse.builder()
+                .sidoCd(this.sidoCd)
+                .sidoNm(this.sidoNm)
+                .build();
     }
 }

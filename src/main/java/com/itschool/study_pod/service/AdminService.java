@@ -1,6 +1,5 @@
 package com.itschool.study_pod.service;
 
-import com.itschool.study_pod.dto.ApiResponse;
 import com.itschool.study_pod.dto.request.AdminRequest;
 import com.itschool.study_pod.dto.response.AdminResponse;
 import com.itschool.study_pod.entity.Admin;

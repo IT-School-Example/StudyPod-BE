@@ -36,19 +36,18 @@ public class Sgg implements Convertible<SggRequest, SggResponse> {
     @Column(columnDefinition = "character varying(100)")
     private String sggNm;
 
+    @Deprecated
     public static Sgg of(SggRequest request) { // create용
-        return Sgg.builder()
-                .sido(Sido.of(request.getSido()))
-                .sggCd(request.getSggCd())
-                .sggNm(request.getSggNm())
-                .build();
+        throw new RuntimeException("사용하지 않음");
     }
 
+    @Deprecated
     @Override
     public void update(SggRequest request) {
-        this.sggNm = request.getSggNm();
+        throw new RuntimeException("사용하지 않음");
     }
 
+    // 조회만 허용
     @Override
     public SggResponse response() {
         return SggResponse.builder()
