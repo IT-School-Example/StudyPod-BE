@@ -4,31 +4,18 @@ import com.itschool.study_pod.dto.request.InterestedSubjectRequest;
 import com.itschool.study_pod.dto.response.InterestedSubjectResponse;
 import com.itschool.study_pod.entity.InterestedSubject;
 import com.itschool.study_pod.repository.InterestedSubjectRepository;
-import com.itschool.study_pod.repository.SubjectAreaRepository;
-import com.itschool.study_pod.repository.UserRepository;
-import com.itschool.study_pod.service.base.CrudService;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class InterestedSubjectService extends CrudService<InterestedSubjectRequest, InterestedSubjectResponse, InterestedSubject> {
+@RequiredArgsConstructor
+public class InterestedSubjectService {
 
-    private final UserRepository userRepository;
+    private final InterestedSubjectRepository interestedSubjectRepository;
 
-    private final SubjectAreaRepository subjectAreaRepository;
-
-
-    public InterestedSubjectService(InterestedSubjectRepository baseRepository, UserRepository userRepository, SubjectAreaRepository subjectAreaRepository) {
-        super(baseRepository);
-        this.userRepository = userRepository;
-        this.subjectAreaRepository = subjectAreaRepository;
-    }
-
-    @Override
-    protected InterestedSubject toEntity(InterestedSubjectRequest requestEntity) {
-        return InterestedSubject.of(requestEntity);
-    }
-
-    /*public InterestedSubjectResponse create(InterestedSubjectRequest request) {
+    public InterestedSubjectResponse create(InterestedSubjectRequest request) {
         return interestedSubjectRepository.save(InterestedSubject.of(request))
                 .response();
     }
@@ -58,19 +45,6 @@ public class InterestedSubjectService extends CrudService<InterestedSubjectReque
         InterestedSubject findEntity = interestedSubjectRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException());
 
-
-//            InterestedSubject interestedSubject = interestedSubjectRepository.findById(request.getInterestedSubjectId())
-//                    .orElseThrow(() -> new EntityNotFoundException());
-//
-//            User user = userRepository.findById(request.getUserId())
-//                    .orElseThrow(() -> new EntityNotFoundException());
-//
-//            SubjectArea subjectArea = subjectAreaRepository.findById(request.get())
-//                    .orElseThrow(() -> new EntityNotFoundException());
-//
-//            return subjectAreaRepository.save(SubjectArea.of(request, interestedSubject, user ,subjectArea))
-//                    .response();
-
         interestedSubjectRepository.delete(findEntity);
-    }*/
+    }
 }

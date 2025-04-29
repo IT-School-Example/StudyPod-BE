@@ -7,45 +7,21 @@ import com.itschool.study_pod.repository.BoardRepository;
 import com.itschool.study_pod.repository.CommentRepository;
 import com.itschool.study_pod.repository.UserRepository;
 import com.itschool.study_pod.service.base.CrudService;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class CommentService extends CrudService<CommentRequest, CommentResponse, Comment> {
+@RequiredArgsConstructor
+public class CommentService {
 
-    private final BoardRepository boardRepository;
-
-    private final UserRepository userRepository;
-
-    public CommentService(CommentRepository baseRepository, BoardRepository boardRepository, UserRepository userRepository) {
-        super(baseRepository);
-        this.boardRepository = boardRepository;
-        this.userRepository = userRepository;
-    }
-
-    @Override
-    protected Comment toEntity(CommentRequest requestEntity) {
-        return null;
-    }
-
-    /*private final CommentRepository commentRepository;
+    private final CommentRepository commentRepository;
 
     public CommentResponse create(CommentRequest request) {
 
-        Board board = boardRepository.findById(request.getBoardId())
-                .orElseThrow(()-> new EntityNotFoundException());
-
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(()-> new EntityNotFoundException());
-
-        Long commentId = request.getParentCommentId();
-        Comment comment = null;
-
-        if(request.getParentCommentId() != null) {
-            comment = commentRepository.findById(commentId)
-                    .orElseThrow(()-> new EntityNotFoundException());
-        }
-
-        return commentRepository.save(Comment.of(request, board, user, comment))
+        return commentRepository.save(Comment.of(request))
                 .response();
     }
 
@@ -73,5 +49,5 @@ public class CommentService extends CrudService<CommentRequest, CommentResponse,
                 .orElseThrow(() -> new EntityNotFoundException());
 
         commentRepository.delete(findEntity);
-    }*/
+    }
 }

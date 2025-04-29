@@ -5,21 +5,17 @@ import com.itschool.study_pod.dto.response.EnrollmentResponse;
 import com.itschool.study_pod.entity.Enrollment;
 import com.itschool.study_pod.repository.EnrollmentRepository;
 import com.itschool.study_pod.service.base.CrudService;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class EnrollmentService extends CrudService<EnrollmentRequest, EnrollmentResponse, Enrollment> {
+@RequiredArgsConstructor
+public class EnrollmentService {
 
-    public EnrollmentService(EnrollmentRepository baseRepository) {
-        super(baseRepository);
-    }
-
-    @Override
-    protected Enrollment toEntity(EnrollmentRequest requestEntity) {
-        return Enrollment.of(requestEntity);
-    }
-
-    /*private final EnrollmentRepository enrollmentRepository;
+    private final EnrollmentRepository enrollmentRepository;
 
     public EnrollmentResponse create(EnrollmentRequest request) {
         return enrollmentRepository.save(Enrollment.of(request)).response();
@@ -45,5 +41,5 @@ public class EnrollmentService extends CrudService<EnrollmentRequest, Enrollment
         Enrollment findEntity = enrollmentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException());
         enrollmentRepository.delete(findEntity);
-    }*/
+    }
 }

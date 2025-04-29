@@ -6,15 +6,21 @@ import com.itschool.study_pod.dto.response.address.SidoResponse;
 import com.itschool.study_pod.entity.address.Sido;
 import com.itschool.study_pod.repository.address.SidoRepository;
 import com.itschool.study_pod.service.base.CrudService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class SidoService extends CrudService<SidoRequest, SidoResponse, Sido> {
 
-    public SidoService(SidoRepository baseRepository) {
-        super(baseRepository);
+    private final SidoRepository sidoRepository;
+
+    @Override
+    protected JpaRepository<Sido, Long> getBaseRepository() {
+        return sidoRepository;
     }
 
     @Override

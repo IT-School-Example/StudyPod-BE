@@ -17,6 +17,13 @@ public abstract class CrudService<Req, Res, Entity extends Convertible<Req, Res>
 
     protected abstract JpaRepository<Entity, Long> getBaseRepository();
 
+    // 요청 DTO를 Entity로 변환
+    protected abstract Entity toEntity(Req requestEntity);
+
+    // 응답 처리(응답 DTO를 ApiResponse에 감싸서 return)
+    protected ApiResponse<Res> apiResponse(Entity entity) {
+        return ApiResponse.OK(entity.response());
+    }
 
     public ApiResponse<Res> create(RequestEntity<Req> request) {
 
@@ -45,20 +52,16 @@ public abstract class CrudService<Req, Res, Entity extends Convertible<Req, Res>
     }
 
 
-    public ResponseEntity delete(Long id) {
+    public ApiResponse<Void> delete(Long id) {
         Entity entity = getBaseRepository().findById(id)
                 .orElseThrow(() -> new EntityNotFoundException());
 
         getBaseRepository().delete(entity);
 
-        return ResponseEntity.ok().build();
+        return ApiResponse.OK();
     }
 
-    protected abstract Entity toEntity(Req requestEntity);
 
-    protected ApiResponse<Res> apiResponse(Entity entity) {
-        return (ApiResponse<Res>) ApiResponse.OK(entity.response());
-    }
 
     /*protected final List<Res> responseList(List<Entity> entities) {
         List<Res> responseList = new ArrayList<>();

@@ -2,7 +2,6 @@ package com.itschool.study_pod.ifs;
 
 import com.itschool.study_pod.dto.ApiResponse;
 import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
 
 public interface CrudInterface <Req, Res> {
 
@@ -12,7 +11,7 @@ public interface CrudInterface <Req, Res> {
 
     ApiResponse<Res> update(Long id, RequestEntity<Req>  request);
 
-    ResponseEntity delete(Long id);
+    ApiResponse<Void> delete(Long id);
 
     // ResponseEntity<ApiResponse<List<Res>>> getPaginatedList(Pageable pageable);
 }

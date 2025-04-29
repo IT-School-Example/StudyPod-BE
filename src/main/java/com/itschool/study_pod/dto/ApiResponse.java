@@ -12,57 +12,46 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class ApiResponse<T> {
-    // api 통신 시간
-    private LocalDateTime transactionTime;
 
-    // api 응답 코드
-    private String resultCode;
+    private LocalDateTime transactionTime; // 통신 시간
 
-    // api 부가 설명
-    private String description;
+    private String resultCode; // OK, ERROR
 
-    private T data;
+    private String description; // ERROR 메시지
 
-    private Pagination pagination;
+    private T data; // OK 데이터
 
-    // Status : OK
+    private Pagination pagination; // 페이지 정보
+
+
+    // OK (빈 데이터)
     public static <T> ApiResponse<T> OK() {
-        return (ApiResponse <T>)ApiResponse.builder()
-                .transactionTime(LocalDateTime.now())
-                .resultCode("OK")
-                .description("OK")
-                .build();
+        return OK(null, null);
     }
 
-    // Data : OK
+    // OK (데이터만)
     public static <T> ApiResponse<T> OK(T data) {
-        return (ApiResponse <T>)ApiResponse.builder()
-                .transactionTime(LocalDateTime.now())
-                .resultCode("OK")
-                .description("OK")
-                .data(data)
-                .build();
+        return OK(data, null);
     }
 
-    // Data : OK
+    // OK (데이터 + 페이징)
     public static <T> ApiResponse<T> OK(T data, Pagination pagination) {
-        return (ApiResponse <T>)ApiResponse.builder()
+        return buildResponse("OK", "OK", data, pagination);
+    }
+
+    // ERROR (에러 설명만)
+    public static <T> ApiResponse<T> ERROR(String description) {
+        return buildResponse("ERROR", description, null, null);
+    }
+
+    // 공통 빌더
+    private static <T> ApiResponse<T> buildResponse(String resultCode, String description, T data, Pagination pagination) {
+        return ApiResponse.<T>builder()
                 .transactionTime(LocalDateTime.now())
-                .resultCode("OK")
-                .description("OK")
+                .resultCode(resultCode)
+                .description(description)
                 .data(data)
                 .pagination(pagination)
                 .build();
     }
-
-    // ERROR
-    public static <T> ApiResponse<T> ERROR(String description) {
-        return (ApiResponse <T>)ApiResponse.builder()
-                .transactionTime(LocalDateTime.now())
-                .resultCode("ERROR")
-                .description(description)
-                .build();
-    }
 }
-
-

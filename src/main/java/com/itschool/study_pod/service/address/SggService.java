@@ -7,18 +7,23 @@ import com.itschool.study_pod.entity.address.Sgg;
 import com.itschool.study_pod.repository.address.SggRepository;
 import com.itschool.study_pod.repository.address.SidoRepository;
 import com.itschool.study_pod.service.base.CrudService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class SggService extends CrudService<SggRequest, SggResponse, Sgg> {
+
+    private final SggRepository sggRepository;
 
     private final SidoRepository sidoRepository;
 
-    public SggService(SggRepository baseRepository, SidoRepository sidoRepository) {
-        super(baseRepository);
-        this.sidoRepository = sidoRepository;
+    @Override
+    protected JpaRepository<Sgg, Long> getBaseRepository() {
+        return sggRepository;
     }
 
     @Override
