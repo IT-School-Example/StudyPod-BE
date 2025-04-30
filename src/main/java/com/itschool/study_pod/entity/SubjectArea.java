@@ -15,8 +15,6 @@ import org.hibernate.annotations.Where;
 @AllArgsConstructor
 @Builder
 @Table(name = "subject_areas")
-@SQLDelete(sql = "UPDATE subject_areas SET is_deleted = true WHERE subject_area_id = ?")
-@Where(clause = "is_deleted = false")
 public class SubjectArea implements Convertible<SubjectAreaRequest, SubjectAreaResponse> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

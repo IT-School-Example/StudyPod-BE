@@ -22,7 +22,7 @@ class SubjectAreaRepositoryTest extends StudyPodApplicationTests {
 
     @AfterEach
     public void afterCleanUp() {
-        subjectAreaRepository.deleteAll();
+        // subjectAreaRepository.deleteAll();
     }
 
     // 생성(Create) 테스트

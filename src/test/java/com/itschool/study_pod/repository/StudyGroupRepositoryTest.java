@@ -45,8 +45,8 @@ class StudyGroupRepositoryTest extends StudyPodApplicationTests {
 
     @AfterEach
     public void afterCleanUp() {
-        studyGroupRepository.deleteAll();
-        subjectAreaRepository.deleteAll();
+        // studyGroupRepository.deleteAll();
+        // subjectAreaRepository.deleteAll();
     }
 
     @Test
@@ -103,16 +103,19 @@ class StudyGroupRepositoryTest extends StudyPodApplicationTests {
                 .meetingMethod(MeetingMethod.ONLINE)
                 .recruitmentStatus(RecruitmentStatus.RECRUITING)
                 .subjectArea(savedSubject)
-                .keywords(Set.of("초기"))
-                /*.weeklySchedules(Set.of(WeeklySchedule.builder()
+                /*.keywords(Set.of("초기"))
+                .weeklySchedules(Set.of(WeeklySchedule.builder()
                         .dayOfWeek(DayOfWeek.FRIDAY)
-                        .timeRange(TimeRange.of(10, 0, 11, 0))
+                        .startTime(LocalTime.of(9, 0))
+                        .endTime(LocalTime.of(10, 0))
                         .build()))*/
                 .build();
 
         StudyGroup savedEntity = studyGroupRepository.save(entity);
 
         savedEntity.softDelete();
+
+        // savedEntity.setKeywords(Set.of("수정"));
 
         StudyGroup updatedEntity = studyGroupRepository.save(entity);
 

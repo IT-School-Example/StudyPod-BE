@@ -76,10 +76,10 @@ class EnrollmentRepositoryTest extends StudyPodApplicationTests {
 
     @AfterEach
     public void afterCleanUp() {
-        enrollmentRepository.deleteAll();
-        studyGroupRepository.deleteAll(); // 수정 해야함
-        subjectAreaRepository.deleteAll();
-        userRepository.deleteAll();
+        // enrollmentRepository.deleteAll();
+        // studyGroupRepository.deleteAll(); // 수정 해야함
+        // subjectAreaRepository.deleteAll();
+        // userRepository.deleteAll();
     }
 
     @Test
