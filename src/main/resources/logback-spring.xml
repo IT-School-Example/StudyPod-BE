@@ -1,0 +1,63 @@
+<configuration>
+
+    <!-- 콘솔 로그 설정 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- dev와 local 프로필 설정 (공통 설정) -->
+    <springProfile name="dev,local">
+        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>../logs/application.log</file>  <!-- 공통 로그 파일 경로 -->
+            <append>true</append>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <fileNamePattern>../logs/application.log.%d{yyyy-MM-dd}.%i.log</fileNamePattern> <!-- 날짜 + 인덱스 -->
+                <maxHistory>7</maxHistory>  <!-- 최대 7일 동안의 로그 보관 -->
+                <totalSizeCap>500MB</totalSizeCap>  <!-- 로그 파일의 총 크기 500MB로 제한 -->
+                <maxFileSize>200MB</maxFileSize>  <!-- 각 파일의 최대 크기 200MB -->
+            </rollingPolicy>
+            <encoder>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            </encoder>
+        </appender>
+
+        <!-- 루트 로거 설정 -->
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE"/>
+        </root>
+
+        <!-- 특정 패키지 로거 설정 -->
+        <logger name="org.springframework.security" level="DEBUG" additivity="false">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="com.itschool" level="DEBUG" additivity="false">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+    </springProfile>
+
+    <!-- prod 프로필 설정 (별도 설정) -->
+    <springProfile name="prod">
+        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>../logs/application.log</file>  <!-- prod용 로그 파일 경로 -->
+            <append>true</append>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <fileNamePattern>../logs/application.log.%d{yyyy-MM-dd}.%i.log</fileNamePattern> <!-- 날짜 + 인덱스 -->
+                <maxHistory>30</maxHistory>  <!-- 최대 30일 동안의 로그 보관 -->
+                <totalSizeCap>20GB</totalSizeCap>  <!-- 로그 파일의 총 크기 20GB로 제한 -->
+                <maxFileSize>500MB</maxFileSize>  <!-- 각 파일의 최대 크기 500MB -->
+            </rollingPolicy>
+            <encoder>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            </encoder>
+        </appender>
+
+        <!-- 루트 로거 설정 -->
+        <root level="INFO">
+            <appender-ref ref="FILE"/>
+        </root>
+    </springProfile>
+</configuration>
