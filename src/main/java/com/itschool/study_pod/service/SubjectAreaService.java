@@ -27,6 +27,7 @@ public class SubjectAreaService extends CrudService<SubjectAreaRequest, SubjectA
         return SubjectArea.of(requestEntity);
     }
 
+
     /*public SubjectAreaResponse create(SubjectAreaRequest request) {
         return subjectAreaRepository.save(SubjectArea.of(request))
                 .response();
