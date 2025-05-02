@@ -1,0 +1,30 @@
+package com.itschool.study_pod.dto.response;
+
+import lombok.*;
+
+import java.time.LocalDateTime;
+
+@Data // 종합선물세트 : @Getter, @Setter, @ToString, @EqualsAndHashCode, @RequiredArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
+public class FaqResponse {
+
+    private Long id;
+
+    private String question;
+
+    private String answer;
+
+    private Boolean visible;
+
+    private AdminResponse admin;
+
+    private String createdBy;
+
+    private LocalDateTime createdAt;
+
+    private String updatedBy;
+
+    private LocalDateTime updatedAt;
+}
