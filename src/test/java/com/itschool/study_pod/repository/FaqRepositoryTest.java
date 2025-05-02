@@ -38,8 +38,8 @@ public class FaqRepositoryTest extends StudyPodApplicationTests {
 
     @AfterEach
     public void afterCleanUp() {
-        faqRepository.deleteAll();
-        adminRepository.deleteAll();
+        //faqRepository.deleteAll();
+        //adminRepository.deleteAll();
     }
 
     @Test
