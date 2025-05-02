@@ -4,6 +4,7 @@ import com.itschool.study_pod.StudyPodApplicationTests;
 import com.itschool.study_pod.entity.*;
 import com.itschool.study_pod.enumclass.AccountRole;
 import com.itschool.study_pod.enumclass.MeetingMethod;
+import com.itschool.study_pod.enumclass.RecruitmentStatus;
 import com.itschool.study_pod.enumclass.Subject;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.AfterEach;
@@ -65,6 +66,7 @@ class InterestedStudyRepositoryTest extends StudyPodApplicationTests {
         StudyGroup studyGroup = StudyGroup.builder()
                 .title("자바 스터디")
                 .maxMembers(7)
+                .recruitmentStatus(RecruitmentStatus.RECRUITING)
                 .meetingMethod(MeetingMethod.OFFLINE)
                 .subjectArea(savedSubject)
                 .keywords(Set.of("키워드1", "키워드2"))
