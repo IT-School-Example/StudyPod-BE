@@ -59,8 +59,8 @@ jobs:
       - name: Set artifact
         id: artifact_step
         run: |
-          JAR_FILE=$(ls ./build/libs/*.jar)
-          printf 'artifact=%s\n' "$JAR_FILE" >> $GITHUB_ENV
+          JAR_FILE=$(find "$PWD/build/libs" -name "*.jar" | head -n 1)
+          echo "artifact=$JAR_FILE" >> $GITHUB_ENV
 
       # 배포 스크립트에 실행 권한 부여
 #      - name: Add execute permission to deploy script
