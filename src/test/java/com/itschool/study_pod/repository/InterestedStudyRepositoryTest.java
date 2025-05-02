@@ -31,7 +31,6 @@ class InterestedStudyRepositoryTest extends StudyPodApplicationTests {
     @Autowired
     private StudyGroupRepository studyGroupRepository;
 
-    // 보류
     @Autowired
     private SubjectAreaRepository subjectAreaRepository;
 
@@ -40,7 +39,6 @@ class InterestedStudyRepositoryTest extends StudyPodApplicationTests {
 
     private StudyGroup savedstudyGroup;
 
-    // 보류
     private SubjectArea savedSubject;
 
     @BeforeEach
@@ -60,7 +58,6 @@ class InterestedStudyRepositoryTest extends StudyPodApplicationTests {
                 .subject(Subject.IT)
                 .build();
 
-        // subject saved를 따로 만들어야 사용가능?
         savedSubject = subjectAreaRepository.save(subjectArea);
 
         StudyGroup studyGroup = StudyGroup.builder()
