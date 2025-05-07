@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Table(name = "interested_studies")
-@SQLDelete(sql = "UPDATE interested_study SET is_deleted = true WHERE interested_study_id = ?")
+@SQLDelete(sql = "UPDATE interested_studies SET is_deleted = true WHERE interested_study_id = ?")
 @Where(clause = "is_deleted = false")
 public class InterestedStudy extends BaseEntity implements Convertible<InterestedStudyRequest, InterestedStudyResponse> {
     // 관심 목록(북마크 같은 역할)
