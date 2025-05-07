@@ -45,7 +45,7 @@ public class User extends BaseEntity implements Convertible<UserRequest, UserRes
         if(request != null) {
             return User.builder()
                     .id(request.getId())
-                    .email(request.getName())
+                    .email(request.getEmail())
                     .password(request.getPassword())
                     .role(request.getRole())
                     .name(request.getName())
