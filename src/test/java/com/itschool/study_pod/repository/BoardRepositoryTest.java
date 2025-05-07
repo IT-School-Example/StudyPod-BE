@@ -35,7 +35,7 @@ class BoardRepositoryTest extends StudyPodApplicationTests {
     @BeforeEach
     public void beforeSetUp() {
         User user = User.builder()
-                .email("create-board-test@subject.com")
+                .email(UUID.randomUUID().toString()+ "@subject.com")
                 .password("1234")
                 .role(AccountRole.ROLE_USER)
                 .name("abc")

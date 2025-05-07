@@ -85,6 +85,8 @@ class EnrollmentRepositoryTest extends StudyPodApplicationTests {
     @Test
     @DisplayName("저장 테스트")
     void create() {
+        Long beforeCount = enrollmentRepository.count();
+
         Enrollment enrollment = Enrollment.builder()
                 .appliedAt(LocalDateTime.now())
                 .introduce("안녕하세요. 참여 신청합니다.")
@@ -95,7 +97,7 @@ class EnrollmentRepositoryTest extends StudyPodApplicationTests {
 
         enrollmentRepository.save(enrollment);
 
-        assertThat(enrollmentRepository.count()).isEqualTo(1);
+        assertThat(enrollmentRepository.count()).isEqualTo(beforeCount + 1);
     }
 
     @Test

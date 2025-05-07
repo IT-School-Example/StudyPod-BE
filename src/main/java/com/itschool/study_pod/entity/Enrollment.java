@@ -52,7 +52,7 @@ public class Enrollment extends BaseEntity implements Convertible<EnrollmentRequ
         if(request != null) {
             return Enrollment.builder()
                     .id(request.getId())
-                    .appliedAt(request.getAppliedAt())
+                    .appliedAt(LocalDateTime.now())
                     .introduce(request.getIntroduce())
                     .status(request.getStatus())
                     .user(User.of(request.getUser()))
