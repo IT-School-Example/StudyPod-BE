@@ -6,6 +6,7 @@ import com.itschool.study_pod.dto.Header;
 import com.itschool.study_pod.service.base.CrudService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -26,7 +27,7 @@ public abstract class CrudController<Req, Res, Entity extends Convertible<Req, R
     // Swagger 문서 생성을 위한 어노테이션 예시
     @Operation(summary = "생성", description = "새로운 엔티티를 생성")
     @PostMapping("")
-    public Header<Res> create(@RequestBody /*@Valid*/ Header<Req> request) {
+    public Header<Res> create(@RequestBody @Valid Header<Req> request) {
         log.info("create: {}에서 객체 {} 생성 요청", this.getClass().getSimpleName(), request);
         return getBaseService().create(request);
     }
@@ -55,7 +56,7 @@ public abstract class CrudController<Req, Res, Entity extends Convertible<Req, R
     @Operation(summary = "수정", description = "ID로 엔티티를 업데이트")
     @PutMapping("{id}")
     public Header<Res> update(@PathVariable(name = "id") Long id,
-                              @RequestBody /*@Valid*/ Header<Req> request) {
+                              @RequestBody @Valid Header<Req> request) {
         log.info("readAll: {}에서 전체 조회 요청", this.getClass().getSimpleName());
         return getBaseService().update(id, request);
     }
