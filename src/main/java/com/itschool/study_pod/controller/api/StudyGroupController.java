@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -37,8 +38,7 @@ public class StudyGroupController extends CrudController<StudyGroupRequest, Stud
     @PostMapping("search")
     @Operation(summary = "검색 기능", description = "")
     public Header<List<StudyGroupResponse>> findAllByFilters(@RequestBody Header<StudyGroup> request,
-                                                             @Parameter(name = "pageable", description = "페이징 설정 (page, size, sort)", example = "{\n\"page\":0,\n\"size\":10,\n\"sort\":[\"id,asc\"]\n}")
-                                                             @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+                                                             @ParameterObject @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 
         return studyGroupService.findAllByFilters(request, pageable);
     }
