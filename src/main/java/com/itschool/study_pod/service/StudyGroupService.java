@@ -1,19 +1,21 @@
 package com.itschool.study_pod.service;
 
+import com.itschool.study_pod.dto.Header;
 import com.itschool.study_pod.dto.request.StudyGroupRequest;
 import com.itschool.study_pod.dto.response.StudyGroupResponse;
-import com.itschool.study_pod.embedable.WeeklySchedule;
 import com.itschool.study_pod.entity.StudyGroup;
+import com.itschool.study_pod.entity.SubjectArea;
+import com.itschool.study_pod.enumclass.MeetingMethod;
+import com.itschool.study_pod.enumclass.RecruitmentStatus;
 import com.itschool.study_pod.repository.StudyGroupRepository;
 import com.itschool.study_pod.service.base.CrudService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,5 +32,32 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
     @Override
     protected StudyGroup toEntity(StudyGroupRequest requestEntity) {
         return StudyGroup.of(requestEntity);
+    }
+
+    public Header<List<StudyGroup>> findAllByLeaderId (Long leaderId) {
+        return Header.OK(studyGroupRepository.findAllByLeaderId(leaderId));
+    }
+
+    public Header<List<StudyGroupResponse>> findAllByFilters(Header<StudyGroup> request, Pageable pageable) {
+
+        StudyGroup conditions = request.getData();
+
+
+
+        RecruitmentStatus recruitmentStatus = conditions.getRecruitmentStatus();
+
+        // BOTH 인 경우 전체 검색되도록 null로 설정
+        MeetingMethod meetingMethod = conditions.getMeetingMethod().equals(MeetingMethod.BOTH)? null : conditions.getMeetingMethod();
+
+        // id가 null인 경우 NPE 방지
+        Long subjectAreaId = conditions.getSubjectArea() == null? null : conditions.getSubjectArea().getId();
+
+
+
+        Page<StudyGroup> groups = studyGroupRepository.findAllByFilters(request.getSearchStr(), recruitmentStatus, meetingMethod,
+                                                                        subjectAreaId, pageable);
+
+
+        return convertPageToList(groups);
     }
 }
