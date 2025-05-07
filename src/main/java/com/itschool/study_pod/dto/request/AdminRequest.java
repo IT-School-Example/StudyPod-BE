@@ -1,7 +1,9 @@
 package com.itschool.study_pod.dto.request;
 
 import com.itschool.study_pod.enumclass.AccountRole;
+import com.itschool.validator.annotation.ValidPassword;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -17,7 +19,8 @@ public class AdminRequest {
     @Email(message = "이메일 형식이 올바르지 않습니다.")
     private String email;
 
-    @Size(min = 8, max = 20, message = "비밀번호는 8~20자여야 합니다.")
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,16}$",
+            message = "비밀번호는 최소 8자 이상, 숫자, 대문자 또는 소문자, 특수문자를 포함해야 합니다.")
     private String password;
 
     private AccountRole role;

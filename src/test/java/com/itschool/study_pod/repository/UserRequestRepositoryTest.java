@@ -4,6 +4,7 @@ import com.itschool.study_pod.StudyPodApplicationTests;
 import com.itschool.study_pod.entity.User;
 import com.itschool.study_pod.enumclass.AccountRole;
 import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,12 +14,13 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
-class UserRepositoryTest extends StudyPodApplicationTests {
+class UserRequestRepositoryTest extends StudyPodApplicationTests {
 
     @Autowired
     private UserRepository userRepository;
 
     @Test
+    @DisplayName("저장 테스트")
     void create() {
         // 사용자 객체 생성
         User entity = User.builder()
@@ -42,6 +44,7 @@ class UserRepositoryTest extends StudyPodApplicationTests {
     }
 
     @Test
+    @DisplayName("조회 테스트")
     void read() {
 
         // 사용자 객체 생성
@@ -66,6 +69,7 @@ class UserRepositoryTest extends StudyPodApplicationTests {
     }
 
     @Test
+    @DisplayName("삭제 테스트")
     void update() {
 
         // 사용자 객체 생성
@@ -93,6 +97,7 @@ class UserRepositoryTest extends StudyPodApplicationTests {
     }
 
     @Test
+    @DisplayName("삭제 테스트")
     void delete() {
         long beforeCount = userRepository.count();
 

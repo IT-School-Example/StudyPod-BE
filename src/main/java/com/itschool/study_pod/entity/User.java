@@ -57,18 +57,12 @@ public class User extends BaseEntity implements Convertible<UserRequest, UserRes
 
     // update용
     @Override
-    @Deprecated
     public void update(UserRequest request) {
-        updatePassword(request.getPassword());
-        updateNickName(request.getNickname());
-    }
+        if(request.getPassword() != null)
+            this.password = request.getPassword();
 
-    public void updatePassword(String password) {
-        this.password = password;
-    }
-
-    public void updateNickName(String nickname) {
-        this.nickname = nickname;
+        if(request.getNickname() != null)
+            this.nickname = request.getNickname();
     }
 
     @Override

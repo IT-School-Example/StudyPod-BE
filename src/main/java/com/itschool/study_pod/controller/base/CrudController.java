@@ -24,7 +24,7 @@ public abstract class CrudController<Req, Res, Entity extends Convertible<Req, R
 
 
     @Override
-    // Swagger 문서 생성을 위한 어노테이션 예시
+    @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "생성", description = "새로운 엔티티를 생성")
     @PostMapping("")
     public Header<Res> create(@RequestBody @Valid Header<Req> request) {
@@ -62,6 +62,7 @@ public abstract class CrudController<Req, Res, Entity extends Convertible<Req, R
     }
 
     @Override
+    @ResponseStatus(HttpStatus.NO_CONTENT) // 204, NO_CONTENT
     @DeleteMapping("{id}")
     @Operation(summary = "삭제", description = "ID로 엔티티를 삭제")
     public Header<Void> softDelete(@PathVariable(name = "id") Long id) {
