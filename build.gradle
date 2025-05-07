@@ -27,6 +27,9 @@ dependencies {
 	// PostgreSQL JDBC 드라이버 (버전 생략: Spring Boot BOM이 자동으로 관리)
 	implementation 'org.postgresql:postgresql'
 
+	// DTO 유효성 검사(@Valid, @NotBlank 등)를 사용할 수 있도록 지원
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
 	// 개발 및 테스트용 인메모리 DB (H2)
 	runtimeOnly 'com.h2database:h2'
 

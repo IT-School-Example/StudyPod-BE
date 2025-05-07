@@ -25,7 +25,7 @@ public class Admin extends BaseEntity implements Convertible<AdminRequest, Admin
     @Column(name = "admin_id")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
