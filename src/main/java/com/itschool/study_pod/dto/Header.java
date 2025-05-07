@@ -1,5 +1,6 @@
 package com.itschool.study_pod.dto;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,7 @@ public class Header<T> {
 
     private String description; // ERROR 메시지
 
+    @Valid
     private T data; // OK 데이터
 
     private Pagination pagination; // 페이지 정보
