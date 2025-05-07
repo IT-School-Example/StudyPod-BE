@@ -40,6 +40,18 @@ dependencies {
 	// 테스트 관련 의존성
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// Spring Boot DevTools는 개발 편의성을 높이기 위해 제공되는 도구. 자동 재시작, 라이브 리로드, 설정 간소화
+	developmentOnly "org.springframework.boot:spring-boot-devtools"
+}
+
+// 개발 환경에서만 필요한 라이브러리를 지정하는 사용자 정의 구성(Configuration)
+// 즉, 개발 모드에서는 spring-boot-devtools를 사용할 수 있지만, 프로덕션 환경에서는 포함되지 않음
+configurations {
+	developmentOnly
+	runtimeClasspath { // developmentOnly로 지정한 라이브러리를 런타임 클래스 경로에 추가
+		extendsFrom developmentOnly
+	}
 }
 
 tasks.named('test') {
