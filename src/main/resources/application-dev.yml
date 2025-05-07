@@ -18,6 +18,14 @@ spring:
         format_sql: true
         highlight_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect  # PostgreSQL 방언 사용
+  devtools:
+    livereload:
+      enabled: true # 파일(특히 정적 리소스나 템플릿)이 변경되면 livereload 서버가 브라우저에 변경을 감지하도록 신호를 보내어 자동으로 새로고침되게 함
+    restart:
+      enabled: false # Java 클래스 변경에 따른 애플리케이션 자동 재시작을 제어하는 옵션
+  thymeleaf:
+    cache: false # 템플릿을 수정할 때마다 변경 사항이 바로 반영되도록 캐싱 비활성화
+
 logging.level:
   org.hibernate.SQL: debug
   org.hibernate.orm.jdbc.bind: trace
