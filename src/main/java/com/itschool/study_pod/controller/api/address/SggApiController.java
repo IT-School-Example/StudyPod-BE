@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Tag(name = "시군구", description = "시군구 주소 API")
 @RequestMapping("/api/sgg")
-public class SggController extends CrudController<SggRequest, SggResponse, Sgg> {
+public class SggApiController extends CrudController<SggRequest, SggResponse, Sgg> {
 
     private final SggService sggService;
 

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Tag(name = "자주 묻는 질문", description = "자주 묻는 질문 API")
 @RequestMapping("/api/faqs")
-public class FaqController extends CrudController<FaqRequest, FaqResponse, Faq> {
+public class FaqApiController extends CrudController<FaqRequest, FaqResponse, Faq> {
 
     private final FaqService faqService;
 

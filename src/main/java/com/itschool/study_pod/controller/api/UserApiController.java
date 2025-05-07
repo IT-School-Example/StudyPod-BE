@@ -8,7 +8,6 @@ import com.itschool.study_pod.service.UserService;
 import com.itschool.study_pod.service.base.CrudService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Tag(name = "사용자", description = "사용자 API")
 @RequestMapping("/api/users")
-public class UserController extends CrudController<UserRequest, UserResponse, User> {
+public class UserApiController extends CrudController<UserRequest, UserResponse, User> {
 
     private final UserService userService;
 

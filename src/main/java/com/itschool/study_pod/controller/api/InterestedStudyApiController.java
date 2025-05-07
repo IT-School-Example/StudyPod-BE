@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Tag(name = "관심 스터디", description = "관심 스터디 API")
 @RequestMapping("/api/interested-Studies")
-public class InterestedStudyController extends CrudController<InterestedStudyRequest, InterestedStudyResponse, InterestedStudy> {
+public class InterestedStudyApiController extends CrudController<InterestedStudyRequest, InterestedStudyResponse, InterestedStudy> {
 
     private final InterestedStudyService interestedStudyService;
 

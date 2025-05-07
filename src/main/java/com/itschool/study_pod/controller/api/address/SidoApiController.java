@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Tag(name = "시도", description = "시도 주소 API")
 @RequestMapping("/api/sido")
-public class SidoController {
+public class SidoApiController {
 
     private final SidoService sidoService;
 
