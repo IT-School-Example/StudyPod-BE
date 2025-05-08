@@ -1,14 +1,11 @@
 package com.itschool.study_pod.entity;
 
-import com.itschool.study_pod.dto.request.SubjectAreaRequest;
-import com.itschool.study_pod.dto.response.StudyGroupResponse;
+import com.itschool.study_pod.dto.request.subjectarea.SubjectAreaRequest;
 import com.itschool.study_pod.dto.response.SubjectAreaResponse;
 import com.itschool.study_pod.enumclass.Subject;
 import com.itschool.study_pod.ifs.Convertible;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
 @Entity
 @Getter

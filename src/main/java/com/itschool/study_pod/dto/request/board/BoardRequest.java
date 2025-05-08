@@ -1,4 +1,4 @@
-package com.itschool.study_pod.dto.request;
+package com.itschool.study_pod.dto.request.board;
 
 import com.itschool.study_pod.dto.ReferenceDto;
 import com.itschool.study_pod.enumclass.BoardCategory;

@@ -1,8 +1,7 @@
 package com.itschool.study_pod.entity;
 
-import com.itschool.study_pod.dto.request.FaqRequest;
+import com.itschool.study_pod.dto.request.faq.FaqRequest;
 import com.itschool.study_pod.dto.response.AdminResponse;
-import com.itschool.study_pod.dto.response.EnrollmentResponse;
 import com.itschool.study_pod.dto.response.FaqResponse;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.ifs.Convertible;

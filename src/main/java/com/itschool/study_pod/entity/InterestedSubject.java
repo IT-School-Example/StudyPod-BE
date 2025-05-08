@@ -1,7 +1,6 @@
 package com.itschool.study_pod.entity;
 
-import com.itschool.study_pod.dto.request.InterestedSubjectRequest;
-import com.itschool.study_pod.dto.response.InterestedStudyResponse;
+import com.itschool.study_pod.dto.request.interestedsubject.InterestedSubjectRequest;
 import com.itschool.study_pod.dto.response.InterestedSubjectResponse;
 import com.itschool.study_pod.dto.response.SubjectAreaResponse;
 import com.itschool.study_pod.dto.response.UserResponse;

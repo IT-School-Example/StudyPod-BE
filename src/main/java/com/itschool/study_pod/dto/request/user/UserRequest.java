@@ -1,7 +1,9 @@
-package com.itschool.study_pod.dto.request;
+package com.itschool.study_pod.dto.request.user;
 
 import com.itschool.study_pod.enumclass.AccountRole;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
@@ -11,15 +13,21 @@ import lombok.*;
 @Builder
 public class UserRequest {
 
+    @NotEmpty
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     @Email(message = "이메일 형식이 올바르지 않습니다.")
     private String email;
 
+    @NotEmpty
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,16}$",
             message = "비밀번호는 최소 8자 이상, 숫자, 대문자 또는 소문자, 특수문자를 포함해야 합니다.")
     private String password;
 
-    private AccountRole role;
+    // private AccountRole role; // User는 AccountRole.ROLE_USER 하나로 고정
 
+    @NotEmpty
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     @Pattern(regexp = "^[가-힣]+$", message = "이름은 한글만 입력 가능합니다.")
     private String name;
 

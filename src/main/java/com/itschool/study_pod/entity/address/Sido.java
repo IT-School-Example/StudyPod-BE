@@ -1,14 +1,7 @@
 package com.itschool.study_pod.entity.address;
 
-import com.itschool.study_pod.dto.request.AdminRequest;
-import com.itschool.study_pod.dto.request.address.SggRequest;
 import com.itschool.study_pod.dto.request.address.SidoRequest;
-import com.itschool.study_pod.dto.response.address.SggResponse;
 import com.itschool.study_pod.dto.response.address.SidoResponse;
-import com.itschool.study_pod.entity.Admin;
-import com.itschool.study_pod.entity.Board;
-import com.itschool.study_pod.entity.StudyGroup;
-import com.itschool.study_pod.entity.User;
 import com.itschool.study_pod.ifs.Convertible;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

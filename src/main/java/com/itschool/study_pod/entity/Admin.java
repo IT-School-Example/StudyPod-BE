@@ -1,6 +1,6 @@
 package com.itschool.study_pod.entity;
 
-import com.itschool.study_pod.dto.request.AdminRequest;
+import com.itschool.study_pod.dto.request.admin.AdminRequest;
 import com.itschool.study_pod.dto.response.AdminResponse;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.enumclass.AccountRole;
@@ -49,11 +49,21 @@ public class Admin extends BaseEntity implements Convertible<AdminRequest, Admin
     @Override
     @Deprecated
     public void update(AdminRequest request) {
+        // PUT 전체 업데이트
+        // 이메일 변경
+        this.email = request.getEmail() != null? request.getEmail() : this.email;
+
+        // 역할 변경
+        this.role = request.getRole() != null? request.getRole() : this.role;
+
+        // 비밀번호 변경
         updatePassword(request.getPassword());
+
     }
 
     public void updatePassword(String password) {
-        this.password = password;
+        // PATCH 일부 업데이트
+        this.password = password != null? password : this.password;
     }
 
     @Override
@@ -61,7 +71,7 @@ public class Admin extends BaseEntity implements Convertible<AdminRequest, Admin
         return AdminResponse.builder()
                 .id(this.id)
                 .email(this.email)
-                .password(this.password)
+                // .password(this.password)
                 .role(this.role)
                 .createdAt(this.createdAt)
                 .createdBy(this.createdBy)

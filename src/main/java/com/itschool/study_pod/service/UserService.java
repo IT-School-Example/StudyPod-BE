@@ -1,7 +1,12 @@
 package com.itschool.study_pod.service;
 
-import com.itschool.study_pod.dto.request.UserRequest;
+import com.itschool.study_pod.dto.Header;
+import com.itschool.study_pod.dto.request.admin.AdminPasswordUpdateRequest;
+import com.itschool.study_pod.dto.request.user.UserPasswordUpdateRequest;
+import com.itschool.study_pod.dto.request.user.UserRequest;
+import com.itschool.study_pod.dto.response.AdminResponse;
 import com.itschool.study_pod.dto.response.UserResponse;
+import com.itschool.study_pod.entity.Admin;
 import com.itschool.study_pod.entity.User;
 import com.itschool.study_pod.repository.UserRepository;
 import com.itschool.study_pod.service.base.CrudService;
@@ -27,32 +32,18 @@ public class UserService extends CrudService<UserRequest, UserResponse, User> {
         return User.of(requestEntity);
     }
 
-    /*private final UserRepository userRepository;
-
-    public UserResponse create(UserRequest request) {
-        return userRepository.save(User.of(request)).response();
-    }
-
-    public UserResponse read(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException())
-                .response();
-    }
-
+    /*
+    * 비밀번호 수정하기
+    * */
     @Transactional
-    public UserResponse update(Long id, UserRequest userRequest) {
-        User entity = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException());
+    public Header<UserResponse> updatePassword(Long id, Header<UserPasswordUpdateRequest> request) {
 
-        entity.update(userRequest);
+        User entity = getBaseRepository().findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(this.getClass().getSimpleName() + " : 해당 id " + id + "에 해당하는 객체가 없습니다."));
 
-        return entity.response();
+        entity.updatePassword(request.getData().getPassword());
+
+        return apiResponse(entity);
     }
 
-    public void delete(Long id) {
-        User findEntity = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException());
-        userRepository.delete(findEntity);
-    }
-    */
 }

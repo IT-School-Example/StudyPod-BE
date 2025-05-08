@@ -1,4 +1,4 @@
-package com.itschool.study_pod.dto.request;
+package com.itschool.study_pod.dto.request.subjectarea;
 
 import com.itschool.study_pod.enumclass.Subject;
 import lombok.*;

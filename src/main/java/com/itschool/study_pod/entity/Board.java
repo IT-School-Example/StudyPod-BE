@@ -1,6 +1,6 @@
 package com.itschool.study_pod.entity;
 
-import com.itschool.study_pod.dto.request.BoardRequest;
+import com.itschool.study_pod.dto.request.board.BoardRequest;
 import com.itschool.study_pod.dto.response.AdminResponse;
 import com.itschool.study_pod.dto.response.BoardResponse;
 import com.itschool.study_pod.dto.response.StudyGroupResponse;

@@ -1,11 +1,10 @@
 package com.itschool.study_pod.service.base;
 
 
-import com.itschool.study_pod.dto.Pagination;
-import com.itschool.study_pod.ifs.CrudInterface;
-import com.itschool.study_pod.ifs.Convertible;
 import com.itschool.study_pod.dto.Header;
-import io.swagger.v3.oas.models.responses.ApiResponse;
+import com.itschool.study_pod.dto.Pagination;
+import com.itschool.study_pod.ifs.Convertible;
+import com.itschool.study_pod.ifs.CrudInterface;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -43,7 +42,7 @@ public abstract class CrudService<Req, Res, Entity extends Convertible<Req, Res>
     @Override
     public final Header<Res> read(Long id) {
         return apiResponse(getBaseRepository().findById(id)
-                .orElseThrow(()-> new EntityNotFoundException("해당 id " + id + "에 해당하는 객체가 없습니다.")));
+                .orElseThrow(()-> new EntityNotFoundException(this.getClass().getSimpleName() + " : 해당 id " + id + "에 해당하는 객체가 없습니다.")));
     }
 
 
@@ -52,7 +51,7 @@ public abstract class CrudService<Req, Res, Entity extends Convertible<Req, Res>
     public Header<Res> update(Long id, Header<Req> request) {
 
         Entity entity = getBaseRepository().findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("해당 id " + id + "에 해당하는 객체가 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException(this.getClass().getSimpleName() + " : 해당 id " + id + "에 해당하는 객체가 없습니다."));
 
         entity.update(request.getData());
 
@@ -62,7 +61,7 @@ public abstract class CrudService<Req, Res, Entity extends Convertible<Req, Res>
     @Override
     public Header<Void> softDelete(Long id) {
         Entity entity = getBaseRepository().findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("해당 id " + id + "에 해당하는 객체가 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException(this.getClass().getSimpleName() + " : 해당 id " + id + "에 해당하는 객체가 없습니다."));
 
         getBaseRepository().delete(entity);
 

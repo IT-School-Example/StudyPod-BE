@@ -1,11 +1,10 @@
 package com.itschool.study_pod.service;
 
 import com.itschool.study_pod.dto.Header;
-import com.itschool.study_pod.dto.request.StudyGroupRequest;
-import com.itschool.study_pod.dto.request.StudyGroupSearchRequest;
+import com.itschool.study_pod.dto.request.studygroup.StudyGroupRequest;
+import com.itschool.study_pod.dto.request.studygroup.StudyGroupSearchRequest;
 import com.itschool.study_pod.dto.response.StudyGroupResponse;
 import com.itschool.study_pod.entity.StudyGroup;
-import com.itschool.study_pod.entity.SubjectArea;
 import com.itschool.study_pod.enumclass.MeetingMethod;
 import com.itschool.study_pod.enumclass.RecruitmentStatus;
 import com.itschool.study_pod.repository.StudyGroupRepository;

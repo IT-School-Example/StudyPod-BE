@@ -1,6 +1,6 @@
 package com.itschool.study_pod.service;
 
-import com.itschool.study_pod.dto.request.FaqRequest;
+import com.itschool.study_pod.dto.request.faq.FaqRequest;
 import com.itschool.study_pod.dto.response.FaqResponse;
 import com.itschool.study_pod.entity.Faq;
 import com.itschool.study_pod.repository.FaqRepository;

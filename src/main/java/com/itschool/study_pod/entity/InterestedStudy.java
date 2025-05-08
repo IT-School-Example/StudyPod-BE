@@ -1,7 +1,6 @@
 package com.itschool.study_pod.entity;
 
-import com.itschool.study_pod.dto.request.InterestedStudyRequest;
-import com.itschool.study_pod.dto.response.FaqResponse;
+import com.itschool.study_pod.dto.request.interestedstudy.InterestedStudyRequest;
 import com.itschool.study_pod.dto.response.InterestedStudyResponse;
 import com.itschool.study_pod.dto.response.StudyGroupResponse;
 import com.itschool.study_pod.dto.response.UserResponse;
@@ -11,8 +10,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter

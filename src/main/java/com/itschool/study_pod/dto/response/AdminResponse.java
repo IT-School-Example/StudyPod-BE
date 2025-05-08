@@ -1,6 +1,5 @@
 package com.itschool.study_pod.dto.response;
 
-import com.itschool.study_pod.dto.request.AdminRequest;
 import com.itschool.study_pod.enumclass.AccountRole;
 import lombok.*;
 
@@ -15,7 +14,7 @@ public class AdminResponse {
 
     private String email;
 
-    private String password;
+    // private String password;
 
     private AccountRole role;
 

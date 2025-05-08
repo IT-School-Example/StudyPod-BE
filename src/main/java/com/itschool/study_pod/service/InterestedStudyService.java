@@ -1,10 +1,8 @@
 package com.itschool.study_pod.service;
 
-import com.itschool.study_pod.dto.request.InterestedStudyRequest;
-import com.itschool.study_pod.dto.request.InterestedSubjectRequest;
+import com.itschool.study_pod.dto.request.interestedstudy.InterestedStudyRequest;
 import com.itschool.study_pod.dto.response.InterestedStudyResponse;
 import com.itschool.study_pod.entity.InterestedStudy;
-import com.itschool.study_pod.entity.InterestedSubject;
 import com.itschool.study_pod.repository.InterestedStudyRepository;
 import com.itschool.study_pod.repository.StudyGroupRepository;
 import com.itschool.study_pod.repository.UserRepository;

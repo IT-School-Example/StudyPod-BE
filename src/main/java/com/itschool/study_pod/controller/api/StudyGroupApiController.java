@@ -2,8 +2,8 @@ package com.itschool.study_pod.controller.api;
 
 import com.itschool.study_pod.controller.base.CrudController;
 import com.itschool.study_pod.dto.Header;
-import com.itschool.study_pod.dto.request.StudyGroupRequest;
-import com.itschool.study_pod.dto.request.StudyGroupSearchRequest;
+import com.itschool.study_pod.dto.request.studygroup.StudyGroupRequest;
+import com.itschool.study_pod.dto.request.studygroup.StudyGroupSearchRequest;
 import com.itschool.study_pod.dto.response.StudyGroupResponse;
 import com.itschool.study_pod.entity.StudyGroup;
 import com.itschool.study_pod.service.StudyGroupService;
@@ -11,6 +11,7 @@ import com.itschool.study_pod.service.base.CrudService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "스터디 그룹", description = "스터디 그룹 API")

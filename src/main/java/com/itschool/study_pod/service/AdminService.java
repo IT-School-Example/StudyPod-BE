@@ -1,6 +1,8 @@
 package com.itschool.study_pod.service;
 
-import com.itschool.study_pod.dto.request.AdminRequest;
+import com.itschool.study_pod.dto.Header;
+import com.itschool.study_pod.dto.request.admin.AdminPasswordUpdateRequest;
+import com.itschool.study_pod.dto.request.admin.AdminRequest;
 import com.itschool.study_pod.dto.response.AdminResponse;
 import com.itschool.study_pod.entity.Admin;
 import com.itschool.study_pod.repository.AdminRepository;
@@ -27,29 +29,17 @@ public class AdminService extends CrudService<AdminRequest, AdminResponse, Admin
         return Admin.of(requestEntity);
     }
 
-    /*public AdminResponse create(AdminRequest request) {
-        return adminRepository.save(Admin.of(request)).response();
-    }
-
-    public AdminResponse read(Long id) {
-        return adminRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException())
-                .response();
-    }
-
+    /*
+     * 비밀번호 수정하기
+     * */
     @Transactional
-    public AdminResponse update(Long id, AdminRequest adminRequest) {
-        Admin entity = adminRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException());
+    public Header<AdminResponse> updatePassword(Long id, Header<AdminPasswordUpdateRequest> request) {
 
-        entity.update(adminRequest);
+        Admin entity = getBaseRepository().findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(this.getClass().getSimpleName() + " : 해당 id " + id + "에 해당하는 객체가 없습니다."));
 
-        return entity.response();
+        entity.updatePassword(request.getData().getPassword());
+
+        return apiResponse(entity);
     }
-
-    public void delete(Long id) {
-        Admin findEntity = adminRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException());
-        adminRepository.delete(findEntity);
-    }*/
 }

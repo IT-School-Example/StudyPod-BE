@@ -1,8 +1,6 @@
 package com.itschool.study_pod.entity;
 
-import com.itschool.study_pod.dto.ReferenceDto;
-import com.itschool.study_pod.dto.request.StudyGroupRequest;
-import com.itschool.study_pod.dto.response.InterestedSubjectResponse;
+import com.itschool.study_pod.dto.request.studygroup.StudyGroupRequest;
 import com.itschool.study_pod.dto.response.StudyGroupResponse;
 import com.itschool.study_pod.dto.response.SubjectAreaResponse;
 import com.itschool.study_pod.dto.response.UserResponse;

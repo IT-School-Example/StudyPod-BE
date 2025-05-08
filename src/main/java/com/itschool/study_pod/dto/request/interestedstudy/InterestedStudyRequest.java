@@ -1,4 +1,4 @@
-package com.itschool.study_pod.dto.request;
+package com.itschool.study_pod.dto.request.interestedstudy;
 
 import com.itschool.study_pod.dto.ReferenceDto;
 import lombok.*;
@@ -7,13 +7,10 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class CommentRequest {
-
-    private String content;
-
-    private ReferenceDto board;
+public class InterestedStudyRequest {
 
     private ReferenceDto user;
 
-    private ReferenceDto parentComment;
+    private ReferenceDto studyGroup;
+
 }
