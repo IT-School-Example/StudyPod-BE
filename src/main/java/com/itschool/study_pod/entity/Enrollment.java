@@ -7,6 +7,7 @@ import com.itschool.study_pod.dto.response.UserResponse;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.enumclass.EnrollmentStatus;
 import com.itschool.study_pod.ifs.Convertible;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
@@ -53,7 +54,7 @@ public class Enrollment extends BaseEntity implements Convertible<EnrollmentRequ
             return Enrollment.builder()
                     .appliedAt(LocalDateTime.now())
                     .introduce(request.getIntroduce())
-                    .status(request.getStatus())
+                    .status(EnrollmentStatus.PENDING)
                     .user(User.withId(request.getUser().getId()))
                     .studyGroup(StudyGroup.withId(request.getStudyGroup().getId()))
                     .build();

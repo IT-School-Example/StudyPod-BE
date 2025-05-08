@@ -24,13 +24,13 @@ public class StudyGroupRequest {
     @NotEmpty
     private String description;
 
-    @NotEmpty
+    @NotNull
     private Integer maxMembers;
 
-    @NotEmpty
+    @NotNull
     private MeetingMethod meetingMethod; // Enum (ONLINE, OFFLINE, BOTH)
 
-    @NotEmpty
+    @NotNull
     private RecruitmentStatus recruitmentStatus; // Enum (RECRUITING, CLOSED)
 
     private FeeType feeType; // Enum (MONTHLY, YEARLY, PER_EVENT, ONE_TIME)

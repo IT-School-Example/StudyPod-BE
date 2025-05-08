@@ -2,6 +2,7 @@ package com.itschool.study_pod.dto.request.enrollment;
 
 import com.itschool.study_pod.dto.ReferenceDto;
 import com.itschool.study_pod.enumclass.EnrollmentStatus;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -15,15 +16,16 @@ import java.time.LocalDateTime;
 public class EnrollmentRequest {
 
     // 시스템 시간 : LocalDateTime.now()로 계산
-    @NotNull
+    @Schema(hidden = true)
     private LocalDateTime appliedAt;
 
     @NotEmpty
     private String introduce;
 
+    @Schema(hidden = true)
     private LocalDateTime joinedAt;
 
-    @NotNull
+    @Schema(hidden = true)
     private EnrollmentStatus status;
 
     @NotNull

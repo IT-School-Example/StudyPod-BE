@@ -46,7 +46,9 @@ public class Comment extends BaseEntity implements Convertible<CommentRequest, C
                     .content(request.getContent())
                     .board(Board.withId(request.getBoard().getId()))
                     .user(User.withId(request.getUser().getId()))
-                    .parentComment(Comment.withId(request.getParentComment().getId()))
+                    .parentComment(request.getParentComment() != null?
+                            Comment.withId(request.getParentComment().getId())
+                            : null)
                     .build();
         }
         return null;

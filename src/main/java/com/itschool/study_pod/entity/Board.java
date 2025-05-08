@@ -56,9 +56,15 @@ public class Board extends BaseEntity implements Convertible<BoardRequest, Board
                     .title(request.getTitle())
                     .content(request.getContent())
                     .category(request.getCategory())
-                    .user(User.withId(request.getUser().getId()))
-                    .admin(Admin.withId(request.getAdmin().getId()))
-                    .studyGroup(StudyGroup.withId(request.getStudyGroup().getId()))
+                    .user(request.getUser() != null?
+                            User.withId(request.getUser().getId())
+                            : null)
+                    .admin(request.getAdmin() != null?
+                            Admin.withId(request.getAdmin().getId())
+                            : null)
+                    .studyGroup(request.getStudyGroup() != null?
+                            StudyGroup.withId(request.getStudyGroup().getId())
+                            : null)
                     .build();
         }
         return null;
