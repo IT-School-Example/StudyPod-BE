@@ -1,7 +1,6 @@
 package com.itschool.study_pod.dto.request;
 
 import com.itschool.study_pod.enumclass.AccountRole;
-import com.itschool.validator.annotation.ValidPassword;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
