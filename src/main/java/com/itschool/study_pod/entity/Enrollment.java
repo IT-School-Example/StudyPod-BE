@@ -1,6 +1,7 @@
 package com.itschool.study_pod.entity;
 
 import com.itschool.study_pod.dto.request.EnrollmentRequest;
+import com.itschool.study_pod.dto.response.CommentResponse;
 import com.itschool.study_pod.dto.response.EnrollmentResponse;
 import com.itschool.study_pod.dto.response.StudyGroupResponse;
 import com.itschool.study_pod.dto.response.UserResponse;
@@ -51,12 +52,11 @@ public class Enrollment extends BaseEntity implements Convertible<EnrollmentRequ
     public static Enrollment of(EnrollmentRequest request) { // create용
         if(request != null) {
             return Enrollment.builder()
-                    .id(request.getId())
                     .appliedAt(LocalDateTime.now())
                     .introduce(request.getIntroduce())
                     .status(request.getStatus())
-                    .user(User.of(request.getUser()))
-                    .studyGroup(StudyGroup.of(request.getStudyGroup()))
+                    .user(User.withId(request.getUser().getId()))
+                    .studyGroup(StudyGroup.withId(request.getStudyGroup().getId()))
                     .build();
         }
         return null;
@@ -78,12 +78,8 @@ public class Enrollment extends BaseEntity implements Convertible<EnrollmentRequ
                 .introduce(this.introduce)
                 .joinedAt(this.joinedAt)
                 .status(this.status)
-                .user(UserResponse.builder()
-                        .id(this.user.getId())
-                        .build())
-                .studyGroup(StudyGroupResponse.builder()
-                        .id(this.studyGroup.getId())
-                        .build())
+                .user(UserResponse.withId(this.user.getId()))
+                .studyGroup(StudyGroupResponse.withId(this.studyGroup.getId()))
                 .createdAt(this.createdAt)
                 .createdBy(this.createdBy)
                 .updatedAt(this.updatedAt)
@@ -91,4 +87,9 @@ public class Enrollment extends BaseEntity implements Convertible<EnrollmentRequ
                 .build();
     }
 
+    public static Enrollment withId(Long id) {
+        return Enrollment.builder()
+                .id(id)
+                .build();
+    }
 }

@@ -27,4 +27,10 @@ public class FaqResponse {
     private String updatedBy;
 
     private LocalDateTime updatedAt;
+
+    public static FaqResponse withId(Long id) {
+        return FaqResponse.builder()
+                .id(id)
+                .build();
+    }
 }

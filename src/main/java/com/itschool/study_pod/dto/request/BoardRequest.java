@@ -1,5 +1,6 @@
 package com.itschool.study_pod.dto.request;
 
+import com.itschool.study_pod.dto.ReferenceDto;
 import com.itschool.study_pod.enumclass.BoardCategory;
 import lombok.*;
 
@@ -9,19 +10,16 @@ import lombok.*;
 @Builder
 public class BoardRequest {
 
-    // fk용으로 필요
-    private Long id;
-
     private String title;
 
     private String content;
 
     private BoardCategory category;
 
-    private UserRequest user;
+    private ReferenceDto user;
 
-    private AdminRequest admin;
+    private ReferenceDto admin;
 
-    private StudyGroupRequest studyGroup;
+    private ReferenceDto studyGroup;
 
 }

@@ -2,6 +2,7 @@ package com.itschool.study_pod.entity;
 
 import com.itschool.study_pod.dto.request.FaqRequest;
 import com.itschool.study_pod.dto.response.AdminResponse;
+import com.itschool.study_pod.dto.response.EnrollmentResponse;
 import com.itschool.study_pod.dto.response.FaqResponse;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.ifs.Convertible;
@@ -41,11 +42,10 @@ public class Faq extends BaseEntity implements Convertible<FaqRequest, FaqRespon
     public static Faq of (FaqRequest request) {
         if(request != null) {
             return Faq.builder()
-                    .id(request.getId())
                     .question(request.getQuestion())
                     .answer(request.getAnswer())
                     .visible(request.getVisible())
-                    .admin(Admin.of(request.getAdmin()))
+                    .admin(Admin.withId(request.getAdmin().getId()))
                     .build();
         }
         return null;
@@ -58,9 +58,7 @@ public class Faq extends BaseEntity implements Convertible<FaqRequest, FaqRespon
                 .question(this.question)
                 .answer(this.answer)
                 .visible(this.visible)
-                .admin(AdminResponse.builder()
-                        .id(this.admin.getId())
-                        .build())
+                .admin(AdminResponse.withId(this.admin.getId()))
                 .createdAt(this.createdAt)
                 .createdBy(this.createdBy)
                 .updatedAt(this.updatedAt)
@@ -73,5 +71,11 @@ public class Faq extends BaseEntity implements Convertible<FaqRequest, FaqRespon
         this.question = request.getQuestion();
         this.answer = request.getAnswer();
         this.visible = request.getVisible();
+    }
+
+    public Faq withId(Long id) {
+        return Faq.builder()
+                .id(id)
+                .build();
     }
 }

@@ -28,4 +28,10 @@ public class UserResponse {
     private String updatedBy;
 
     private LocalDateTime updatedAt;
+
+    public static UserResponse withId(Long id) {
+        return UserResponse.builder()
+                .id(id)
+                .build();
+    }
 }

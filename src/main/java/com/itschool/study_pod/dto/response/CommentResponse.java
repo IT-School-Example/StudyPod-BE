@@ -28,4 +28,10 @@ public class CommentResponse {
     private String updatedBy;
 
     private LocalDateTime updatedAt;
+
+    public static CommentResponse withId(Long id) {
+        return CommentResponse.builder()
+                .id(id)
+                .build();
+    }
 }

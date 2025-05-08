@@ -11,9 +11,6 @@ import lombok.*;
 @Builder
 public class UserRequest {
 
-    // fk용으로 필요
-    private Long id;
-
     @Email(message = "이메일 형식이 올바르지 않습니다.")
     private String email;
 

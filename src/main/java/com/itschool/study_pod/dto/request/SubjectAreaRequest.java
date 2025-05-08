@@ -7,9 +7,8 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-// 요청!
 public class SubjectAreaRequest {
-    // fk용으로 필요
+
     private Long id;
 
     private Subject subject;

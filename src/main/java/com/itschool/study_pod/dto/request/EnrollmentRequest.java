@@ -1,5 +1,6 @@
 package com.itschool.study_pod.dto.request;
 
+import com.itschool.study_pod.dto.ReferenceDto;
 import com.itschool.study_pod.enumclass.EnrollmentStatus;
 import lombok.*;
 
@@ -11,9 +12,6 @@ import java.time.LocalDateTime;
 @Builder
 public class EnrollmentRequest {
 
-    // fk용으로 필요
-    private Long id;
-
     // 시스템 시간 : LocalDateTime.now()로 계산
     private LocalDateTime appliedAt;
 
@@ -23,7 +21,7 @@ public class EnrollmentRequest {
 
     private EnrollmentStatus status;
 
-    private StudyGroupRequest studyGroup;
+    private ReferenceDto studyGroup;
 
-    private UserRequest user;
+    private ReferenceDto user;
 }

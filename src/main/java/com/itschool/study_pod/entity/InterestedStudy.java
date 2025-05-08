@@ -1,6 +1,7 @@
 package com.itschool.study_pod.entity;
 
 import com.itschool.study_pod.dto.request.InterestedStudyRequest;
+import com.itschool.study_pod.dto.response.FaqResponse;
 import com.itschool.study_pod.dto.response.InterestedStudyResponse;
 import com.itschool.study_pod.dto.response.StudyGroupResponse;
 import com.itschool.study_pod.dto.response.UserResponse;
@@ -40,9 +41,8 @@ public class InterestedStudy extends BaseEntity implements Convertible<Intereste
     public static InterestedStudy of(InterestedStudyRequest request) { // create용
         if (request != null) {
             return InterestedStudy.builder()
-                    .id(request.getId())
-                    .user(User.of(request.getUser()))
-                    .studyGroup(StudyGroup.of(request.getStudyGroup()))
+                    .user(User.withId(request.getUser().getId()))
+                    .studyGroup(StudyGroup.withId(request.getStudyGroup().getId()))
                     .build();
         }
         return null;
@@ -56,17 +56,20 @@ public class InterestedStudy extends BaseEntity implements Convertible<Intereste
     public InterestedStudyResponse response() {
         return InterestedStudyResponse.builder()
                 .id(this.id)
-                .user(UserResponse.builder()
-                        .id(this.user.getId())
-                        .build())
-                .studyGroup(StudyGroupResponse.builder()
-                        .id(this.studyGroup.getId())
-                        .build())
+                .user(UserResponse.withId(this.user.getId()))
+                .studyGroup(StudyGroupResponse.withId(this.studyGroup.getId()))
                 .createdAt(this.createdAt)
                 .createdBy(this.createdBy)
                 .updatedAt(this.updatedAt)
                 .updatedBy(this.updatedBy)
                 .build();
     }
+
+    public static InterestedStudy withId(Long id) {
+        return InterestedStudy.builder()
+                .id(id)
+                .build();
+    }
+
 }
 

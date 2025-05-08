@@ -16,6 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 public class StudyGroupResponse {
+
     private Long id;
     private String title;
     private String description;
@@ -38,4 +39,10 @@ public class StudyGroupResponse {
     private String updatedBy;
 
     private LocalDateTime updatedAt;
+
+    public static StudyGroupResponse withId(Long id) {
+        return StudyGroupResponse.builder()
+                .id(id)
+                .build();
+    }
 }

@@ -1,5 +1,6 @@
 package com.itschool.study_pod.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,15 +15,19 @@ import java.time.LocalDateTime;
 @Builder
 public class Header<T> {
 
+    @Schema(hidden = true)
     private LocalDateTime transactionTime; // 통신 시간
 
+    @Schema(hidden = true)
     private String resultCode; // OK, ERROR
 
+    @Schema(hidden = true)
     private String description; // ERROR 메시지
 
     @Valid
     private T data; // OK 데이터
 
+    @Schema(hidden = true)
     private Pagination pagination; // 페이지 정보
 
     private String searchStr;

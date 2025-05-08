@@ -13,9 +13,6 @@ import lombok.*;
 @Builder
 public class AdminRequest {
 
-    // fk용으로 필요
-    private Long id;
-
     @Email(message = "이메일 형식이 올바르지 않습니다.")
     private String email;
 
@@ -24,4 +21,5 @@ public class AdminRequest {
     private String password;
 
     private AccountRole role;
+
 }

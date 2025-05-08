@@ -53,13 +53,12 @@ public class Board extends BaseEntity implements Convertible<BoardRequest, Board
     public static Board of (BoardRequest request) {
         if(request != null) {
             return Board.builder()
-                    .id(request.getId())
                     .title(request.getTitle())
                     .content(request.getContent())
                     .category(request.getCategory())
-                    .user(User.of(request.getUser()))
-                    .admin(Admin.of(request.getAdmin()))
-                    .studyGroup(StudyGroup.of(request.getStudyGroup()))
+                    .user(User.withId(request.getUser().getId()))
+                    .admin(Admin.withId(request.getAdmin().getId()))
+                    .studyGroup(StudyGroup.withId(request.getStudyGroup().getId()))
                     .build();
         }
         return null;
@@ -73,19 +72,13 @@ public class Board extends BaseEntity implements Convertible<BoardRequest, Board
                 .content(this.content)
                 .category(BoardCategory.FREE)
                 .user(this.user != null?
-                        UserResponse.builder()
-                                .id(this.user.getId())
-                                .build()
+                        UserResponse.withId(this.user.getId())
                         : null)
                 .admin(this.admin != null?
-                        AdminResponse.builder()
-                                .id(this.admin.getId())
-                                .build()
+                        AdminResponse.withId(this.admin.getId())
                         : null)
                 .studyGroup(this.studyGroup != null?
-                        StudyGroupResponse.builder()
-                                .id(this.studyGroup.getId())
-                                .build()
+                        StudyGroupResponse.withId(this.studyGroup.getId())
                         : null)
                 .createdAt(this.createdAt)
                 .createdBy(this.createdBy)
@@ -94,9 +87,17 @@ public class Board extends BaseEntity implements Convertible<BoardRequest, Board
                 .build();
     }
 
+
     @Override
     public void update(BoardRequest request) {
         this.title = request.getTitle();
         this.content = request.getContent();
     }
+
+    public static Board withId(Long id) {
+        return Board.builder()
+                .id(id)
+                .build();
+    }
+
 }

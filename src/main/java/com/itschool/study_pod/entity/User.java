@@ -1,6 +1,7 @@
 package com.itschool.study_pod.entity;
 
 import com.itschool.study_pod.dto.request.UserRequest;
+import com.itschool.study_pod.dto.response.SubjectAreaResponse;
 import com.itschool.study_pod.dto.response.UserResponse;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.enumclass.AccountRole;
@@ -44,7 +45,6 @@ public class User extends BaseEntity implements Convertible<UserRequest, UserRes
     public static User of(UserRequest request) { // create용
         if(request != null) {
             return User.builder()
-                    .id(request.getId())
                     .email(request.getEmail())
                     .password(request.getPassword())
                     .role(request.getRole())
@@ -77,6 +77,12 @@ public class User extends BaseEntity implements Convertible<UserRequest, UserRes
                 .createdBy(this.createdBy)
                 .updatedAt(this.updatedAt)
                 .updatedBy(this.updatedBy)
+                .build();
+    }
+
+    public static User withId(Long id) {
+        return User.builder()
+                .id(id)
                 .build();
     }
 }

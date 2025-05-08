@@ -32,4 +32,10 @@ public class BoardResponse {
     private String updatedBy;
 
     private LocalDateTime updatedAt;
+
+    public static BoardResponse withId(Long id) {
+        return BoardResponse.builder()
+                .id(id)
+                .build();
+    }
 }

@@ -1,6 +1,7 @@
 package com.itschool.study_pod.entity;
 
 import com.itschool.study_pod.dto.request.InterestedSubjectRequest;
+import com.itschool.study_pod.dto.response.InterestedStudyResponse;
 import com.itschool.study_pod.dto.response.InterestedSubjectResponse;
 import com.itschool.study_pod.dto.response.SubjectAreaResponse;
 import com.itschool.study_pod.dto.response.UserResponse;
@@ -37,9 +38,8 @@ public class InterestedSubject extends BaseEntity implements Convertible<Interes
     public static InterestedSubject of(InterestedSubjectRequest request) { // create용
         if(request != null) {
             return InterestedSubject.builder()
-                    .id(request.getId())
-                    .user(User.of(request.getUser()))
-                    .subjectArea(SubjectArea.of(request.getSubjectArea()))
+                    .user(User.withId(request.getUser().getId()))
+                    .subjectArea(SubjectArea.withId(request.getSubjectArea().getId()))
                     .build();
         }
         return null;
@@ -55,17 +55,19 @@ public class InterestedSubject extends BaseEntity implements Convertible<Interes
     public InterestedSubjectResponse response() {
         return InterestedSubjectResponse.builder()
                 .id(this.id)
-                .user(UserResponse.builder()
-                        .id(this.user.getId())
-                        .build())
-                .subjectArea(SubjectAreaResponse.builder()
-                        .id(this.subjectArea.getId())
-                        .build())
+                .user(UserResponse.withId(this.user.getId()))
+                .subjectArea(SubjectAreaResponse.withId(this.subjectArea.getId()))
                 .createdAt(this.createdAt)
                 .createdBy(this.createdBy)
                 .updatedAt(this.updatedAt)
                 .updatedBy(this.updatedBy)
                 .build();
-//        return null;
     }
+
+    public static InterestedSubject withId(Long id) {
+        return InterestedSubject.builder()
+                .id(id)
+                .build();
+    }
+
 }

@@ -38,7 +38,6 @@ public class Admin extends BaseEntity implements Convertible<AdminRequest, Admin
     public static Admin of(AdminRequest request) { // create용
         if(request != null) {
             return Admin.builder()
-                    .id(request.getId())
                     .email(request.getEmail())
                     .password(request.getPassword())
                     .role(request.getRole())
@@ -68,6 +67,12 @@ public class Admin extends BaseEntity implements Convertible<AdminRequest, Admin
                 .createdBy(this.createdBy)
                 .updatedAt(this.updatedAt)
                 .updatedBy(this.updatedBy)
+                .build();
+    }
+
+    public static Admin withId(Long id) {
+        return Admin.builder()
+                .id(id)
                 .build();
     }
 }

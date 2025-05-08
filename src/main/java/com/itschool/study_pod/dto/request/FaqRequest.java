@@ -1,5 +1,6 @@
 package com.itschool.study_pod.dto.request;
 
+import com.itschool.study_pod.dto.ReferenceDto;
 import lombok.*;
 
 @Data // 종합선물세트 : @Getter, @Setter, @ToString, @EqualsAndHashCode, @RequiredArgsConstructor
@@ -8,13 +9,11 @@ import lombok.*;
 @Builder
 public class FaqRequest {
 
-    private Long id;
-
     private String question;
 
     private String answer;
 
     private Boolean visible;
 
-    private AdminRequest admin;
+    private ReferenceDto admin;
 }

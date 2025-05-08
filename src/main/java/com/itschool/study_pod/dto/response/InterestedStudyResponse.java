@@ -27,4 +27,9 @@ public class InterestedStudyResponse {
 
     private LocalDateTime updatedAt;
 
+    public static InterestedStudyResponse withId(Long id) {
+        return InterestedStudyResponse.builder()
+                .id(id)
+                .build();
+    }
 }

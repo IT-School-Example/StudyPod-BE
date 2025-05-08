@@ -49,6 +49,13 @@ public class Sgg implements Convertible<SggRequest, SggResponse> {
         return null;
     }
 
+    public static Sgg withId(Long id) {
+        return Sgg.builder()
+                .id(id)
+                .build();
+
+    }
+
     @Deprecated
     @Override
     public void update(SggRequest request) {
