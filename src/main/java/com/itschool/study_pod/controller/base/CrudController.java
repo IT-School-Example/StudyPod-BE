@@ -65,9 +65,9 @@ public abstract class CrudController<Req, Res, Entity extends Convertible<Req, R
     @ResponseStatus(HttpStatus.NO_CONTENT) // 204, NO_CONTENT
     @DeleteMapping("{id}")
     @Operation(summary = "삭제", description = "ID로 엔티티를 삭제")
-    public Header<Void> softDelete(@PathVariable(name = "id") Long id) {
+    public Header<Void> delete(@PathVariable(name = "id") Long id) {
         log.info("delete: {}에서 id={}인 객체 삭제 요청", this.getClass().getSimpleName(), id);
-        return getBaseService().softDelete(id);
+        return getBaseService().delete(id);
     }
 
     @GetMapping("all")
