@@ -18,7 +18,7 @@ import org.hibernate.annotations.Where;
 @Builder
 @Table(name = "interested_studies",
         uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"user_id, study_group_id"})
+        @UniqueConstraint(columnNames = {"user_id", "study_group_id"})
 })
 @SQLDelete(sql = "UPDATE interested_studies SET is_deleted = true WHERE interested_study_id = ?")
 @Where(clause = "is_deleted = false")
