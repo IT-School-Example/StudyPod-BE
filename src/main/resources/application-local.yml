@@ -6,7 +6,7 @@ spring:
     console:
       enabled: true # /h2-console 설정
   datasource:
-    url: jdbc:h2:mem:testdb # 메모리 H2 DB 경로 설정
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false;INIT=CREATE SCHEMA IF NOT EXISTS address # 메모리 H2 DB 경로 설정
   jpa:
     #show-sql: true # 전송 쿼리 확인, 애플리케이션 실행과정에 쿼리의 실행 구문을 모두 보여줌
     hibernate:
@@ -17,6 +17,7 @@ spring:
         highlight_sql: true
         dialect: org.hibernate.dialect.H2Dialect  # H2 방언 사용
         use_sql_comments: true
+    # defer-datasource-initialization: true  # 데이터 소스 초기화를 지연
   devtools:
     livereload:
       enabled: true # 파일(특히 정적 리소스나 템플릿)이 변경되면 livereload 서버가 브라우저에 변경을 감지하도록 신호를 보내어 자동으로 새로고침되게 함
