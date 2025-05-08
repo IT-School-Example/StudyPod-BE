@@ -33,6 +33,7 @@ public class AdminApiController extends CrudController<AdminRequest, AdminRespon
      * 전체 수정 사용 불가 처리 (임시)
      * */
     @Override
+    @Deprecated
     public Header<AdminResponse> update(Long id, Header<AdminRequest> request) {
         throw new RuntimeException("이메일 및 역할 전체 수정 불가하도록 임시 조치");
     }
@@ -41,10 +42,10 @@ public class AdminApiController extends CrudController<AdminRequest, AdminRespon
      * 비밀번호 수정하기
      * */
     @Operation(summary = "관리자 비밀번호 수정", description = "관리자(Admin) 비밀번호 수정하기")
-    @PatchMapping("/update-pw/{id}")
+    @PatchMapping("update-pw/{id}")
     public Header<AdminResponse> updatePassword(@PathVariable(name = "id") Long id,
                                                 @RequestBody @Valid Header<AdminPasswordUpdateRequest> request) {
-        log.info("readAll: {}에서 전체 조회 요청", this.getClass().getSimpleName());
+        log.info("update password : {}에서 전체 조회 요청", this.getClass().getSimpleName());
         return adminService.updatePassword(id, request);
     }
 }
