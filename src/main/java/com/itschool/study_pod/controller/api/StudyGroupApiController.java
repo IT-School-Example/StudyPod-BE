@@ -42,10 +42,11 @@ public class StudyGroupApiController extends CrudController<StudyGroupRequest, S
 
     @PostMapping("search")
     @Operation(summary = "검색 기능", description = "")
-    public Header<List<StudyGroupResponse>> findAllByFilters(@RequestBody Header<StudyGroupSearchRequest> request,
+    public Header<List<StudyGroupResponse>> findAllByFilters(@RequestParam String searchStr,
+                                                             @RequestBody Header<StudyGroupSearchRequest> request,
                                                              @ParameterObject @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        return studyGroupService.findAllByFilters(request, pageable);
+        return studyGroupService.findAllByFilters(searchStr, request, pageable);
     }
 
     @GetMapping("/filter/recruitment")

@@ -30,8 +30,6 @@ public class Header<T> {
     @Schema(hidden = true)
     private Pagination pagination; // 페이지 정보
 
-    private String searchStr;
-
     // OK (빈 데이터)
     public static <T> Header<T> OK() {
         return OK(null, null);

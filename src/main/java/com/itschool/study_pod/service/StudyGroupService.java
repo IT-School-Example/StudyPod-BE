@@ -38,7 +38,10 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
         return Header.OK(studyGroupRepository.findAllByLeaderId(leaderId));
     }
 
-    public Header<List<StudyGroupResponse>> findAllByFilters(Header<StudyGroupSearchRequest> request, Pageable pageable) {
+    public Header<List<StudyGroupResponse>> findAllByFilters(String searchStr,
+                                                             Header<StudyGroupSearchRequest> request,
+                                                             Pageable pageable) {
+
         StudyGroupSearchRequest conditions = request.getData();
 
         RecruitmentStatus recruitmentStatus = conditions.getRecruitmentStatus();
@@ -49,7 +52,7 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
         Long subjectAreaId = conditions.getSubjectArea() == null ? null : conditions.getSubjectArea().getId();
 
         Page<StudyGroup> groups = studyGroupRepository.findAllByFilters(
-                request.getSearchStr(),
+                searchStr,
                 recruitmentStatus,
                 meetingMethod,
                 subjectAreaId,
