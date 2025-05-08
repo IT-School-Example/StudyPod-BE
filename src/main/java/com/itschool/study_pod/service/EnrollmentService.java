@@ -1,19 +1,32 @@
 package com.itschool.study_pod.service;
 
+import com.itschool.study_pod.dto.Header;
 import com.itschool.study_pod.dto.request.enrollment.EnrollmentRequest;
 import com.itschool.study_pod.dto.response.EnrollmentResponse;
+import com.itschool.study_pod.dto.response.StudyGroupResponse;
+import com.itschool.study_pod.dto.response.UserResponse;
 import com.itschool.study_pod.entity.Enrollment;
+import com.itschool.study_pod.enumclass.EnrollmentStatus;
 import com.itschool.study_pod.repository.EnrollmentRepository;
+import com.itschool.study_pod.repository.StudyGroupRepository;
+import com.itschool.study_pod.repository.UserRepository;
 import com.itschool.study_pod.service.base.CrudService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class EnrollmentService extends CrudService<EnrollmentRequest, EnrollmentResponse, Enrollment> {
 
     private final EnrollmentRepository enrollmentRepository;
+
+    private final StudyGroupRepository studyGroupRepository;
+
+    private final UserRepository userRepository;
 
     @Override
     protected JpaRepository<Enrollment, Long> getBaseRepository() {
@@ -25,31 +38,31 @@ public class EnrollmentService extends CrudService<EnrollmentRequest, Enrollment
         return Enrollment.of(requestEntity);
     }
 
-    /*private final EnrollmentRepository enrollmentRepository;
+    /*
+    * 회원id와 등록상태로 스터디 내역 조회
+    * */
+    public Header<List<StudyGroupResponse>> findEnrolledStudyGroupsByUserId(Long userId, EnrollmentStatus enrollmentStatus) {
 
-    public EnrollmentResponse create(EnrollmentRequest request) {
-        return enrollmentRepository.save(Enrollment.of(request)).response();
+        List<Enrollment> enrollmentList = enrollmentRepository.findWithStudyGroupByUserIdAndStatus(userId, EnrollmentStatus.APPROVED);
+
+        List<StudyGroupResponse> studyGroupResponses = enrollmentList.stream()
+                .map(enrollment -> enrollment.getStudyGroup().response())
+                .collect(Collectors.toList());
+
+        return Header.OK(studyGroupResponses);
     }
 
-    public EnrollmentResponse read(Long id) {
-        return enrollmentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException())
-                .response();
+    /*
+     * 스터디그룹별 등록 회원 조회
+     * */
+    public Header<List<UserResponse>> findEnrolledUsersByStudyGroupId(Long studyGroupId, EnrollmentStatus enrollmentStatus) {
+
+        List<Enrollment> enrollmentList = enrollmentRepository.findWithUserByStudyGroupIdAndStatus(studyGroupId, EnrollmentStatus.APPROVED);
+
+        List<UserResponse> userResponses = enrollmentList.stream()
+                .map(enrollment -> enrollment.getUser().response())
+                .collect(Collectors.toList());
+
+        return Header.OK(userResponses);
     }
-
-    @Transactional
-    public EnrollmentResponse update(Long id, EnrollmentRequest enrollmentRequest) {
-        Enrollment entity = enrollmentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException());
-
-        entity.update(enrollmentRequest);
-
-        return entity.response();
-    }
-
-    public void delete(Long id) {
-        Enrollment findEntity = enrollmentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException());
-        enrollmentRepository.delete(findEntity);
-    }*/
 }

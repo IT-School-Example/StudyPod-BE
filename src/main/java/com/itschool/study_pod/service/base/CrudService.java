@@ -74,12 +74,10 @@ public abstract class CrudService<Req, Res, Entity extends Convertible<Req, Res>
         return responseList(entities);
     }
 
-    protected final Header<List<Res>> responseList(List<Entity> entities) {
-        List<Res> responseList = new ArrayList<>();
-
-        for(Entity entity : entities){
-            responseList.add((Res) entity.response());
-        }
+    protected final Header<List<Res>> responseList(List<? extends Convertible<?, Res>> entities) {
+        List<Res> responseList = entities.stream()
+                .map(Convertible::response)
+                .collect(Collectors.toList());
 
         return Header.OK(responseList);
     }
