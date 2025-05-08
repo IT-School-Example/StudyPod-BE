@@ -6,6 +6,7 @@ import com.itschool.study_pod.dto.Header;
 import com.itschool.study_pod.dto.request.user.UserRequest;
 import com.itschool.study_pod.entity.User;
 import com.itschool.study_pod.enumclass.AccountRole;
+import com.itschool.study_pod.repository.StudyGroupRepository;
 import com.itschool.study_pod.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,10 +28,13 @@ class UserRequestApiControllerTest extends MockMvcTest {
     private UserRepository userRepository;
 
     @Autowired
+    private StudyGroupRepository studyGroupRepository;
+
+    @Autowired
     private ObjectMapper objectMapper; // 직렬화와 역직렬화를 위한 클래스
 
     @BeforeEach
-    public void BeforeCleanUp() {
+    public void BeforeSetUp() {
         /*userRepository.deleteAll(); // 사용자 전부 삭제
 
         // 사용자 객체 생성
