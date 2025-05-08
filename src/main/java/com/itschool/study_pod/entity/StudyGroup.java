@@ -51,6 +51,11 @@ public class StudyGroup extends BaseEntity implements Convertible<StudyGroupRequ
     @Column(nullable = false)
     private RecruitmentStatus recruitmentStatus;
 
+    // 이미지 업로드 기능 위해 추가
+    /*@Column(name = "image_url")
+    private String imageUrl;*/
+
+
     @Enumerated(EnumType.STRING)
     private FeeType feeType;
 
@@ -87,7 +92,7 @@ public class StudyGroup extends BaseEntity implements Convertible<StudyGroupRequ
     private Set<WeeklySchedule> weeklySchedules = new HashSet<>();
 
     public static StudyGroup of(StudyGroupRequest request) { // create용
-        if(request != null) {
+        if (request != null) {
             return StudyGroup.builder()
                     .title(request.getTitle())
                     .description(request.getDescription())
@@ -101,6 +106,7 @@ public class StudyGroup extends BaseEntity implements Convertible<StudyGroupRequ
                     .subjectArea(SubjectArea.withId(request.getSubjectArea().getId()))
                     .keywords(request.getKeywords())
                     .weeklySchedules(request.getWeeklySchedules())
+                    //.imageUrl(request.getImageUrl() //이미지 업로드 기능
                     .build();
         }
         return null;

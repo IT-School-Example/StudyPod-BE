@@ -34,30 +34,48 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
         return StudyGroup.of(requestEntity);
     }
 
-    public Header<List<StudyGroup>> findAllByLeaderId (Long leaderId) {
+    public Header<List<StudyGroup>> findAllByLeaderId(Long leaderId) {
         return Header.OK(studyGroupRepository.findAllByLeaderId(leaderId));
     }
 
     public Header<List<StudyGroupResponse>> findAllByFilters(Header<StudyGroupSearchRequest> request, Pageable pageable) {
-
         StudyGroupSearchRequest conditions = request.getData();
-
-
 
         RecruitmentStatus recruitmentStatus = conditions.getRecruitmentStatus();
 
-        // BOTH 인 경우 전체 검색되도록 null로 설정
-        MeetingMethod meetingMethod = conditions.getMeetingMethod().equals(MeetingMethod.BOTH)? null : conditions.getMeetingMethod();
+        // BOTH일 경우 meetingMethod 조건 제거
+        MeetingMethod meetingMethod = conditions.getMeetingMethod() == MeetingMethod.BOTH ? null : conditions.getMeetingMethod();
 
-        // id가 null인 경우 NPE 방지
-        Long subjectAreaId = conditions.getSubjectArea() == null? null : conditions.getSubjectArea().getId();
+        Long subjectAreaId = conditions.getSubjectArea() == null ? null : conditions.getSubjectArea().getId();
 
-
-
-        Page<StudyGroup> groups = studyGroupRepository.findAllByFilters(request.getSearchStr(), recruitmentStatus, meetingMethod,
-                                                                        subjectAreaId, pageable);
-
+        Page<StudyGroup> groups = studyGroupRepository.findAllByFilters(
+                request.getSearchStr(),
+                recruitmentStatus,
+                meetingMethod,
+                subjectAreaId,
+                pageable
+        );
 
         return convertPageToList(groups);
+    }
+
+    public Header<List<StudyGroupResponse>> findAllByRecruitmentStatus(String value) {
+        try {
+            RecruitmentStatus status = RecruitmentStatus.valueOf(value.toUpperCase());
+            List<StudyGroup> results = studyGroupRepository.findAllByRecruitmentStatus(status);
+
+            if (results.isEmpty()) {
+                throw new RuntimeException("해당 조건의 스터디 그룹을 불러오지 못했습니다.");
+            }
+
+            // 엔티티를 DTO로 변환해서 반환
+            List<StudyGroupResponse> dtoList = results.stream()
+                    .map(StudyGroup::response)
+                    .toList();
+
+            return Header.OK(dtoList);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("요청에 실패했습니다. 유효하지 않은 모집 상태입니다.");
+        }
     }
 }

@@ -34,10 +34,10 @@ public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long> {
                                       @Param("subjectAreaId") Long subjectAreaId,
                                       Pageable pageable);
 
-    /*// 모집 상태로 조회
+    // 모집 상태로 조회
     List<StudyGroup> findAllByRecruitmentStatus(RecruitmentStatus recruitmentStatus);
 
-    // 스터디 방식으로 조회
+/*    // 스터디 방식으로 조회
     List<StudyGroup> findAllByMeetingMethod(MeetingMethod meetingMethod);
 
     // 주제 영역(subject area)으로 조회

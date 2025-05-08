@@ -9,6 +9,10 @@ import com.itschool.study_pod.entity.StudyGroup;
 import com.itschool.study_pod.service.StudyGroupService;
 import com.itschool.study_pod.service.base.CrudService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,4 +45,18 @@ public class StudyGroupApiController extends CrudController<StudyGroupRequest, S
 
         return studyGroupService.findAllByFilters(request, pageable);
     }
+
+    @GetMapping("/filter/recruitment")
+    @Operation(summary = "모집 상태로 스터디 그룹 조회", description = "RECRUITING 또는 CLOSED 상태로 필터링")
+    public Header<List<StudyGroupResponse>> getByRecruitmentStatus(@RequestParam String value) {
+        try {
+            return studyGroupService.findAllByRecruitmentStatus(value);
+        } catch (IllegalArgumentException e) {
+            return Header.ERROR("요청에 실패했습니다.");
+        } catch (RuntimeException e) {
+            return Header.ERROR("해당 조건의 스터디 그룹을 불러오지 못했습니다.");
+        }
+    }
+
+
 }
