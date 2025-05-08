@@ -3,6 +3,7 @@ package com.itschool.study_pod.dto.request.enrollment;
 import com.itschool.study_pod.dto.ReferenceDto;
 import com.itschool.study_pod.enumclass.EnrollmentStatus;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 public class EnrollmentRequest {
 
     // 시스템 시간 : LocalDateTime.now()로 계산
-    @NotEmpty
+    @NotNull
     private LocalDateTime appliedAt;
 
     @NotEmpty
@@ -22,12 +23,12 @@ public class EnrollmentRequest {
 
     private LocalDateTime joinedAt;
 
-    @NotEmpty
+    @NotNull
     private EnrollmentStatus status;
 
-    @NotEmpty
+    @NotNull
     private ReferenceDto studyGroup;
 
-    @NotEmpty
+    @NotNull
     private ReferenceDto user;
 }

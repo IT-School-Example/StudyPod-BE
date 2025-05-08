@@ -2,6 +2,7 @@ package com.itschool.study_pod.dto.request.comment;
 
 import com.itschool.study_pod.dto.ReferenceDto;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Data // 종합선물세트 : @Getter, @Setter, @ToString, @EqualsAndHashCode, @RequiredArgsConstructor
@@ -13,10 +14,10 @@ public class CommentRequest {
     @NotEmpty
     private String content;
 
-    @NotEmpty
+    @NotNull
     private ReferenceDto board;
 
-    @NotEmpty
+    @NotNull
     private ReferenceDto user;
 
     private ReferenceDto parentComment;

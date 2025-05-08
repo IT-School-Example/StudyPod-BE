@@ -6,6 +6,7 @@ import com.itschool.study_pod.enumclass.FeeType;
 import com.itschool.study_pod.enumclass.MeetingMethod;
 import com.itschool.study_pod.enumclass.RecruitmentStatus;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -36,13 +37,13 @@ public class StudyGroupRequest {
 
     private Long amount;
 
-    @NotEmpty
+    @NotNull
     private ReferenceDto leader;
 
-    @NotEmpty
+    @NotNull
     private ReferenceDto address;
 
-    @NotEmpty
+    @NotNull
     private ReferenceDto subjectArea;
 
     private Set<String> keywords;
