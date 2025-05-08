@@ -118,10 +118,8 @@ public class StudyGroup extends BaseEntity implements Convertible<StudyGroupRequ
         this.feeType = request.getFeeType();
         this.amount = request.getAmount();
         // this.leader = User.of(request.getLeader());
-
-        // ReferenceDto 사용 예외, Service 계층에서 id로 처리 고민
-        this.address = Sgg.of(request.getAddress());
-        this.subjectArea = SubjectArea.of(request.getSubjectArea());
+        this.address = Sgg.withId(request.getAddress().getId());
+        this.subjectArea = SubjectArea.withId(request.getSubjectArea().getId());
         
         this.keywords = request.getKeywords();
         this.weeklySchedules = request.getWeeklySchedules();

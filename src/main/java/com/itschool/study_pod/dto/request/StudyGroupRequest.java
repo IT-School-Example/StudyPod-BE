@@ -33,9 +33,9 @@ public class StudyGroupRequest {
 
     private ReferenceDto leader;
 
-    private SggRequest address;
+    private ReferenceDto address;
 
-    private SubjectAreaRequest subjectArea;
+    private ReferenceDto subjectArea;
 
     private Set<String> keywords;
 
