@@ -58,14 +58,14 @@
             <label for="userIdUpdate">사용자 ID:</label>
             <input type="text" id="userIdUpdate" required><br><br>
 
-            <!--<label for="emailUpdate">이메일:</label>
-            <input type="email" id="emailUpdate"><br><br>-->
+            <label for="emailUpdate">이메일:</label>
+            <input type="email" id="emailUpdate"><br><br>
 
             <label for="passwordUpdate">비밀번호:</label>
             <input type="password" id="passwordUpdate"><br><br>
 
-            <!--<label for="nameUpdate">이름:</label>
-            <input type="text" id="nameUpdate"><br><br>-->
+            <label for="nameUpdate">이름:</label>
+            <input type="text" id="nameUpdate"><br><br>
 
             <label for="nicknameUpdate">닉네임:</label>
             <input type="text" id="nicknameUpdate"><br><br>
@@ -139,9 +139,8 @@
 
                     // 수정할 수 있도록 기본 값 설정
                     $('#userIdUpdate').val(userData.id);
-                    // $('#emailUpdate').val(userData.email);
-                    $('#passwordUpdate').val(userData.password);
-                    // $('#nameUpdate').val(userData.name);
+                    $('#emailUpdate').val(userData.email);
+                    $('#nameUpdate').val(userData.name);
                     $('#nicknameUpdate').val(userData.nickname);
 
                     // 삭제할 수 있도록 기본 값 설정
