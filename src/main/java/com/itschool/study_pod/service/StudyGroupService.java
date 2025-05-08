@@ -2,6 +2,7 @@ package com.itschool.study_pod.service;
 
 import com.itschool.study_pod.dto.Header;
 import com.itschool.study_pod.dto.request.StudyGroupRequest;
+import com.itschool.study_pod.dto.request.StudyGroupSearchRequest;
 import com.itschool.study_pod.dto.response.StudyGroupResponse;
 import com.itschool.study_pod.entity.StudyGroup;
 import com.itschool.study_pod.entity.SubjectArea;
@@ -38,9 +39,9 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
         return Header.OK(studyGroupRepository.findAllByLeaderId(leaderId));
     }
 
-    public Header<List<StudyGroupResponse>> findAllByFilters(Header<StudyGroup> request, Pageable pageable) {
+    public Header<List<StudyGroupResponse>> findAllByFilters(Header<StudyGroupSearchRequest> request, Pageable pageable) {
 
-        StudyGroup conditions = request.getData();
+        StudyGroupSearchRequest conditions = request.getData();
 
 
 

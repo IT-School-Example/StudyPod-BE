@@ -3,6 +3,7 @@ package com.itschool.study_pod.controller.api;
 import com.itschool.study_pod.controller.base.CrudController;
 import com.itschool.study_pod.dto.Header;
 import com.itschool.study_pod.dto.request.StudyGroupRequest;
+import com.itschool.study_pod.dto.request.StudyGroupSearchRequest;
 import com.itschool.study_pod.dto.response.StudyGroupResponse;
 import com.itschool.study_pod.entity.StudyGroup;
 import com.itschool.study_pod.service.StudyGroupService;
@@ -33,7 +34,7 @@ public class StudyGroupApiController extends CrudController<StudyGroupRequest, S
 
     @PostMapping("search")
     @Operation(summary = "검색 기능", description = "")
-    public Header<List<StudyGroupResponse>> findAllByFilters(@RequestBody Header<StudyGroup> request,
+    public Header<List<StudyGroupResponse>> findAllByFilters(@RequestBody Header<StudyGroupSearchRequest> request,
                                                              @ParameterObject @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 
         return studyGroupService.findAllByFilters(request, pageable);
