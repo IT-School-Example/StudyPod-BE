@@ -24,10 +24,10 @@ import org.hibernate.type.SqlTypes;
 public class Sido implements Convertible<SidoRequest, SidoResponse> {
     @Id
     @JdbcTypeCode(SqlTypes.CHAR)
-    @Column(length = 2, insertable = false, updatable = false)
+    @Column(length = 2) // , insertable = false, updatable = false
     private String sidoCd;
 
-    @Column(columnDefinition = "character varying(100)", insertable = false, updatable = false)
+    @Column(columnDefinition = "character varying(100)") // , insertable = false, updatable = false
     private String sidoNm;
 
     @Deprecated

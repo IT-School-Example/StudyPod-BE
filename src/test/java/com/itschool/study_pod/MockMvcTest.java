@@ -11,7 +11,7 @@ import org.springframework.web.context.WebApplicationContext;
 // Mockito : 테스트에 사용할 가짜 객체인 Mock 객체를 만들고, 관리하고, 검증할 수 있는 프레임워크
 // @SpringBootTest + @AutoConfigureMockMvc
 @AutoConfigureMockMvc
-public class MockMvcTest extends StudyPodApplicationTests {
+public abstract class MockMvcTest extends StudyPodApplicationTests {
 
     @Autowired
     private WebApplicationContext context;

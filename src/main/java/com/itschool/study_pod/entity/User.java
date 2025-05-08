@@ -33,7 +33,7 @@ public class User extends BaseEntity implements Convertible<UserRequest, UserRes
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private AccountRole role = AccountRole.ROLE_USER;
+    private AccountRole role;
 
     @Column(nullable = false)
     private String name;
@@ -46,7 +46,7 @@ public class User extends BaseEntity implements Convertible<UserRequest, UserRes
             return User.builder()
                     .email(request.getEmail())
                     .password(request.getPassword())
-                    // .role(request.getRole())
+                    .role(AccountRole.ROLE_USER)
                     .name(request.getName())
                     .nickname(request.getNickname())
                     .build();
@@ -64,7 +64,7 @@ public class User extends BaseEntity implements Convertible<UserRequest, UserRes
         // 비밀번호 수정
         updatePassword(request.getPassword());
 
-        // 역할 수정
+        // 역할 수정 x
         // this.role = request.getRole() != null? request.getRole() : this.role;
 
         // 이름 수정

@@ -1,10 +1,9 @@
 package com.itschool.study_pod.controller.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itschool.study_pod.MockMvcTest;
 import com.itschool.study_pod.dto.Header;
-import com.itschool.study_pod.dto.request.UserRequest;
+import com.itschool.study_pod.dto.request.user.UserRequest;
 import com.itschool.study_pod.entity.User;
 import com.itschool.study_pod.enumclass.AccountRole;
 import com.itschool.study_pod.repository.UserRepository;
@@ -16,11 +15,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Transactional
 class UserRequestApiControllerTest extends MockMvcTest {
     @Autowired
     private UserRepository userRepository;
@@ -54,7 +55,7 @@ class UserRequestApiControllerTest extends MockMvcTest {
         final UserRequest userRequest = UserRequest.builder()
                 .email(email)
                 .password("abcd1234!@#$")
-                .role(AccountRole.ROLE_USER)
+                //.role(AccountRole.ROLE_USER)
                 .name("저장테스트")
                 .nickname("nick" + UUID.randomUUID())
                 .build();
@@ -109,6 +110,9 @@ class UserRequestApiControllerTest extends MockMvcTest {
     void update() throws Exception {
         // given
         final StringBuilder url = new StringBuilder().append("/api/users");
+        final String newEmail = "newEmail@example.com";
+        final String newPassword = "Password1234!@#$";
+        final String newName = "새이름";
         final String newNickname = "nick" + UUID.randomUUID();
 
         // repo 직접 저장
@@ -123,6 +127,9 @@ class UserRequestApiControllerTest extends MockMvcTest {
         url.append("/").append(savedUser.getId());
 
         UserRequest userRequest = UserRequest.builder()
+                .email(newEmail)
+                .password(newPassword)
+                .name(newName)
                 .nickname(newNickname)
                 .build();
 
@@ -140,6 +147,8 @@ class UserRequestApiControllerTest extends MockMvcTest {
 
         // then : 검증
         result.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.email").value(newEmail))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.name").value(newName))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.nickname").value(newNickname));
     }
 

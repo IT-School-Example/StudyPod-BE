@@ -1,7 +1,7 @@
 package com.itschool.study_pod.repository;
 
 import com.itschool.study_pod.StudyPodApplicationTests;
-import com.itschool.study_pod.dto.request.SubjectAreaRequest;
+import com.itschool.study_pod.dto.request.subjectarea.SubjectAreaRequest;
 import com.itschool.study_pod.entity.SubjectArea;
 import com.itschool.study_pod.enumclass.Subject;
 import jakarta.persistence.EntityNotFoundException;

@@ -32,15 +32,6 @@ public class UserApiController extends CrudController<UserRequest, UserResponse,
     }
 
     /*
-     * 전체 수정 사용 불가 처리 (임시)
-     * */
-    @Override
-    @Deprecated
-    public Header<UserResponse> update(Long id, Header<UserRequest> request) {
-        throw new RuntimeException("이메일 및 역할 전체 수정 불가하도록 임시 조치");
-    }
-
-    /*
      * 비밀번호 수정하기
      * */
     @Operation(summary = "사용자 비밀번호 수정", description = "사용자(User) 비밀번호 수정하기")

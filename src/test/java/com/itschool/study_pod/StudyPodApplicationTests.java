@@ -6,7 +6,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("local")
-public class StudyPodApplicationTests {
+public abstract class StudyPodApplicationTests {
 
 	@Test
 	void contextLoads() {

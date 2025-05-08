@@ -44,18 +44,18 @@ class AdminRepositoryTest extends StudyPodApplicationTests {
     @Test
     @DisplayName("조회 테스트")
     void read() {
-        Admin admin = Admin.builder()
+        Admin entity = Admin.builder()
                 .email(UUID.randomUUID() +"@example.com")
                 .password("admin123")
                 .role(AccountRole.ROLE_MODERATOR)
                 .build();
 
-        Admin savedEntity = adminRepository.save(admin);
+        Admin savedEntity = adminRepository.save(entity);
 
         Admin findEntity = adminRepository.findById(savedEntity.getId())
                 .orElseThrow(() -> new EntityNotFoundException());
 
-        assertThat(admin).isEqualTo(savedEntity);
+        assertThat(savedEntity).isEqualTo(findEntity);
     }
 
     @Test
