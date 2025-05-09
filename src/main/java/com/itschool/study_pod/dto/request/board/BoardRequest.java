@@ -19,7 +19,6 @@ public class BoardRequest {
     @NotEmpty
     private String content;
 
-    @NotNull
     private BoardCategory category;
 
     private ReferenceDto user;
