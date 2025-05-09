@@ -81,4 +81,5 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
             throw new IllegalArgumentException("요청에 실패했습니다. 유효하지 않은 모집 상태입니다.");
         }
     }
+
 }
