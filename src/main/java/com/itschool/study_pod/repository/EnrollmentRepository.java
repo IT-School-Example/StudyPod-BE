@@ -24,21 +24,24 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     Optional<Enrollment> findByUserIdAndStudyGroupId(Long userId, Long studyGroupId);
 
     @Query("""
-    SELECT e
-    FROM Enrollment e
-    JOIN FETCH e.studyGroup
-    WHERE e.user.id = :userId
-      AND (:status IS NULL OR e.status = :status)
-    """)
+            SELECT e
+            FROM Enrollment e
+            JOIN FETCH e.studyGroup
+            WHERE e.user.id = :userId
+              AND (:status IS NULL OR e.status = :status)
+            """)
     List<Enrollment> findWithStudyGroupByUserIdAndStatus(@Param("userId") Long userId, @Param("status") EnrollmentStatus status);
 
     @Query("""
-    SELECT e
-    FROM Enrollment e
-    JOIN FETCH e.user
-    WHERE e.studyGroup.id = :studyGroupId
-      AND (:status IS NULL OR e.status = :status)
-    """)
+            SELECT e
+            FROM Enrollment e
+            JOIN FETCH e.user
+            WHERE e.studyGroup.id = :studyGroupId
+              AND (:status IS NULL OR e.status = :status)
+            """)
     List<Enrollment> findWithUserByStudyGroupIdAndStatus(@Param("studyGroupId") Long studyGroupId, @Param("status") EnrollmentStatus status);
+
+
+    Optional<Enrollment> findByUserIdAndStatus(Long userId, EnrollmentStatus status);
 
 }

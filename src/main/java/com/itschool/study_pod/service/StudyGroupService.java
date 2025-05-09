@@ -4,9 +4,12 @@ import com.itschool.study_pod.dto.Header;
 import com.itschool.study_pod.dto.request.studygroup.StudyGroupRequest;
 import com.itschool.study_pod.dto.request.studygroup.StudyGroupSearchRequest;
 import com.itschool.study_pod.dto.response.StudyGroupResponse;
+import com.itschool.study_pod.entity.Enrollment;
 import com.itschool.study_pod.entity.StudyGroup;
+import com.itschool.study_pod.enumclass.EnrollmentStatus;
 import com.itschool.study_pod.enumclass.MeetingMethod;
 import com.itschool.study_pod.enumclass.RecruitmentStatus;
+import com.itschool.study_pod.repository.EnrollmentRepository;
 import com.itschool.study_pod.repository.StudyGroupRepository;
 import com.itschool.study_pod.service.base.CrudService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +25,9 @@ import java.util.List;
 public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroupResponse, StudyGroup> {
 
     private final StudyGroupRepository studyGroupRepository;
+
+    // 필드 주입 추가
+    private final EnrollmentRepository enrollmentRepository;
 
 
     @Override
@@ -96,4 +102,15 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
         return Header.OK(dtoList);
     }
 
+    public Header<StudyGroupResponse> findStudyGroupByUserId(Long userId) {
+        Enrollment enrollment = enrollmentRepository.findByUserIdAndStatus(userId, EnrollmentStatus.APPROVED)
+                .orElseThrow(() -> new RuntimeException("스터디원으로 있는 그룹을 찾을 수 없습니다."));
+
+        StudyGroup studyGroup = enrollment.getStudyGroup();
+        if (studyGroup == null) {
+            throw new RuntimeException("스터디 그룹 정보를 찾을 수 없습니다.");
+        }
+
+        return Header.OK(studyGroup.response());
+    }
 }
