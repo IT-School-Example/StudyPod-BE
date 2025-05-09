@@ -20,15 +20,15 @@ public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long> {
 
     // 동적 쿼리로 스터디 그룹 목록 조회
     @Query("""
-    SELECT sg FROM StudyGroup sg
-    WHERE (
-        (:keyword IS NULL OR LOWER(sg.title) LIKE LOWER(CONCAT('%', :keyword, '%')))
-        OR (:keyword IS NULL OR :keyword IN elements(sg.keywords))
-    )
-    AND (:recruitmentStatus IS NULL OR sg.recruitmentStatus = :recruitmentStatus)
-    AND (:meetingMethod IS NULL OR sg.meetingMethod = :meetingMethod)
-    AND (:subjectAreaId IS NULL OR sg.subjectArea.id = :subjectAreaId)
-    """)
+            SELECT sg FROM StudyGroup sg
+            WHERE (
+                (:keyword IS NULL OR LOWER(sg.title) LIKE LOWER(CONCAT('%', :keyword, '%')))
+                OR (:keyword IS NULL OR :keyword IN elements(sg.keywords))
+            )
+            AND (:recruitmentStatus IS NULL OR sg.recruitmentStatus = :recruitmentStatus)
+            AND (:meetingMethod IS NULL OR sg.meetingMethod = :meetingMethod)
+            AND (:subjectAreaId IS NULL OR sg.subjectArea.id = :subjectAreaId)
+            """)
     Page<StudyGroup> findAllByFilters(@Param("keyword") String keyword,
                                       @Param("recruitmentStatus") RecruitmentStatus recruitmentStatus,
                                       @Param("meetingMethod") MeetingMethod meetingMethod,
@@ -40,4 +40,5 @@ public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long> {
 
     //  스터디 방식으로 조회
     List<StudyGroup> findAllByMeetingMethod(MeetingMethod meetingMethod);
+
 }

@@ -113,4 +113,19 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
 
         return Header.OK(studyGroup.response());
     }
+
+    public Header<List<StudyGroupResponse>> findStudyGroupsByLeaderId(Long leaderId) {
+        List<StudyGroup> groups = studyGroupRepository.findAllByLeaderId(leaderId);
+
+        if (groups.isEmpty()) {
+            throw new RuntimeException("스터디 리더로 있는 그룹을 찾을 수 없습니다.");
+        }
+
+        List<StudyGroupResponse> responseList = groups.stream()
+                .map(StudyGroup::response)
+                .toList();
+
+        return Header.OK(responseList);
+    }
+
 }
