@@ -42,7 +42,7 @@ public class StudyGroupApiController extends CrudController<StudyGroupRequest, S
 
     @PostMapping("search")
     @Operation(summary = "검색 기능", description = "")
-    public Header<List<StudyGroupResponse>> findAllByFilters(@RequestParam String searchStr,
+    public Header<List<StudyGroupResponse>> findAllByFilters(@RequestParam(required = false) String searchStr,
                                                              @RequestBody Header<StudyGroupSearchRequest> request,
                                                              @ParameterObject @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 
@@ -51,7 +51,7 @@ public class StudyGroupApiController extends CrudController<StudyGroupRequest, S
 
     @GetMapping("/filter/recruitment")
     @Operation(summary = "모집 상태로 스터디 그룹 조회", description = "RECRUITING 또는 CLOSED 상태로 필터링")
-    public Header<List<StudyGroupResponse>> getByRecruitmentStatus(@RequestParam String value) {
+    public Header<List<StudyGroupResponse>> getByRecruitmentStatus(@RequestParam(name = "value") String value) {
         try {
             return studyGroupService.findAllByRecruitmentStatus(value);
         } catch (IllegalArgumentException e) {
@@ -64,7 +64,7 @@ public class StudyGroupApiController extends CrudController<StudyGroupRequest, S
     @Operation(summary = "스터디그룹 id와 등록 상태로 회원 목록 조회", description = "study_group_id와 등록 상태에 따른 회원 목록을 조회")
     @GetMapping("{id}/users")
     public Header<List<UserResponse>> findEnrolledUsersByStudyGroupId(@PathVariable(name = "id") Long id,
-                                                                      @RequestParam EnrollmentStatus enrollmentStatus) {
+                                                                      @RequestParam(name = "enrollmentStatus") EnrollmentStatus enrollmentStatus) {
         log.info("스터디그룹별 스터디 등록 내역 조회 : {}에서 id={}로 조회 요청", this.getClass().getSimpleName(), id);
         return enrollmentService.findEnrolledUsersByStudyGroupId(id, enrollmentStatus);
     }
