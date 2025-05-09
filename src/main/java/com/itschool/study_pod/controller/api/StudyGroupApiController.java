@@ -9,6 +9,7 @@ import com.itschool.study_pod.dto.response.UserResponse;
 import com.itschool.study_pod.entity.StudyGroup;
 import com.itschool.study_pod.entity.User;
 import com.itschool.study_pod.enumclass.EnrollmentStatus;
+import com.itschool.study_pod.enumclass.MeetingMethod;
 import com.itschool.study_pod.enumclass.RecruitmentStatus;
 import com.itschool.study_pod.service.EnrollmentService;
 import com.itschool.study_pod.service.StudyGroupService;
@@ -62,6 +63,18 @@ public class StudyGroupApiController extends CrudController<StudyGroupRequest, S
         }
     }
 
+    @GetMapping("/filter/meeting")
+    @Operation(summary = "스터디 방식으로 스터디 그룹 조회", description = "ONLINE, OFFLINE, BOTH 중 하나의 스터디 방식으로 필터링합니다.")
+    public Header<List<StudyGroupResponse>> getByMeetingMethod(@RequestParam(name = "meetingMethod") MeetingMethod meetingMethod) {
+        try {
+            return studyGroupService.findAllByMeetingMethod(meetingMethod);
+        } catch (IllegalArgumentException e) {
+            return Header.ERROR("요청에 실패했습니다.");
+        } catch (RuntimeException e) {
+            return Header.ERROR("해당 조건의 스터디 그룹을 불러오지 못했습니다.");
+        }
+    }
+
     @Operation(summary = "스터디그룹 id와 등록 상태로 회원 목록 조회", description = "study_group_id와 등록 상태에 따른 회원 목록을 조회")
     @GetMapping("{id}/users")
     public Header<List<UserResponse>> findEnrolledUsersByStudyGroupId(@PathVariable(name = "id") Long id,
@@ -69,4 +82,5 @@ public class StudyGroupApiController extends CrudController<StudyGroupRequest, S
         log.info("스터디그룹별 스터디 등록 내역 조회 : {}에서 id={}로 조회 요청", this.getClass().getSimpleName(), id);
         return enrollmentService.findEnrolledUsersByStudyGroupId(id, enrollmentStatus);
     }
+
 }

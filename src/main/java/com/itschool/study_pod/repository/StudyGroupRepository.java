@@ -11,7 +11,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long> {
@@ -39,9 +38,6 @@ public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long> {
     // 모집 상태로 조회
     List<StudyGroup> findAllByRecruitmentStatus(RecruitmentStatus recruitmentStatus);
 
-/*    // 스터디 방식으로 조회
+    //  스터디 방식으로 조회
     List<StudyGroup> findAllByMeetingMethod(MeetingMethod meetingMethod);
-
-    // 주제 영역(subject area)으로 조회
-    List<StudyGroup> findAllBySubjectAreaId(Long subjectAreaId);*/
 }

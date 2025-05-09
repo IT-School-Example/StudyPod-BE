@@ -81,4 +81,19 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
             throw new IllegalArgumentException("요청에 실패했습니다. 유효하지 않은 모집 상태입니다.");
         }
     }
+
+    public Header<List<StudyGroupResponse>> findAllByMeetingMethod(MeetingMethod meetingMethod) {
+        List<StudyGroup> results = studyGroupRepository.findAllByMeetingMethod(meetingMethod);
+
+        if (results.isEmpty()) {
+            throw new RuntimeException("해당 조건의 스터디 그룹을 불러오지 못했습니다.");
+        }
+
+        List<StudyGroupResponse> dtoList = results.stream()
+                .map(StudyGroup::response)
+                .toList();
+
+        return Header.OK(dtoList);
+    }
+
 }
