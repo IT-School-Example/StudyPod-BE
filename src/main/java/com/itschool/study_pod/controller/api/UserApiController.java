@@ -66,6 +66,9 @@ public class UserApiController extends CrudController<UserRequest, UserResponse,
 
         result.put("exists", exists);
 
+        // 아래 코드로 대체 가능, exists 단일 응답을 위한 불변객체
+        // Map<String, Boolean> result= Collections.singletonMap("exists", exists);
+
         return Header.OK(result);
     }
 }
