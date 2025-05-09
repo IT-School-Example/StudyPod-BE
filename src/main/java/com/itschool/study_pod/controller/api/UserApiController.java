@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,8 +38,9 @@ public class UserApiController extends CrudController<UserRequest, UserResponse,
     }
 
     @Operation(summary = "사용자 비밀번호 수정", description = "사용자(User) 비밀번호 수정하기")
+    @ResponseStatus(HttpStatus.NO_CONTENT) // 204, NO_CONTENT
     @PatchMapping("update-pw/{id}")
-    public Header<UserResponse> updatePassword(@PathVariable(name = "id") Long id,
+    public Header<Void> updatePassword(@PathVariable(name = "id") Long id,
                                                 @RequestBody @Valid Header<UserPasswordUpdateRequest> request) {
         log.info("update password : {}에서 전체 조회 요청", this.getClass().getSimpleName());
         return userService.updatePassword(id, request);

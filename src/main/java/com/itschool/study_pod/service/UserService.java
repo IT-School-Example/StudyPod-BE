@@ -36,14 +36,14 @@ public class UserService extends CrudService<UserRequest, UserResponse, User> {
     * 비밀번호 수정하기
     * */
     @Transactional
-    public Header<UserResponse> updatePassword(Long id, Header<UserPasswordUpdateRequest> request) {
+    public Header<Void> updatePassword(Long id, Header<UserPasswordUpdateRequest> request) {
 
         User entity = getBaseRepository().findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(this.getClass().getSimpleName() + " : 해당 id " + id + "에 해당하는 객체가 없습니다."));
 
         entity.updatePassword(request.getData().getPassword());
 
-        return apiResponse(entity);
+        return Header.OK();
     }
 
 }

@@ -33,13 +33,13 @@ public class AdminService extends CrudService<AdminRequest, AdminResponse, Admin
      * 비밀번호 수정하기
      * */
     @Transactional
-    public Header<AdminResponse> updatePassword(Long id, Header<AdminPasswordUpdateRequest> request) {
+    public Header<Void> updatePassword(Long id, Header<AdminPasswordUpdateRequest> request) {
 
         Admin entity = getBaseRepository().findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(this.getClass().getSimpleName() + " : 해당 id " + id + "에 해당하는 객체가 없습니다."));
 
         entity.updatePassword(request.getData().getPassword());
 
-        return apiResponse(entity);
+        return Header.OK();
     }
 }

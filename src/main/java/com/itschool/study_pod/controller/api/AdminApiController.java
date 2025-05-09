@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -33,8 +34,9 @@ public class AdminApiController extends CrudController<AdminRequest, AdminRespon
      * 비밀번호 수정하기
      * */
     @Operation(summary = "관리자 비밀번호 수정", description = "관리자(Admin) 비밀번호 수정하기")
+    @ResponseStatus(HttpStatus.NO_CONTENT) // 204, NO_CONTENT
     @PatchMapping("update-pw/{id}")
-    public Header<AdminResponse> updatePassword(@PathVariable(name = "id") Long id,
+    public Header<Void> updatePassword(@PathVariable(name = "id") Long id,
                                                 @RequestBody @Valid Header<AdminPasswordUpdateRequest> request) {
         log.info("update password : {}에서 전체 조회 요청", this.getClass().getSimpleName());
         return adminService.updatePassword(id, request);
