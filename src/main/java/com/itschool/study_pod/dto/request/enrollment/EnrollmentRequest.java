@@ -16,16 +16,15 @@ import java.time.LocalDateTime;
 public class EnrollmentRequest {
 
     // 시스템 시간 : LocalDateTime.now()로 계산
-    @Schema(hidden = true)
-    private LocalDateTime appliedAt;
+    /*@Schema(hidden = true)
+    private LocalDateTime appliedAt;*/
 
     @NotEmpty
     private String introduce;
 
-    @Schema(hidden = true)
-    private LocalDateTime joinedAt;
+    /*@Schema(hidden = true)
+    private LocalDateTime joinedAt;*/
 
-    @Schema(hidden = true)
     private EnrollmentStatus status;
 
     @NotNull

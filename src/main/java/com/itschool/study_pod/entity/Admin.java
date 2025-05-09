@@ -36,14 +36,11 @@ public class Admin extends BaseEntity implements Convertible<AdminRequest, Admin
     private AccountRole role;
 
     public static Admin of(AdminRequest request) { // create용
-        if(request != null) {
-            return Admin.builder()
-                    .email(request.getEmail())
-                    .password(request.getPassword())
-                    .role(request.getRole())
-                    .build();
-        }
-        return null;
+        return Admin.builder()
+                .email(request.getEmail())
+                .password(request.getPassword())
+                .role(request.getRole())
+                .build();
     }
 
     @Override

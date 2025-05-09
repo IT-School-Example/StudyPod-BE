@@ -129,7 +129,7 @@ class EnrollmentRepositoryTest extends StudyPodApplicationTests {
         Long beforeCount = enrollmentRepository.count();
 
         Enrollment enrollment = Enrollment.builder()
-                .appliedAt(LocalDateTime.now())
+                // .appliedAt(LocalDateTime.now())
                 .introduce("안녕하세요. 참여 신청합니다.")
                 .status(EnrollmentStatus.PENDING)
                 .user(savedUser)
@@ -145,7 +145,7 @@ class EnrollmentRepositoryTest extends StudyPodApplicationTests {
     @DisplayName("유저 객체로 조회 테스트")
     void findByUser() {
         Enrollment enrollment = Enrollment.builder()
-                .appliedAt(LocalDateTime.now())
+                // .appliedAt(LocalDateTime.now())
                 .introduce("참여합니다.")
                 .status(EnrollmentStatus.PENDING)
                 .user(savedUser)
@@ -162,7 +162,7 @@ class EnrollmentRepositoryTest extends StudyPodApplicationTests {
     @DisplayName("스터디 그룹 id로 조회 테스트")
     void findByStudyGroupId() {
         Enrollment enrollment = Enrollment.builder()
-                .appliedAt(LocalDateTime.now())
+                // .appliedAt(LocalDateTime.now())
                 .introduce("스터디 신청합니다.")
                 .status(EnrollmentStatus.PENDING)
                 .user(savedUser)
@@ -179,7 +179,7 @@ class EnrollmentRepositoryTest extends StudyPodApplicationTests {
     @DisplayName("사용자id와 그룹 id로 조회 테스트")
     void findByUserIdAndStudyGroupId() {
         Enrollment enrollment = Enrollment.builder()
-                .appliedAt(LocalDateTime.now())
+                // .appliedAt(LocalDateTime.now())
                 .introduce("신청!")
                 .status(EnrollmentStatus.PENDING)
                 .user(savedUser)

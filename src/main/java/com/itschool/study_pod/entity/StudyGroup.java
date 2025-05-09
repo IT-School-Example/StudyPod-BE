@@ -119,14 +119,17 @@ public class StudyGroup extends BaseEntity implements Convertible<StudyGroupRequ
         this.maxMembers = request.getMaxMembers();
         this.meetingMethod = request.getMeetingMethod();
         this.recruitmentStatus = request.getRecruitmentStatus();
-        this.feeType = request.getFeeType();
-        this.amount = request.getAmount();
-        // this.leader = User.of(request.getLeader());
+
         this.address = Sgg.withId(request.getAddress().getId());
         this.subjectArea = SubjectArea.withId(request.getSubjectArea().getId());
-        
+
+        this.feeType = request.getFeeType();
+        this.amount = request.getAmount();
         this.keywords = request.getKeywords();
         this.weeklySchedules = request.getWeeklySchedules();
+
+        // fk 변경 위험, 스터디장 변경은 fetch로 스터디장만 변경하는 다른 api 로직 생성 필요
+        // this.leader = User.of(request.getLeader());
     }
 
     @Override

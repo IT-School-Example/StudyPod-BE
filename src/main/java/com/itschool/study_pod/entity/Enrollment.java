@@ -29,13 +29,13 @@ public class Enrollment extends BaseEntity implements Convertible<EnrollmentRequ
     @Column(name = "enrollment_id")
     private Long id;
 
-    @Column(nullable = false)
-    private LocalDateTime appliedAt;
+    /*@Column(nullable = false)
+    private LocalDateTime appliedAt;*/
 
     @Column(nullable = false)
     private String introduce;
 
-    private LocalDateTime joinedAt;
+    /*private LocalDateTime joinedAt;*/
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -50,24 +50,25 @@ public class Enrollment extends BaseEntity implements Convertible<EnrollmentRequ
     private User user;
 
     public static Enrollment of(EnrollmentRequest request) { // create용
-        if(request != null) {
-            return Enrollment.builder()
-                    .appliedAt(LocalDateTime.now())
-                    .introduce(request.getIntroduce())
-                    .status(EnrollmentStatus.PENDING)
-                    .user(User.withId(request.getUser().getId()))
-                    .studyGroup(StudyGroup.withId(request.getStudyGroup().getId()))
-                    .build();
-        }
-        return null;
+        return Enrollment.builder()
+                // .appliedAt(LocalDateTime.now())
+                .introduce(request.getIntroduce())
+                .status(EnrollmentStatus.PENDING)
+                .user(User.withId(request.getUser().getId()))
+                .studyGroup(StudyGroup.withId(request.getStudyGroup().getId()))
+                .build();
     }
 
     @Override
     public void update(EnrollmentRequest request) {
-        this.appliedAt = request.getAppliedAt();
         this.introduce = request.getIntroduce();
-        this.joinedAt = request.getJoinedAt();
         this.status = request.getStatus();
+        
+        // 아래의 소속 및 유저가 변경되는 안됨 (fk)
+        /*this.studyGroup = request.getStudyGroup() != null?
+                StudyGroup.withId(request.getStudyGroup().getId()) : this.studyGroup;
+        this.user = request.getUser() != null?
+                User.withId(request.getUser().getId()) : this.user;*/
     }
 
     public void memberKick() {
@@ -78,9 +79,7 @@ public class Enrollment extends BaseEntity implements Convertible<EnrollmentRequ
     public EnrollmentResponse response() {
         return EnrollmentResponse.builder()
                 .id(this.id)
-                .appliedAt(this.appliedAt)
                 .introduce(this.introduce)
-                .joinedAt(this.joinedAt)
                 .status(this.status)
                 .user(UserResponse.withId(this.user.getId()))
                 .studyGroup(StudyGroupResponse.withId(this.studyGroup.getId()))
@@ -88,6 +87,8 @@ public class Enrollment extends BaseEntity implements Convertible<EnrollmentRequ
                 .createdBy(this.createdBy)
                 .updatedAt(this.updatedAt)
                 .updatedBy(this.updatedBy)
+                // .appliedAt(this.appliedAt)
+                // .joinedAt(this.joinedAt)
                 .build();
     }
 

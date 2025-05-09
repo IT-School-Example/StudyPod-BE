@@ -51,23 +51,20 @@ public class Board extends BaseEntity implements Convertible<BoardRequest, Board
 
     // 요청 DTO -> Entity 로 변환하는 메서드
     public static Board of (BoardRequest request) {
-        if(request != null) {
-            return Board.builder()
-                    .title(request.getTitle())
-                    .content(request.getContent())
-                    .category(request.getCategory())
-                    .user(request.getUser() != null?
-                            User.withId(request.getUser().getId())
-                            : null)
-                    .admin(request.getAdmin() != null?
-                            Admin.withId(request.getAdmin().getId())
-                            : null)
-                    .studyGroup(request.getStudyGroup() != null?
-                            StudyGroup.withId(request.getStudyGroup().getId())
-                            : null)
-                    .build();
-        }
-        return null;
+        return Board.builder()
+                .title(request.getTitle())
+                .content(request.getContent())
+                .category(request.getCategory())
+                .user(request.getUser() != null?
+                        User.withId(request.getUser().getId())
+                        : null)
+                .admin(request.getAdmin() != null?
+                        Admin.withId(request.getAdmin().getId())
+                        : null)
+                .studyGroup(request.getStudyGroup() != null?
+                        StudyGroup.withId(request.getStudyGroup().getId())
+                        : null)
+                .build();
     }
 
     @Override
@@ -96,8 +93,12 @@ public class Board extends BaseEntity implements Convertible<BoardRequest, Board
 
     @Override
     public void update(BoardRequest request) {
-        this.title = request.getTitle();
-        this.content = request.getContent();
+        this.title = request.getTitle() != null? request.getTitle() : this.title;
+        this.content = request.getContent() != null? request.getContent() : this.content;
+        this.category = request.getCategory() != null? request.getCategory() : this.category;
+        this.user = request.getUser() != null ? User.withId(request.getUser().getId()) : null;
+        this.admin = request.getAdmin() != null ? Admin.withId(request.getAdmin().getId()) : null;
+        this.studyGroup = request.getStudyGroup() != null ? StudyGroup.withId(request.getStudyGroup().getId()) : null;
     }
 
     public static Board withId(Long id) {

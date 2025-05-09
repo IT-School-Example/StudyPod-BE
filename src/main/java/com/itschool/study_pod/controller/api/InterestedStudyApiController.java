@@ -1,6 +1,7 @@
 package com.itschool.study_pod.controller.api;
 
 import com.itschool.study_pod.controller.base.CrudController;
+import com.itschool.study_pod.dto.Header;
 import com.itschool.study_pod.dto.request.interestedstudy.InterestedStudyRequest;
 import com.itschool.study_pod.dto.response.InterestedStudyResponse;
 import com.itschool.study_pod.entity.InterestedStudy;
@@ -24,5 +25,11 @@ public class InterestedStudyApiController extends CrudController<InterestedStudy
     @Override
     protected CrudService<InterestedStudyRequest, InterestedStudyResponse, InterestedStudy> getBaseService() {
         return interestedStudyService;
+    }
+
+    @Override
+    @Deprecated
+    public Header<InterestedStudyResponse> update(Long id, Header<InterestedStudyRequest> request) {
+        throw new IllegalArgumentException("해당 연결 테이블에서 업데이트는 허용하지 않습니다. 삭제 후 다시 생성하세요");
     }
 }

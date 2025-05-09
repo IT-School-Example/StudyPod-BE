@@ -59,7 +59,7 @@ public class User extends BaseEntity implements Convertible<UserRequest, UserRes
     public void update(UserRequest request) {
         // PUT 전체 업데이트
         // 이메일 수정
-        this.email = request.getEmail() != null? request.getEmail() : this.email;
+        this.email = request.getEmail();
 
         // 비밀번호 수정
         updatePassword(request.getPassword());
@@ -68,14 +68,15 @@ public class User extends BaseEntity implements Convertible<UserRequest, UserRes
         // this.role = request.getRole() != null? request.getRole() : this.role;
 
         // 이름 수정
-        this.name = request.getName() != null? request.getName() : this.name;
+        this.name = request.getName();
 
-        // 닉네임 수정
+        // 닉네임 수정 (처음 가입할때 null을 허용하나, null로 update 요청 시 현재 닉네임 유지)
         this.nickname = request.getNickname() != null? request.getNickname() : this.nickname;
     }
 
     public void updatePassword(String password) {
         // PATCH 일부 업데이트
+        // 비밀번호 null로 수정 불가 (null로 수정 요청 오면 현재 비밀번호 유지)
         this.password = password != null? password : this.password;
     }
 

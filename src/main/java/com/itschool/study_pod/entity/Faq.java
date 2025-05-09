@@ -39,15 +39,12 @@ public class Faq extends BaseEntity implements Convertible<FaqRequest, FaqRespon
     private Admin admin;
 
     public static Faq of (FaqRequest request) {
-        if(request != null) {
-            return Faq.builder()
-                    .question(request.getQuestion())
-                    .answer(request.getAnswer())
-                    .visible(request.getVisible())
-                    .admin(Admin.withId(request.getAdmin().getId()))
-                    .build();
-        }
-        return null;
+        return Faq.builder()
+                .question(request.getQuestion())
+                .answer(request.getAnswer())
+                .visible(request.getVisible())
+                .admin(Admin.withId(request.getAdmin().getId()))
+                .build();
     }
 
     @Override

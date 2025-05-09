@@ -41,17 +41,14 @@ public class Comment extends BaseEntity implements Convertible<CommentRequest, C
     private User user;
 
     public static Comment of(CommentRequest request) { // create용
-        if(request != null) {
-            return Comment.builder()
-                    .content(request.getContent())
-                    .board(Board.withId(request.getBoard().getId()))
-                    .user(User.withId(request.getUser().getId()))
-                    .parentComment(request.getParentComment() != null?
-                            Comment.withId(request.getParentComment().getId())
-                            : null)
-                    .build();
-        }
-        return null;
+        return Comment.builder()
+                .content(request.getContent())
+                .board(Board.withId(request.getBoard().getId()))
+                .user(User.withId(request.getUser().getId()))
+                .parentComment(request.getParentComment() != null?
+                        Comment.withId(request.getParentComment().getId())
+                        : null)
+                .build();
     }
 
     @Override
@@ -74,7 +71,10 @@ public class Comment extends BaseEntity implements Convertible<CommentRequest, C
 
     @Override
     public void update(CommentRequest request) {
-        this.content = request.getContent();
+        this.content = request.getContent() != null? request.getContent() : this.content;
+        this.board = request.getBoard() != null ? Board.withId(request.getBoard().getId()) : this.board;
+        this.user = request.getUser() != null ? User.withId(request.getUser().getId()) : this.user;
+        this.parentComment = request.getParentComment() != null ? Comment.withId(request.getParentComment().getId()) : null;
     }
 
 

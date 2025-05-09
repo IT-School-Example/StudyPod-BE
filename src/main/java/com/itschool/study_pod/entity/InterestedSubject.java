@@ -35,19 +35,15 @@ public class InterestedSubject extends BaseEntity implements Convertible<Interes
 
     // 요청청 DTO -> Entity로 변환하는 메서드
     public static InterestedSubject of(InterestedSubjectRequest request) { // create용
-        if(request != null) {
-            return InterestedSubject.builder()
-                    .user(User.withId(request.getUser().getId()))
-                    .subjectArea(SubjectArea.withId(request.getSubjectArea().getId()))
-                    .build();
-        }
-        return null;
+        return InterestedSubject.builder()
+                .user(User.withId(request.getUser().getId()))
+                .subjectArea(SubjectArea.withId(request.getSubjectArea().getId()))
+                .build();
     }
 
     @Override
     public void update(InterestedSubjectRequest request) {
-        throw new IllegalArgumentException("연결 테이블에서 업데이트는 허용하지 않습니다.");
-        // this.subjectArea = SubjectArea.of(request.getSubjectArea());
+        throw new IllegalArgumentException("해당 연결 테이블에서 업데이트는 허용하지 않습니다. 삭제 후 다시 생성하세요");
     }
 
     @Override

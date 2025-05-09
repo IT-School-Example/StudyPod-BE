@@ -39,18 +39,15 @@ public class InterestedStudy extends BaseEntity implements Convertible<Intereste
 
     // 요청 DTO -> Entity로 변환하는 메서드
     public static InterestedStudy of(InterestedStudyRequest request) { // create용
-        if (request != null) {
-            return InterestedStudy.builder()
-                    .user(User.withId(request.getUser().getId()))
-                    .studyGroup(StudyGroup.withId(request.getStudyGroup().getId()))
-                    .build();
-        }
-        return null;
+        return InterestedStudy.builder()
+                .user(User.withId(request.getUser().getId()))
+                .studyGroup(StudyGroup.withId(request.getStudyGroup().getId()))
+                .build();
     }
 
     @Override
     public void update(InterestedStudyRequest request) {
-        throw new IllegalArgumentException("연결 테이블에서 업데이트는 허용하지 않습니다.");
+        throw new IllegalArgumentException("해당 연결 테이블에서 업데이트는 허용하지 않습니다. 삭제 후 다시 생성하세요");
     }
     @Override
     public InterestedStudyResponse response() {
@@ -70,6 +67,5 @@ public class InterestedStudy extends BaseEntity implements Convertible<Intereste
                 .id(id)
                 .build();
     }
-
 }
 
