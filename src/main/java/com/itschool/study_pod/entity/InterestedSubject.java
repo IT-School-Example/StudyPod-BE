@@ -16,7 +16,10 @@ import org.hibernate.annotations.Where;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@Table(name = "interested_subjects")
+@Table(name = "interested_subjects",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"user_id", "subject_area_id"})
+})
 @SQLDelete(sql = "UPDATE interested_subjects SET is_deleted = true WHERE interested_subject_id = ?")
 @Where(clause = "is_deleted = false")
 public class InterestedSubject extends BaseEntity implements Convertible<InterestedSubjectRequest, InterestedSubjectResponse> {
