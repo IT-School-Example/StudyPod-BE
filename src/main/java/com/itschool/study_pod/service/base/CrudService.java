@@ -42,7 +42,7 @@ public abstract class CrudService<Req, Res, Entity extends Convertible<Req, Res>
     @Override
     public final Header<Res> read(Long id) {
         return apiResponse(getBaseRepository().findById(id)
-                .orElseThrow(()-> new EntityNotFoundException(this.getClass().getSimpleName() + " : 해당 id " + id + "에 해당하는 객체가 없습니다.")));
+                .orElseThrow(()-> new EntityNotFoundException("해당 id " + id + "에 해당하는 객체가 없습니다.")));
     }
 
 
@@ -51,7 +51,7 @@ public abstract class CrudService<Req, Res, Entity extends Convertible<Req, Res>
     public Header<Res> update(Long id, Header<Req> request) {
 
         Entity entity = getBaseRepository().findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(this.getClass().getSimpleName() + " : 해당 id " + id + "에 해당하는 객체가 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("해당 id " + id + "에 해당하는 객체가 없습니다."));
 
         entity.update(request.getData());
 
@@ -61,7 +61,7 @@ public abstract class CrudService<Req, Res, Entity extends Convertible<Req, Res>
     @Override
     public Header<Void> delete(Long id) {
         Entity entity = getBaseRepository().findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(this.getClass().getSimpleName() + " : 해당 id " + id + "에 해당하는 객체가 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("해당 id " + id + "에 해당하는 객체가 없습니다."));
 
         getBaseRepository().delete(entity);
 

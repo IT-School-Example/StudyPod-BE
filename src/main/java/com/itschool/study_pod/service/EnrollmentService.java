@@ -11,9 +11,11 @@ import com.itschool.study_pod.repository.EnrollmentRepository;
 import com.itschool.study_pod.repository.StudyGroupRepository;
 import com.itschool.study_pod.repository.UserRepository;
 import com.itschool.study_pod.service.base.CrudService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -65,4 +67,16 @@ public class EnrollmentService extends CrudService<EnrollmentRequest, Enrollment
 
         return Header.OK(userResponses);
     }
+
+
+    @Transactional
+    public Header<Void> memberKick (Long id) {
+
+        Enrollment enrollment = enrollmentRepository.findById(id)
+                .orElseThrow(()-> new EntityNotFoundException("해당 id " + id + "에 해당하는 객체가 없습니다."));
+
+        enrollment.memberKick();
+        return Header.OK();
+    }
+
 }

@@ -70,6 +70,10 @@ public class Enrollment extends BaseEntity implements Convertible<EnrollmentRequ
         this.status = request.getStatus();
     }
 
+    public void memberKick() {
+        this.status = EnrollmentStatus.BANNED;
+    }
+
     @Override
     public EnrollmentResponse response() {
         return EnrollmentResponse.builder()

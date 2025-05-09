@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,5 +32,10 @@ public class EnrollmentApiController extends CrudController<EnrollmentRequest, E
     @Override
     protected CrudService<EnrollmentRequest, EnrollmentResponse, Enrollment> getBaseService() {
         return enrollmentService;
+    }
+    @Operation(summary = "스터디 강제 퇴장", description = "등록 상태를 추방으로 수정")
+    @PatchMapping("member-kick/{id}")
+    public Header<Void> memberKick(@PathVariable Long id) {
+        return enrollmentService.memberKick(id);
     }
 }
