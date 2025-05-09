@@ -9,6 +9,7 @@ import com.itschool.study_pod.dto.response.UserResponse;
 import com.itschool.study_pod.entity.StudyGroup;
 import com.itschool.study_pod.entity.User;
 import com.itschool.study_pod.enumclass.EnrollmentStatus;
+import com.itschool.study_pod.enumclass.RecruitmentStatus;
 import com.itschool.study_pod.service.EnrollmentService;
 import com.itschool.study_pod.service.StudyGroupService;
 import com.itschool.study_pod.service.base.CrudService;
@@ -51,9 +52,9 @@ public class StudyGroupApiController extends CrudController<StudyGroupRequest, S
 
     @GetMapping("/filter/recruitment")
     @Operation(summary = "모집 상태로 스터디 그룹 조회", description = "RECRUITING 또는 CLOSED 상태로 필터링")
-    public Header<List<StudyGroupResponse>> getByRecruitmentStatus(@RequestParam(name = "value") String value) {
+    public Header<List<StudyGroupResponse>> getByRecruitmentStatus(@RequestParam(name = "recruitmentStatus") RecruitmentStatus recruitmentStatus) {
         try {
-            return studyGroupService.findAllByRecruitmentStatus(value);
+            return studyGroupService.findAllByRecruitmentStatus(recruitmentStatus);
         } catch (IllegalArgumentException e) {
             return Header.ERROR("요청에 실패했습니다.");
         } catch (RuntimeException e) {

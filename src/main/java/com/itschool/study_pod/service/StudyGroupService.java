@@ -62,9 +62,9 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
         return convertPageToList(groups);
     }
 
-    public Header<List<StudyGroupResponse>> findAllByRecruitmentStatus(String value) {
+    public Header<List<StudyGroupResponse>> findAllByRecruitmentStatus(RecruitmentStatus recruitmentStatus) {
         try {
-            RecruitmentStatus status = RecruitmentStatus.valueOf(value.toUpperCase());
+            RecruitmentStatus status = recruitmentStatus;
             List<StudyGroup> results = studyGroupRepository.findAllByRecruitmentStatus(status);
 
             if (results.isEmpty()) {
