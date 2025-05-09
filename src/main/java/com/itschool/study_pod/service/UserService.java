@@ -46,4 +46,7 @@ public class UserService extends CrudService<UserRequest, UserResponse, User> {
         return Header.OK();
     }
 
+    public Boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
 }
