@@ -95,7 +95,10 @@ public class Board extends BaseEntity implements Convertible<BoardRequest, Board
     public void update(BoardRequest request) {
         this.title = request.getTitle() != null? request.getTitle() : this.title;
         this.content = request.getContent() != null? request.getContent() : this.content;
-        this.category = request.getCategory() != null? request.getCategory() : this.category;
+
+        // 카테고리 변경은 위험
+        // this.category = request.getCategory() != null? request.getCategory() : this.category;
+
         this.user = request.getUser() != null ? User.withId(request.getUser().getId()) : null;
         this.admin = request.getAdmin() != null ? Admin.withId(request.getAdmin().getId()) : null;
         this.studyGroup = request.getStudyGroup() != null ? StudyGroup.withId(request.getStudyGroup().getId()) : null;
