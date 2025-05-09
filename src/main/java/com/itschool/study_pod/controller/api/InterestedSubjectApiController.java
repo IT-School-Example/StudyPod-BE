@@ -28,6 +28,7 @@ public class InterestedSubjectApiController extends CrudController<InterestedSub
     }
 
     @Override
+    @Deprecated
     public Header<InterestedSubjectResponse> update(Long id, Header<InterestedSubjectRequest> request) {
         throw new IllegalArgumentException("해당 연결 테이블에서 업데이트는 허용하지 않습니다. 삭제 후 다시 생성하세요");
     }
