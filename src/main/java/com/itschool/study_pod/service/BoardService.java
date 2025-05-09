@@ -1,8 +1,8 @@
 package com.itschool.study_pod.service;
 
-import com.itschool.study_pod.dto.request.board.BoardRequest;
-import com.itschool.study_pod.dto.response.BoardResponse;
-import com.itschool.study_pod.entity.Board;
+import com.itschool.study_pod.dto.request.board.StudyBoardRequest;
+import com.itschool.study_pod.dto.response.StudyBoardResponse;
+import com.itschool.study_pod.entity.StudyBoard;
 import com.itschool.study_pod.repository.BoardRepository;
 import com.itschool.study_pod.service.base.CrudService;
 import lombok.RequiredArgsConstructor;
@@ -11,18 +11,18 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class BoardService extends CrudService<BoardRequest, BoardResponse, Board> {
+public class BoardService extends CrudService<StudyBoardRequest, StudyBoardResponse, StudyBoard> {
 
     private final BoardRepository boardRepository;
 
     @Override
-    protected JpaRepository<Board, Long> getBaseRepository() {
+    protected JpaRepository<StudyBoard, Long> getBaseRepository() {
         return boardRepository;
     }
 
     @Override
-    protected Board toEntity(BoardRequest requestEntity) {
-        return Board.of(requestEntity);
+    protected StudyBoard toEntity(StudyBoardRequest requestEntity) {
+        return StudyBoard.of(requestEntity);
     }
 
     /*private final BoardRepository boardRepository;

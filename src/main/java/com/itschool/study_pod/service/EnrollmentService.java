@@ -70,13 +70,14 @@ public class EnrollmentService extends CrudService<EnrollmentRequest, Enrollment
 
 
     @Transactional
-    public Header<Void> memberKick (Long id) {
+    public Header<EnrollmentResponse> memberKick (Long id) {
 
         Enrollment enrollment = enrollmentRepository.findById(id)
                 .orElseThrow(()-> new EntityNotFoundException("해당 id " + id + "에 해당하는 객체가 없습니다."));
 
         enrollment.memberKick();
-        return Header.OK();
+
+        return apiResponse(enrollment);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.itschool.study_pod.dto.request.faq;
+package com.itschool.study_pod.dto.request.board;
 
 import com.itschool.study_pod.dto.ReferenceDto;
 import jakarta.validation.constraints.NotEmpty;
@@ -12,10 +12,10 @@ import lombok.*;
 public class FaqRequest {
 
     @NotEmpty
-    private String question;
+    private String title;
 
     @NotEmpty
-    private String answer;
+    private String content;
 
     @NotNull
     private Boolean visible;

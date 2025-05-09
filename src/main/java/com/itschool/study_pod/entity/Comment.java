@@ -1,7 +1,7 @@
 package com.itschool.study_pod.entity;
 
 import com.itschool.study_pod.dto.request.comment.CommentRequest;
-import com.itschool.study_pod.dto.response.BoardResponse;
+import com.itschool.study_pod.dto.response.StudyBoardResponse;
 import com.itschool.study_pod.dto.response.CommentResponse;
 import com.itschool.study_pod.dto.response.UserResponse;
 import com.itschool.study_pod.entity.base.BaseEntity;
@@ -30,7 +30,7 @@ public class Comment extends BaseEntity implements Convertible<CommentRequest, C
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", nullable = false)
-    private Board board;
+    private StudyBoard studyBoard;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
@@ -43,7 +43,7 @@ public class Comment extends BaseEntity implements Convertible<CommentRequest, C
     public static Comment of(CommentRequest request) { // create용
         return Comment.builder()
                 .content(request.getContent())
-                .board(Board.withId(request.getBoard().getId()))
+                .studyBoard(StudyBoard.withId(request.getBoard().getId()))
                 .user(User.withId(request.getUser().getId()))
                 .parentComment(request.getParentComment() != null?
                         Comment.withId(request.getParentComment().getId())
@@ -56,7 +56,7 @@ public class Comment extends BaseEntity implements Convertible<CommentRequest, C
         return CommentResponse.builder()
                 .id(this.id)
                 .content(this.content)
-                .board(BoardResponse.withId(this.board.getId()))
+                .board(StudyBoardResponse.withId(this.studyBoard.getId()))
                 .user(UserResponse.withId(this.user.getId()))
                 .parentComment(
                         this.parentComment != null?
@@ -72,7 +72,7 @@ public class Comment extends BaseEntity implements Convertible<CommentRequest, C
     @Override
     public void update(CommentRequest request) {
         this.content = request.getContent() != null? request.getContent() : this.content;
-        this.board = request.getBoard() != null ? Board.withId(request.getBoard().getId()) : this.board;
+        this.studyBoard = request.getBoard() != null ? StudyBoard.withId(request.getBoard().getId()) : this.studyBoard;
         this.user = request.getUser() != null ? User.withId(request.getUser().getId()) : this.user;
         this.parentComment = request.getParentComment() != null ? Comment.withId(request.getParentComment().getId()) : null;
     }

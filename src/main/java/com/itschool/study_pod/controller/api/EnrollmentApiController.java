@@ -35,7 +35,7 @@ public class EnrollmentApiController extends CrudController<EnrollmentRequest, E
     }
     @Operation(summary = "스터디 강제 퇴장", description = "등록 상태를 추방으로 수정")
     @PatchMapping("member-kick/{id}")
-    public Header<Void> memberKick(@PathVariable Long id) {
+    public Header<EnrollmentResponse> memberKick(@PathVariable(name = "id") Long id) {
         return enrollmentService.memberKick(id);
     }
 }

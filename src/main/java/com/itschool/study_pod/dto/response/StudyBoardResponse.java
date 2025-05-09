@@ -1,5 +1,6 @@
 package com.itschool.study_pod.dto.response;
 
+import com.itschool.study_pod.enumclass.BoardCategory;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -8,17 +9,21 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class CommentResponse {
+public class StudyBoardResponse {
 
     private Long id;
 
+    private String title;
+
     private String content;
 
-    private StudyBoardResponse board;
-
-    private CommentResponse parentComment;
+    private BoardCategory category;
 
     private UserResponse user;
+
+    private AdminResponse admin;
+
+    private StudyGroupResponse studyGroup;
 
     private String createdBy;
 
@@ -28,8 +33,8 @@ public class CommentResponse {
 
     private LocalDateTime updatedAt;
 
-    public static CommentResponse withId(Long id) {
-        return CommentResponse.builder()
+    public static StudyBoardResponse withId(Long id) {
+        return StudyBoardResponse.builder()
                 .id(id)
                 .build();
     }

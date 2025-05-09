@@ -1,12 +1,13 @@
 package com.itschool.study_pod.entity;
 
-import com.itschool.study_pod.dto.request.faq.FaqRequest;
+import com.itschool.study_pod.dto.request.board.FaqRequest;
 import com.itschool.study_pod.dto.response.AdminResponse;
 import com.itschool.study_pod.dto.response.FaqResponse;
-import com.itschool.study_pod.entity.base.BaseEntity;
+import com.itschool.study_pod.entity.base.Post;
 import com.itschool.study_pod.ifs.Convertible;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -14,11 +15,11 @@ import org.hibernate.annotations.Where;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @Table(name = "faqs")
 @SQLDelete(sql = "UPDATE faqs SET is_deleted = true WHERE faq_id = ?")
 @Where(clause = "is_deleted = false")
-public class Faq extends BaseEntity implements Convertible<FaqRequest, FaqResponse> {
+public class Faq extends Post implements Convertible<FaqRequest, FaqResponse> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,22 +27,16 @@ public class Faq extends BaseEntity implements Convertible<FaqRequest, FaqRespon
     private Long id;
 
     @Column(nullable = false)
-    private String question;
-
-    @Column(nullable = false)
-    private String answer;
-
-    @Column(nullable = false)
     private Boolean visible; // 사용자에게 노출 여부
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "admin_id", nullable = false)
-    private Admin admin;
+    @JoinColumn(name = "admin_id")
+    protected Admin admin;
 
     public static Faq of (FaqRequest request) {
         return Faq.builder()
-                .question(request.getQuestion())
-                .answer(request.getAnswer())
+                .title(request.getTitle())
+                .content(request.getContent())
                 .visible(request.getVisible())
                 .admin(Admin.withId(request.getAdmin().getId()))
                 .build();
@@ -51,8 +46,8 @@ public class Faq extends BaseEntity implements Convertible<FaqRequest, FaqRespon
     public FaqResponse response() {
         return FaqResponse.builder()
                 .id(this.id)
-                .question(this.question)
-                .answer(this.answer)
+                .title(this.title)
+                .content(this.content)
                 .visible(this.visible)
                 .admin(AdminResponse.withId(this.admin.getId()))
                 .createdAt(this.createdAt)
@@ -64,8 +59,8 @@ public class Faq extends BaseEntity implements Convertible<FaqRequest, FaqRespon
 
     @Override
     public void update(FaqRequest request) {
-        this.question = request.getQuestion();
-        this.answer = request.getAnswer();
+        this.title = request.getTitle();
+        this.content = request.getContent();
         this.visible = request.getVisible();
     }
 

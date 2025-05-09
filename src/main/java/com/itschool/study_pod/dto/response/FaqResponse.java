@@ -12,9 +12,9 @@ public class FaqResponse {
 
     private Long id;
 
-    private String question;
+    private String title;
 
-    private String answer;
+    private String content;
 
     private Boolean visible;
 

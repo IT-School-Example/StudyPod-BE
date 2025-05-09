@@ -8,17 +8,17 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class CommentResponse {
+public class NoticeResponse {
 
     private Long id;
 
+    private String title;
+
     private String content;
 
-    private StudyBoardResponse board;
+    private Boolean visible;
 
-    private CommentResponse parentComment;
-
-    private UserResponse user;
+    private AdminResponse admin;
 
     private String createdBy;
 
@@ -28,8 +28,8 @@ public class CommentResponse {
 
     private LocalDateTime updatedAt;
 
-    public static CommentResponse withId(Long id) {
-        return CommentResponse.builder()
+    public static NoticeResponse withId(Long id) {
+        return NoticeResponse.builder()
                 .id(id)
                 .build();
     }

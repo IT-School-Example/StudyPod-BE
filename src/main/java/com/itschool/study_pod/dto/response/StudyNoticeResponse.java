@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class BoardResponse {
+public class StudyNoticeResponse {
 
     private Long id;
 
@@ -33,8 +33,8 @@ public class BoardResponse {
 
     private LocalDateTime updatedAt;
 
-    public static BoardResponse withId(Long id) {
-        return BoardResponse.builder()
+    public static StudyNoticeResponse withId(Long id) {
+        return StudyNoticeResponse.builder()
                 .id(id)
                 .build();
     }
