@@ -7,7 +7,6 @@ import com.itschool.study_pod.dto.request.studygroup.StudyGroupSearchRequest;
 import com.itschool.study_pod.dto.response.StudyGroupResponse;
 import com.itschool.study_pod.dto.response.UserResponse;
 import com.itschool.study_pod.entity.StudyGroup;
-import com.itschool.study_pod.entity.User;
 import com.itschool.study_pod.enumclass.EnrollmentStatus;
 import com.itschool.study_pod.enumclass.MeetingMethod;
 import com.itschool.study_pod.enumclass.RecruitmentStatus;
@@ -34,7 +33,6 @@ import java.util.List;
 public class StudyGroupApiController extends CrudController<StudyGroupRequest, StudyGroupResponse, StudyGroup> {
 
     private final StudyGroupService studyGroupService;
-
     private final EnrollmentService enrollmentService;
 
     @Override
@@ -42,23 +40,24 @@ public class StudyGroupApiController extends CrudController<StudyGroupRequest, S
         return studyGroupService;
     }
 
-    @PostMapping("search")
-    @Operation(summary = "검색 기능", description = "")
-    public Header<List<StudyGroupResponse>> findAllByFilters(@RequestParam(required = false) String searchStr,
-                                                             @RequestBody Header<StudyGroupSearchRequest> request,
-                                                             @ParameterObject @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-
+    @PostMapping("/search")
+    @Operation(summary = "스터디 그룹 필터링 검색", description = """
+            키워드(title 또는 keywords) + 모집 상태 + 스터디 방식 + 주제 영역을 기준으로 스터디 그룹을 필터링합니다.
+            searchStr 필드만 입력해도 키워드 검색이 가능합니다.
+            """)
+    public Header<List<StudyGroupResponse>> findAllByFilters(
+            @RequestParam(required = false) String searchStr,
+            @RequestBody Header<StudyGroupSearchRequest> request,
+            @ParameterObject @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return studyGroupService.findAllByFilters(searchStr, request, pageable);
     }
 
     @GetMapping("/filter/recruitment")
-    @Operation(summary = "모집 상태로 스터디 그룹 조회", description = "RECRUITING 또는 CLOSED 상태로 필터링")
+    @Operation(summary = "모집 상태로 스터디 그룹 조회", description = "RECRUITING 또는 CLOSED 상태로 필터링합니다.")
     public Header<List<StudyGroupResponse>> getByRecruitmentStatus(@RequestParam(name = "recruitmentStatus") RecruitmentStatus recruitmentStatus) {
         try {
             return studyGroupService.findAllByRecruitmentStatus(recruitmentStatus);
-        } catch (IllegalArgumentException e) {
-            return Header.ERROR("요청에 실패했습니다.");
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             return Header.ERROR("해당 조건의 스터디 그룹을 불러오지 못했습니다.");
         }
     }
@@ -68,48 +67,43 @@ public class StudyGroupApiController extends CrudController<StudyGroupRequest, S
     public Header<List<StudyGroupResponse>> getByMeetingMethod(@RequestParam(name = "meetingMethod") MeetingMethod meetingMethod) {
         try {
             return studyGroupService.findAllByMeetingMethod(meetingMethod);
-        } catch (IllegalArgumentException e) {
-            return Header.ERROR("요청에 실패했습니다.");
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             return Header.ERROR("해당 조건의 스터디 그룹을 불러오지 못했습니다.");
         }
     }
 
-    @Operation(summary = "스터디그룹 id와 등록 상태로 회원 목록 조회", description = "study_group_id와 등록 상태에 따른 회원 목록을 조회")
     @GetMapping("{id}/users")
-    public Header<List<UserResponse>> findEnrolledUsersByStudyGroupId(@PathVariable(name = "id") Long id,
-                                                                      @RequestParam(name = "enrollmentStatus") EnrollmentStatus enrollmentStatus) {
-        log.info("스터디그룹별 스터디 등록 내역 조회 : {}에서 id={}로 조회 요청", this.getClass().getSimpleName(), id);
+    @Operation(summary = "스터디 그룹 내 유저 목록 조회", description = "스터디 그룹 ID와 등록 상태에 따라 소속 유저들을 조회합니다.")
+    public Header<List<UserResponse>> findEnrolledUsersByStudyGroupId(
+            @PathVariable(name = "id") Long id,
+            @RequestParam(name = "enrollmentStatus") EnrollmentStatus enrollmentStatus) {
         return enrollmentService.findEnrolledUsersByStudyGroupId(id, enrollmentStatus);
     }
 
     @GetMapping("/my")
-    @Operation(summary = "회원이 소속된 승인된 스터디 그룹 조회", description = "userId로 APPROVED 상태의 스터디 그룹 정보를 조회합니다.")
+    @Operation(summary = "회원이 소속된 스터디 그룹 조회", description = "userId로 APPROVED 상태의 스터디 그룹을 조회합니다.")
     public Header<StudyGroupResponse> getMyStudyGroup(@RequestParam(name = "userId") Long userId) {
         return studyGroupService.findStudyGroupByUserId(userId);
     }
 
-
     @GetMapping("/user/{userId}/enrolled-groups")
-    @Operation(summary = "사용자의 등록된 스터디 그룹 목록 조회", description = "회원 ID와 등록 상태로 스터디 그룹 리스트를 반환합니다.")
+    @Operation(summary = "사용자의 등록된 스터디 그룹 목록 조회", description = "회원 ID로 등록된 스터디 그룹 리스트를 반환합니다.")
     public Header<List<StudyGroupResponse>> getStudyGroupsByUserId(
             @PathVariable Long userId,
-            @RequestParam(name = "enrollmentStatus", required = false, defaultValue = "APPROVED") EnrollmentStatus enrollmentStatus
-    ) {
+            @RequestParam(name = "enrollmentStatus", required = false, defaultValue = "APPROVED") EnrollmentStatus enrollmentStatus) {
         return enrollmentService.findEnrolledStudyGroupsByUserId(userId, enrollmentStatus);
     }
 
     @GetMapping("/leader/{leaderId}")
-    @Operation(summary = "스터디 리더가 개설한 스터디 그룹 조회", description = "리더 ID로 해당 사용자가 생성한 스터디 그룹 목록을 조회합니다.")
+    @Operation(summary = "스터디 리더가 개설한 스터디 그룹 조회", description = "리더 ID로 생성한 스터디 그룹을 조회합니다.")
     public Header<List<StudyGroupResponse>> getStudyGroupsByLeaderId(@PathVariable Long leaderId) {
         return studyGroupService.findStudyGroupsByLeaderId(leaderId);
     }
 
     @GetMapping("/search")
-    @Operation(summary = "키워드 기반 스터디 그룹 검색", description = "스터디 그룹 이름 또는 키워드로 검색합니다.")
+    @Operation(summary = "키워드 기반 간단 검색", description = "스터디 그룹 이름 또는 키워드에 해당 문자열이 포함된 항목을 조회합니다.")
     public Header<List<StudyGroupResponse>> searchByKeyword(@RequestParam(name = "keyword") String keyword) {
-        return studyGroupService.searchByKeyword(keyword);
+        return studyGroupService.searchByKeywordOnly(keyword);
     }
-
 
 }

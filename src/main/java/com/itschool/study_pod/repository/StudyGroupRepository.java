@@ -17,15 +17,16 @@ public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long> {
 
     List<StudyGroup> findAllByLeaderId(Long leaderId);
 
+    // POST /search 필터링용
     @Query("""
-            SELECT sg FROM StudyGroup sg
-            WHERE (
-                (:keyword IS NULL OR LOWER(sg.title) LIKE LOWER(CONCAT('%', :keyword, '%')))
-                OR (:keyword IS NULL OR :keyword IN elements(sg.keywords))
-            )
-            AND (:recruitmentStatus IS NULL OR sg.recruitmentStatus = :recruitmentStatus)
-            AND (:meetingMethod IS NULL OR sg.meetingMethod = :meetingMethod)
-            AND (:subjectAreaId IS NULL OR sg.subjectArea.id = :subjectAreaId)
+                SELECT sg FROM StudyGroup sg
+                WHERE (
+                    (:keyword IS NULL OR LOWER(sg.title) LIKE LOWER(CONCAT('%', :keyword, '%')))
+                    OR (:keyword IS NULL OR :keyword MEMBER OF sg.keywords)
+                )
+                AND (:recruitmentStatus IS NULL OR sg.recruitmentStatus = :recruitmentStatus)
+                AND (:meetingMethod IS NULL OR sg.meetingMethod = :meetingMethod)
+                AND (:subjectAreaId IS NULL OR sg.subjectArea.id = :subjectAreaId)
             """)
     Page<StudyGroup> findAllByFilters(@Param("keyword") String keyword,
                                       @Param("recruitmentStatus") RecruitmentStatus recruitmentStatus,
@@ -33,15 +34,19 @@ public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long> {
                                       @Param("subjectAreaId") Long subjectAreaId,
                                       Pageable pageable);
 
+    @Query("""
+                SELECT sg FROM StudyGroup sg
+                WHERE LOWER(sg.title) LIKE LOWER(CONCAT('%', :kw, '%'))
+                   OR EXISTS (
+                       SELECT 1 FROM StudyGroup s2
+                       JOIN s2.keywords k
+                       WHERE s2.id = sg.id AND LOWER(k) LIKE LOWER(CONCAT('%', :kw, '%'))
+                   )
+            """)
+    List<StudyGroup> searchByKeyword(@Param("kw") String keyword);
+
+
     List<StudyGroup> findAllByRecruitmentStatus(RecruitmentStatus recruitmentStatus);
 
     List<StudyGroup> findAllByMeetingMethod(MeetingMethod meetingMethod);
-
-    @Query("""
-                SELECT sg FROM StudyGroup sg
-                WHERE LOWER(sg.title) LIKE LOWER(CONCAT('%', :keyword, '%'))
-                OR :keyword MEMBER OF sg.keywords
-            """)
-    List<StudyGroup> searchByKeyword(@Param("keyword") String keyword);
-
 }

@@ -1,7 +1,7 @@
 # 스프링 프로필 : local (본인 로컬 컴퓨터로 톰캣 실행, H2 인메모리 DB)
 spring:
   jackson:
-    default-property-inclusion: non_null;
+    default-property-inclusion: NON_NULL
   h2:
     console:
       enabled: true # /h2-console 설정

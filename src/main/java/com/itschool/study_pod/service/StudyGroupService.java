@@ -25,10 +25,7 @@ import java.util.List;
 public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroupResponse, StudyGroup> {
 
     private final StudyGroupRepository studyGroupRepository;
-
-    // 필드 주입 추가
     private final EnrollmentRepository enrollmentRepository;
-
 
     @Override
     protected JpaRepository<StudyGroup, Long> getBaseRepository() {
@@ -47,15 +44,17 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
     public Header<List<StudyGroupResponse>> findAllByFilters(String searchStr,
                                                              Header<StudyGroupSearchRequest> request,
                                                              Pageable pageable) {
-
         StudyGroupSearchRequest conditions = request.getData();
 
         RecruitmentStatus recruitmentStatus = conditions.getRecruitmentStatus();
 
-        // BOTH일 경우 meetingMethod 조건 제거
-        MeetingMethod meetingMethod = conditions.getMeetingMethod() == MeetingMethod.BOTH ? null : conditions.getMeetingMethod();
+        MeetingMethod meetingMethod = conditions.getMeetingMethod() == MeetingMethod.BOTH
+                ? null
+                : conditions.getMeetingMethod();
 
-        Long subjectAreaId = conditions.getSubjectArea() == null ? null : conditions.getSubjectArea().getId();
+        Long subjectAreaId = conditions.getSubjectArea() == null
+                ? null
+                : conditions.getSubjectArea().getId();
 
         Page<StudyGroup> groups = studyGroupRepository.findAllByFilters(
                 searchStr,
@@ -69,30 +68,24 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
     }
 
     public Header<List<StudyGroupResponse>> findAllByRecruitmentStatus(RecruitmentStatus recruitmentStatus) {
-        try {
-            RecruitmentStatus status = recruitmentStatus;
-            List<StudyGroup> results = studyGroupRepository.findAllByRecruitmentStatus(status);
+        List<StudyGroup> results = studyGroupRepository.findAllByRecruitmentStatus(recruitmentStatus);
 
-            if (results.isEmpty()) {
-                throw new RuntimeException("해당 조건의 스터디 그룹을 불러오지 못했습니다.");
-            }
-
-            // 엔티티를 DTO로 변환해서 반환
-            List<StudyGroupResponse> dtoList = results.stream()
-                    .map(StudyGroup::response)
-                    .toList();
-
-            return Header.OK(dtoList);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("요청에 실패했습니다. 유효하지 않은 모집 상태입니다.");
+        if (results.isEmpty()) {
+            return Header.ERROR("해당 조건의 스터디 그룹을 불러오지 못했습니다.");
         }
+
+        List<StudyGroupResponse> dtoList = results.stream()
+                .map(StudyGroup::response)
+                .toList();
+
+        return Header.OK(dtoList);
     }
 
     public Header<List<StudyGroupResponse>> findAllByMeetingMethod(MeetingMethod meetingMethod) {
         List<StudyGroup> results = studyGroupRepository.findAllByMeetingMethod(meetingMethod);
 
         if (results.isEmpty()) {
-            throw new RuntimeException("해당 조건의 스터디 그룹을 불러오지 못했습니다.");
+            return Header.ERROR("해당 조건의 스터디 그룹을 불러오지 못했습니다.");
         }
 
         List<StudyGroupResponse> dtoList = results.stream()
@@ -107,6 +100,7 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
                 .orElseThrow(() -> new RuntimeException("스터디원으로 있는 그룹을 찾을 수 없습니다."));
 
         StudyGroup studyGroup = enrollment.getStudyGroup();
+
         if (studyGroup == null) {
             throw new RuntimeException("스터디 그룹 정보를 찾을 수 없습니다.");
         }
@@ -118,7 +112,7 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
         List<StudyGroup> groups = studyGroupRepository.findAllByLeaderId(leaderId);
 
         if (groups.isEmpty()) {
-            throw new RuntimeException("스터디 리더로 있는 그룹을 찾을 수 없습니다.");
+            return Header.ERROR("스터디 리더로 있는 그룹을 찾을 수 없습니다.");
         }
 
         List<StudyGroupResponse> responseList = groups.stream()
@@ -128,19 +122,18 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
         return Header.OK(responseList);
     }
 
-    public Header<List<StudyGroupResponse>> searchByKeyword(String keyword) {
+    public Header<List<StudyGroupResponse>> searchByKeywordOnly(String keyword) {
         List<StudyGroup> results = studyGroupRepository.searchByKeyword(keyword);
 
         if (results.isEmpty()) {
-            return Header.ERROR("해당 검색어와 관한 스터디를 조회하는데 실패했습니다.");
+            return Header.ERROR("검색 결과가 없습니다.");
         }
 
         List<StudyGroupResponse> dtoList = results.stream()
                 .map(StudyGroup::response)
                 .toList();
 
-        return Header.OK(dtoList); // 메시지는 제거하거나 setMessage로 따로 붙여야 함
+        return Header.OK(dtoList);
     }
-
 
 }
