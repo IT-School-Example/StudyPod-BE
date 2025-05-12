@@ -19,7 +19,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -52,5 +55,20 @@ public class UserApiController extends CrudController<UserRequest, UserResponse,
                                                                             @RequestParam EnrollmentStatus enrollmentStatus) {
         log.info("사용자별 스터디 등록 내역 조회 : {}에서 id={}로 조회 요청", this.getClass().getSimpleName(), id);
         return enrollmentService.findEnrolledStudyGroupsByUserId(id, enrollmentStatus);
+    }
+
+    @Operation(summary = "이메일 중복 여부 조회", description = "이메일 중복 여부 조회")
+    @GetMapping("/check-email")
+    public Header<Map<String, Boolean>> checkEmail(@RequestParam(name = "email") String email) {
+        Boolean exists = userService.existsByEmail(email);
+
+        Map<String, Boolean> result = new Hashtable<>();
+
+        result.put("exists", exists);
+
+        // 아래 코드로 대체 가능, exists 단일 응답을 위한 불변객체
+        // Map<String, Boolean> result= Collections.singletonMap("exists", exists);
+
+        return Header.OK(result);
     }
 }
