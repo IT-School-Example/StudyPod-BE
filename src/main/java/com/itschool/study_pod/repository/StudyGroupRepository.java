@@ -49,4 +49,13 @@ public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long> {
     List<StudyGroup> findAllByRecruitmentStatus(RecruitmentStatus recruitmentStatus);
 
     List<StudyGroup> findAllByMeetingMethod(MeetingMethod meetingMethod);
+
+    @Query("""
+                SELECT sg FROM StudyGroup sg
+                WHERE sg.recruitmentStatus = com.itschool.study_pod.enumclass.RecruitmentStatus.RECRUITING
+                AND sg.subjectArea.subject = :subjectEnum
+            """)
+    List<StudyGroup> findBySubjectAreaAndRecruiting(@Param("subjectEnum") com.itschool.study_pod.enumclass.Subject subjectEnum);
+
+
 }

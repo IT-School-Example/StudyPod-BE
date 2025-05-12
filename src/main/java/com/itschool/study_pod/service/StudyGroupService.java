@@ -9,6 +9,7 @@ import com.itschool.study_pod.entity.StudyGroup;
 import com.itschool.study_pod.enumclass.EnrollmentStatus;
 import com.itschool.study_pod.enumclass.MeetingMethod;
 import com.itschool.study_pod.enumclass.RecruitmentStatus;
+import com.itschool.study_pod.enumclass.Subject;
 import com.itschool.study_pod.repository.EnrollmentRepository;
 import com.itschool.study_pod.repository.StudyGroupRepository;
 import com.itschool.study_pod.service.base.CrudService;
@@ -135,5 +136,29 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
 
         return Header.OK(dtoList);
     }
+
+    public Header<List<StudyGroupResponse>> findBySubjectAreaAndRecruiting(String subjectValue) {
+        try {
+            Subject subjectEnum = Subject.valueOf(subjectValue.toUpperCase());
+
+            List<StudyGroup> results = studyGroupRepository.findBySubjectAreaAndRecruiting(subjectEnum);
+
+            List<StudyGroupResponse> dtoList = results.stream()
+                    .map(StudyGroup::response)
+                    .toList();
+
+            Header<List<StudyGroupResponse>> response = Header.OK(dtoList);
+            if (dtoList.isEmpty()) {
+                response.setDescription("검색 결과가 없습니다.");
+            } else {
+                response.setDescription("조회에 성공했습니다.");
+            }
+
+            return response;
+        } catch (IllegalArgumentException e) {
+            return Header.ERROR("요청에 실패했습니다.");
+        }
+    }
+
 
 }

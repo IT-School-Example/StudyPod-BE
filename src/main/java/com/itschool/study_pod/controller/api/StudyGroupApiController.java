@@ -106,4 +106,14 @@ public class StudyGroupApiController extends CrudController<StudyGroupRequest, S
         return studyGroupService.searchByKeywordOnly(keyword);
     }
 
+    @GetMapping("/filter/subject")
+    @Operation(summary = "주제 영역으로 모집 중인 스터디 그룹 조회",
+            description = "ENUM Subject 값 (예: LANGUAGE, IT, EXAM...)을 전달하면 해당 주제의 모집 중인 스터디 그룹만 반환합니다.")
+    public Header<List<StudyGroupResponse>> getBySubjectArea(
+            @RequestParam(name = "value") String subjectAreaValue
+    ) {
+        return studyGroupService.findBySubjectAreaAndRecruiting(subjectAreaValue);
+    }
+
+
 }
