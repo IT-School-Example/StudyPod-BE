@@ -16,7 +16,7 @@ import org.hibernate.annotations.Where;
 @AllArgsConstructor
 @Builder
 @Table(name = "study_boards")
-//@SQLDelete(sql = "UPDATE study-boards SET is_deleted = true WHERE study_board_id = ?")
+@SQLDelete(sql = "UPDATE study_boards SET is_deleted = true WHERE study_board_id = ?")
 @Where(clause = "is_deleted = false")
 public class StudyBoard extends BaseEntity implements Convertible<StudyBoardRequest, StudyBoardResponse>{
     @Id
