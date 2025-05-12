@@ -99,6 +99,7 @@ public class StudyGroupApiController extends CrudController<StudyGroupRequest, S
         return enrollmentService.findEnrolledStudyGroupsByUserId(userId, enrollmentStatus);
     }
 
+    // 스터디 리더 개설한 스터디 그룹 조회
     @GetMapping("/leader/{leaderId}")
     @Operation(summary = "스터디 리더가 개설한 스터디 그룹 조회", description = "리더 ID로 해당 사용자가 생성한 스터디 그룹 목록을 조회합니다.")
     public Header<List<StudyGroupResponse>> getStudyGroupsByLeaderId(@PathVariable Long leaderId) {
