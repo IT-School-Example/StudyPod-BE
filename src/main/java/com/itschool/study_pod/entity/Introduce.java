@@ -1,6 +1,6 @@
 package com.itschool.study_pod.entity;
 
-import com.itschool.study_pod.dto.request.IntroduceRequest;
+import com.itschool.study_pod.dto.request.introduce.IntroduceRequest;
 import com.itschool.study_pod.dto.response.IntroduceResponse;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.ifs.Convertible;

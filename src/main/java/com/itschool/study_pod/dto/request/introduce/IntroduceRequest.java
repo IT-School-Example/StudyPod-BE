@@ -1,5 +1,6 @@
-package com.itschool.study_pod.dto.request;
+package com.itschool.study_pod.dto.request.introduce;
 
+import com.itschool.study_pod.dto.request.studygroup.StudyGroupRequest;
 import lombok.*;
 
 @Data // 종합선물세트 : @Getter, @Setter, @ToString, @EqualsAndHashCode, @RequiredArgsConstructor

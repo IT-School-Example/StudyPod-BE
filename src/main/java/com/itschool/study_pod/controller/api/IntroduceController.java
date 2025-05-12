@@ -1,7 +1,7 @@
 package com.itschool.study_pod.controller.api;
 
 import com.itschool.study_pod.controller.base.CrudController;
-import com.itschool.study_pod.dto.request.IntroduceRequest;
+import com.itschool.study_pod.dto.request.introduce.IntroduceRequest;
 import com.itschool.study_pod.dto.response.IntroduceResponse;
 import com.itschool.study_pod.entity.Introduce;
 import com.itschool.study_pod.service.IntroduceService;
