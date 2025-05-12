@@ -44,6 +44,7 @@ jobs:
           distribution: 'corretto'
           java-version: 17
 
+      #
       # gradlew 스크립트에 실행 권한 부여
       - name: gradlew 실행 권한 부여
         run: chmod +x gradlew
