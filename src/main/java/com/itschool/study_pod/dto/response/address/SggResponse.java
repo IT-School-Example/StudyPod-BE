@@ -16,4 +16,10 @@ public class SggResponse {
     private String sggCd;
 
     private String sggNm;
+
+    public static SggResponse withId(Long id) {
+        return SggResponse.builder()
+                .id(id)
+                .build();
+    }
 }

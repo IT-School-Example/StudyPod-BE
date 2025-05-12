@@ -1,6 +1,6 @@
 package com.itschool.study_pod.entity;
 
-import com.itschool.study_pod.dto.request.StudyGroupRequest;
+import com.itschool.study_pod.dto.request.studygroup.StudyGroupRequest;
 import com.itschool.study_pod.dto.response.StudyGroupResponse;
 import com.itschool.study_pod.dto.response.SubjectAreaResponse;
 import com.itschool.study_pod.dto.response.UserResponse;
@@ -51,17 +51,22 @@ public class StudyGroup extends BaseEntity implements Convertible<StudyGroupRequ
     @Column(nullable = false)
     private RecruitmentStatus recruitmentStatus;
 
+    // 이미지 업로드 기능 위해 추가
+    /*@Column(name = "image_url")
+    private String imageUrl;*/
+
+
     @Enumerated(EnumType.STRING)
     private FeeType feeType;
 
     private Long amount;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "leader_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "leader_id", referencedColumnName = "user_id", nullable = false)
     private User leader;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id", referencedColumnName = "sgg_id")
+    @JoinColumn(name = "address_id", referencedColumnName = "sgg_id", nullable = false)
     private Sgg address;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -87,9 +92,8 @@ public class StudyGroup extends BaseEntity implements Convertible<StudyGroupRequ
     private Set<WeeklySchedule> weeklySchedules = new HashSet<>();
 
     public static StudyGroup of(StudyGroupRequest request) { // create용
-        if(request != null) {
+        if (request != null) {
             return StudyGroup.builder()
-                    .id(request.getId())
                     .title(request.getTitle())
                     .description(request.getDescription())
                     .maxMembers(request.getMaxMembers())
@@ -97,11 +101,12 @@ public class StudyGroup extends BaseEntity implements Convertible<StudyGroupRequ
                     .recruitmentStatus(request.getRecruitmentStatus())
                     .feeType(request.getFeeType())
                     .amount(request.getAmount())
-                    .leader(User.of(request.getLeader()))
-                    .address(Sgg.of(request.getAddress()))
-                    .subjectArea(SubjectArea.of(request.getSubjectArea()))
+                    .leader(User.withId(request.getLeader().getId()))
+                    .address(Sgg.withId(request.getAddress().getId()))
+                    .subjectArea(SubjectArea.withId(request.getSubjectArea().getId()))
                     .keywords(request.getKeywords())
                     .weeklySchedules(request.getWeeklySchedules())
+                    //.imageUrl(request.getImageUrl() //이미지 업로드 기능
                     .build();
         }
         return null;
@@ -114,13 +119,17 @@ public class StudyGroup extends BaseEntity implements Convertible<StudyGroupRequ
         this.maxMembers = request.getMaxMembers();
         this.meetingMethod = request.getMeetingMethod();
         this.recruitmentStatus = request.getRecruitmentStatus();
+
+        this.address = Sgg.withId(request.getAddress().getId());
+        this.subjectArea = SubjectArea.withId(request.getSubjectArea().getId());
+
         this.feeType = request.getFeeType();
         this.amount = request.getAmount();
-        // this.leader = User.of(request.getLeader());
-        this.address = Sgg.of(request.getAddress());
-        this.subjectArea = SubjectArea.of(request.getSubjectArea());
         this.keywords = request.getKeywords();
         this.weeklySchedules = request.getWeeklySchedules();
+
+        // fk 변경 위험, 스터디장 변경은 fetch로 스터디장만 변경하는 다른 api 로직 생성 필요
+        // this.leader = User.of(request.getLeader());
     }
 
     @Override
@@ -134,15 +143,9 @@ public class StudyGroup extends BaseEntity implements Convertible<StudyGroupRequ
                 .recruitmentStatus(this.recruitmentStatus)
                 .feeType(this.feeType)
                 .amount(this.amount)
-                .leader(UserResponse.builder()
-                        .id(this.leader.getId())
-                        .build())
-                .address(SggResponse.builder()
-                        .id(this.address.getId())
-                        .build())
-                .subjectArea(SubjectAreaResponse.builder()
-                        .id(this.subjectArea.getId())
-                        .build())
+                .leader(UserResponse.withId(this.leader.getId()))
+                .address(SggResponse.withId(this.address.getId()))
+                .subjectArea(SubjectAreaResponse.withId(this.subjectArea.getId()))
                 .keywords(this.keywords)
                 .weeklySchedules(this.weeklySchedules)
                 .createdAt(this.createdAt)
@@ -151,4 +154,11 @@ public class StudyGroup extends BaseEntity implements Convertible<StudyGroupRequ
                 .updatedBy(this.updatedBy)
                 .build();
     }
+
+    public static StudyGroup withId(Long id) {
+        return StudyGroup.builder()
+                .id(id)
+                .build();
+    }
+
 }

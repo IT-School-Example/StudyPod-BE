@@ -1,5 +1,6 @@
 package com.itschool.study_pod.embedable;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,16 +15,20 @@ import java.time.LocalTime;
 @Builder
 public class WeeklySchedule {
 
+    @Schema(description = "요일", example = "MONDAY")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private DayOfWeek dayOfWeek;
 
+    @Schema(type = "string", format = "HH:mm", example = "10:00", description = "시작 시간")
     @Column(nullable = false)
     private LocalTime startTime;
 
+    @Schema(type = "string", format = "HH:mm", example = "12:00", description = "종료 시간")
     @Column(nullable = false)
     private LocalTime endTime;
 
+    @Schema(hidden = true)
     @Transient
     public long getPeriodMinutes() {
         if (startTime == null || endTime == null) {
@@ -35,6 +40,7 @@ public class WeeklySchedule {
         return Duration.between(startTime, endTime).toMinutes();
     }
 
+    @Schema(hidden = true)
     @Transient
     public Duration getPeriodDuration() {
         if (startTime == null || endTime == null || endTime.isBefore(startTime)) {

@@ -1,6 +1,6 @@
 package com.itschool.study_pod.entity;
 
-import com.itschool.study_pod.dto.request.UserRequest;
+import com.itschool.study_pod.dto.request.user.UserRequest;
 import com.itschool.study_pod.dto.response.UserResponse;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.enumclass.AccountRole;
@@ -25,7 +25,7 @@ public class User extends BaseEntity implements Convertible<UserRequest, UserRes
     @Column(name = "user_id")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
@@ -44,10 +44,9 @@ public class User extends BaseEntity implements Convertible<UserRequest, UserRes
     public static User of(UserRequest request) { // create용
         if(request != null) {
             return User.builder()
-                    .id(request.getId())
-                    .email(request.getName())
+                    .email(request.getEmail())
                     .password(request.getPassword())
-                    .role(request.getRole())
+                    .role(AccountRole.ROLE_USER)
                     .name(request.getName())
                     .nickname(request.getNickname())
                     .build();
@@ -57,18 +56,28 @@ public class User extends BaseEntity implements Convertible<UserRequest, UserRes
 
     // update용
     @Override
-    @Deprecated
     public void update(UserRequest request) {
+        // PUT 전체 업데이트
+        // 이메일 수정
+        this.email = request.getEmail();
+
+        // 비밀번호 수정
         updatePassword(request.getPassword());
-        updateNickName(request.getNickname());
+
+        // 역할 수정 x
+        // this.role = request.getRole() != null? request.getRole() : this.role;
+
+        // 이름 수정
+        this.name = request.getName();
+
+        // 닉네임 수정 (처음 가입할때 null을 허용하나, null로 update 요청 시 현재 닉네임 유지)
+        this.nickname = request.getNickname() != null? request.getNickname() : this.nickname;
     }
 
     public void updatePassword(String password) {
-        this.password = password;
-    }
-
-    public void updateNickName(String nickname) {
-        this.nickname = nickname;
+        // PATCH 일부 업데이트
+        // 비밀번호 null로 수정 불가 (null로 수정 요청 오면 현재 비밀번호 유지)
+        this.password = password != null? password : this.password;
     }
 
     @Override
@@ -76,13 +85,19 @@ public class User extends BaseEntity implements Convertible<UserRequest, UserRes
         return UserResponse.builder()
                 .id(this.id)
                 .email(this.email)
-                .role(this.role)
+                // .role(this.role)
                 .name(this.name)
                 .nickname(this.nickname)
                 .createdAt(this.createdAt)
                 .createdBy(this.createdBy)
                 .updatedAt(this.updatedAt)
                 .updatedBy(this.updatedBy)
+                .build();
+    }
+
+    public static User withId(Long id) {
+        return User.builder()
+                .id(id)
                 .build();
     }
 }

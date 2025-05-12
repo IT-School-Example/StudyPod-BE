@@ -1,6 +1,6 @@
 package com.itschool.study_pod.entity;
 
-import com.itschool.study_pod.dto.request.BoardRequest;
+import com.itschool.study_pod.dto.request.board.BoardRequest;
 import com.itschool.study_pod.dto.response.AdminResponse;
 import com.itschool.study_pod.dto.response.BoardResponse;
 import com.itschool.study_pod.dto.response.StudyGroupResponse;
@@ -51,18 +51,20 @@ public class Board extends BaseEntity implements Convertible<BoardRequest, Board
 
     // 요청 DTO -> Entity 로 변환하는 메서드
     public static Board of (BoardRequest request) {
-        if(request != null) {
-            return Board.builder()
-                    .id(request.getId())
-                    .title(request.getTitle())
-                    .content(request.getContent())
-                    .category(request.getCategory())
-                    .user(User.of(request.getUser()))
-                    .admin(Admin.of(request.getAdmin()))
-                    .studyGroup(StudyGroup.of(request.getStudyGroup()))
-                    .build();
-        }
-        return null;
+        return Board.builder()
+                .title(request.getTitle())
+                .content(request.getContent())
+                .category(request.getCategory())
+                .user(request.getUser() != null?
+                        User.withId(request.getUser().getId())
+                        : null)
+                .admin(request.getAdmin() != null?
+                        Admin.withId(request.getAdmin().getId())
+                        : null)
+                .studyGroup(request.getStudyGroup() != null?
+                        StudyGroup.withId(request.getStudyGroup().getId())
+                        : null)
+                .build();
     }
 
     @Override
@@ -73,19 +75,13 @@ public class Board extends BaseEntity implements Convertible<BoardRequest, Board
                 .content(this.content)
                 .category(BoardCategory.FREE)
                 .user(this.user != null?
-                        UserResponse.builder()
-                                .id(this.user.getId())
-                                .build()
+                        UserResponse.withId(this.user.getId())
                         : null)
                 .admin(this.admin != null?
-                        AdminResponse.builder()
-                                .id(this.admin.getId())
-                                .build()
+                        AdminResponse.withId(this.admin.getId())
                         : null)
                 .studyGroup(this.studyGroup != null?
-                        StudyGroupResponse.builder()
-                                .id(this.studyGroup.getId())
-                                .build()
+                        StudyGroupResponse.withId(this.studyGroup.getId())
                         : null)
                 .createdAt(this.createdAt)
                 .createdBy(this.createdBy)
@@ -94,9 +90,24 @@ public class Board extends BaseEntity implements Convertible<BoardRequest, Board
                 .build();
     }
 
+
     @Override
     public void update(BoardRequest request) {
-        this.title = request.getTitle();
-        this.content = request.getContent();
+        this.title = request.getTitle() != null? request.getTitle() : this.title;
+        this.content = request.getContent() != null? request.getContent() : this.content;
+
+        // 카테고리 변경은 위험
+        // this.category = request.getCategory() != null? request.getCategory() : this.category;
+
+        this.user = request.getUser() != null ? User.withId(request.getUser().getId()) : null;
+        this.admin = request.getAdmin() != null ? Admin.withId(request.getAdmin().getId()) : null;
+        this.studyGroup = request.getStudyGroup() != null ? StudyGroup.withId(request.getStudyGroup().getId()) : null;
     }
+
+    public static Board withId(Long id) {
+        return Board.builder()
+                .id(id)
+                .build();
+    }
+
 }

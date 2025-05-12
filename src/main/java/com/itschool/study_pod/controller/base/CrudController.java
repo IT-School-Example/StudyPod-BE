@@ -5,7 +5,12 @@ import com.itschool.study_pod.ifs.Convertible;
 import com.itschool.study_pod.dto.Header;
 import com.itschool.study_pod.service.base.CrudService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +24,10 @@ public abstract class CrudController<Req, Res, Entity extends Convertible<Req, R
 
 
     @Override
-    // Swagger 문서 생성을 위한 어노테이션 예시
+    @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "생성", description = "새로운 엔티티를 생성")
     @PostMapping("")
-    public Header<Res> create(@RequestBody /*@Valid*/ Header<Req> request) {
+    public Header<Res> create(@RequestBody @Valid Header<Req> request) {
         log.info("create: {}에서 객체 {} 생성 요청", this.getClass().getSimpleName(), request);
         return getBaseService().create(request);
     }
@@ -35,43 +40,41 @@ public abstract class CrudController<Req, Res, Entity extends Convertible<Req, R
         return getBaseService().read(id);
     }
 
+    // 페이지 단위 조회
+    @GetMapping("")
+    @Operation(summary = "페이지별 조회", description = "pageable로 엔티티 목록을 조회")
+    public Header<List<Res>> getPaginatedList(
+            // Swagger 문서에 pageable 파라미터 예시 추가
+            @Parameter(name = "pageable", description = "페이징 설정 (page, size, sort)", example = "{\n\"page\":0,\n\"size\":10,\n\"sort\":[\"id,asc\"]\n}")
+            @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        log.info("getPaginatedList: {}에서 pageable={}인 객체들 조회 요청", this.getClass().getSimpleName(), pageable);
+        return getBaseService().getPaginatedList(pageable);
+    }
+
     @Override
     @Operation(summary = "수정", description = "ID로 엔티티를 업데이트")
     @PutMapping("{id}")
     public Header<Res> update(@PathVariable(name = "id") Long id,
-                              @RequestBody /*@Valid*/ Header<Req> request) {
+                              @RequestBody @Valid Header<Req> request) {
         log.info("readAll: {}에서 전체 조회 요청", this.getClass().getSimpleName());
         return getBaseService().update(id, request);
     }
 
     @Override
+    @ResponseStatus(HttpStatus.NO_CONTENT) // 204, NO_CONTENT
     @DeleteMapping("{id}")
     @Operation(summary = "삭제", description = "ID로 엔티티를 삭제")
-    public Header<Void> softDelete(@PathVariable(name = "id") Long id) {
+    public Header<Void> delete(@PathVariable(name = "id") Long id) {
         log.info("delete: {}에서 id={}인 객체 삭제 요청", this.getClass().getSimpleName(), id);
-        return getBaseService().softDelete(id);
+        return getBaseService().delete(id);
     }
 
     @GetMapping("all")
-    @Operation(summary = "전체 조회", description = "임시 조회")
+    @Operation(summary = "전체 조회(임시)", description = "임시로 전체 조회 가능하도록 열어둠")
     public Header<List<Res>> findAll() {
         return getBaseService().findAll();
     }
-
-    /*
-    // 페이지 단위 조회 (페이징 기능 추가용)
-    @GetMapping("")
-    // Swagger 문서 생성을 위한 어노테이션 예시
-    // @Operation(summary = "페이지별 조회", description = "pageable로 엔티티 목록을 조회")
-    public ResponseEntity<ApiResponse<List<Res>>> getPaginatedList(
-            // Swagger 문서에 pageable 파라미터 예시 추가
-            // @Parameter(name = "pageable", description = "페이징 설정 (page, size, sort)", example = "{\n\"page\":0,\n\"size\":10,\n\"sort\":[\"id,asc\"]\n}")
-            @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-
-        log.info("{}","{}","getPaginatedList: ", pageable);
-        return baseService.getPaginatedList(pageable);
-    }
-    */
 
     // 요청 DTO 클래스 타입 반환용 (리플렉션 등에서 활용 가능)
     // protected abstract Class<CreateReq> getRequestClass();

@@ -1,11 +1,13 @@
 package com.itschool.study_pod.repository;
 
 import com.itschool.study_pod.StudyPodApplicationTests;
+import com.itschool.study_pod.embedable.WeeklySchedule;
 import com.itschool.study_pod.entity.*;
-import com.itschool.study_pod.enumclass.AccountRole;
-import com.itschool.study_pod.enumclass.MeetingMethod;
-import com.itschool.study_pod.enumclass.RecruitmentStatus;
-import com.itschool.study_pod.enumclass.Subject;
+import com.itschool.study_pod.entity.address.Sgg;
+import com.itschool.study_pod.entity.address.Sido;
+import com.itschool.study_pod.enumclass.*;
+import com.itschool.study_pod.repository.address.SggRepository;
+import com.itschool.study_pod.repository.address.SidoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 import java.util.Set;
 import java.util.UUID;
 
@@ -31,48 +35,83 @@ class InterestedStudyRepositoryTest extends StudyPodApplicationTests {
     @Autowired
     private StudyGroupRepository studyGroupRepository;
 
-    // 보류
     @Autowired
     private SubjectAreaRepository subjectAreaRepository;
+
+    @Autowired
+    private SggRepository sggRepository;
+
+    @Autowired
+    private SidoRepository sidoRepository;
 
 
     private User savedUser;
 
-    private StudyGroup savedstudyGroup;
+    private StudyGroup savedStudyGroup;
 
-    // 보류
     private SubjectArea savedSubject;
+
+    private Sido savedSido;
+
+    private Sgg savedSgg;
 
     @BeforeEach
     public void beforeSetUp() {
 
-        User user = User.builder()
-                .email(UUID.randomUUID() + "@study.com")
-                .password("1234")
-                .role(AccountRole.ROLE_USER)
-                .name("abc")
-                .nickname(UUID.randomUUID().toString())
-                .build();
+        savedUser = userRepository.save(
+                User.builder()
+                        .email(UUID.randomUUID() +"@example.com")
+                        .password("1234")
+                        .role(AccountRole.ROLE_USER)
+                        .name("abc")
+                        .nickname(UUID.randomUUID().toString())
+                        .build()
+        );
 
-        savedUser = userRepository.save(user);
-
-        SubjectArea subjectArea = SubjectArea.builder()
+        savedSubject = subjectAreaRepository.save(SubjectArea.builder()
                 .subject(Subject.IT)
+                .build());
+
+        savedSubject = subjectAreaRepository.save(SubjectArea.builder()
+                .subject(Subject.IT)
+                .build());
+
+        Sido sido = Sido.builder()
+                .sidoCd("11")
+                .sidoNm("서울특별시")
                 .build();
 
-        // subject saved를 따로 만들어야 사용가능?
-        savedSubject = subjectAreaRepository.save(subjectArea);
+        savedSido = sidoRepository.save(sido);
 
-        StudyGroup studyGroup = StudyGroup.builder()
-                .title("자바 스터디")
-                .maxMembers(7)
-                .recruitmentStatus(RecruitmentStatus.RECRUITING)
-                .meetingMethod(MeetingMethod.OFFLINE)
-                .subjectArea(savedSubject)
-                .keywords(Set.of("키워드1", "키워드2"))
+        Sgg sgg = Sgg.builder()
+                .sido(savedSido)
+                .sggCd("110")
+                .sggNm("종로구")
                 .build();
 
-        savedstudyGroup = studyGroupRepository.save(studyGroup);
+        savedSgg = sggRepository.save(sgg);
+
+
+        savedStudyGroup = studyGroupRepository.save(
+                StudyGroup.builder()
+                        .title("자바 스터디")
+                        .description("설명")
+                        .maxMembers(5)
+                        .meetingMethod(MeetingMethod.ONLINE)
+                        .recruitmentStatus(RecruitmentStatus.RECRUITING)
+                        .feeType(FeeType.MONTHLY)
+                        .amount(10000L)
+                        .leader(savedUser)
+                        .address(savedSgg)
+                        .subjectArea(savedSubject)
+                        .keywords(Set.of("키워드1", "키워드2"))
+                        .weeklySchedules(Set.of(WeeklySchedule.builder()
+                                .dayOfWeek(DayOfWeek.MONDAY)
+                                .startTime(LocalTime.of(9, 0))
+                                .endTime(LocalTime.of(10, 0))
+                                .build()))
+                        .build()
+        );
 
     }
 
@@ -91,7 +130,7 @@ class InterestedStudyRepositoryTest extends StudyPodApplicationTests {
         // 관심 스터디 목록 생성 및 저장
         InterestedStudy interestedStudy = InterestedStudy.builder()
                 .user(savedUser)
-                .studyGroup(savedstudyGroup)
+                .studyGroup(savedStudyGroup)
                 .build();
 
         InterestedStudy savedInterestedStudy = interestedStudyRepository.save(interestedStudy);
@@ -108,7 +147,7 @@ class InterestedStudyRepositoryTest extends StudyPodApplicationTests {
         // 관심 스터디 목록 저장
         InterestedStudy interestedStudy = InterestedStudy.builder()
                 .user(savedUser)
-                .studyGroup(savedstudyGroup)
+                .studyGroup(savedStudyGroup)
                 .build();
 
         InterestedStudy savedInterestedStudy = interestedStudyRepository.save(interestedStudy);
@@ -131,7 +170,7 @@ class InterestedStudyRepositoryTest extends StudyPodApplicationTests {
         // 관심 스터디 목록 저장
         InterestedStudy interestedStudy = InterestedStudy.builder()
                 .user(savedUser)
-                .studyGroup(savedstudyGroup)
+                .studyGroup(savedStudyGroup)
                 .build();
 
         InterestedStudy savedInterestedStudy = interestedStudyRepository.save(interestedStudy);
@@ -156,7 +195,7 @@ class InterestedStudyRepositoryTest extends StudyPodApplicationTests {
         // // 관심 스터디 목록 저장
         InterestedStudy interestedStudy = InterestedStudy.builder()
                 .user(savedUser)
-                .studyGroup(savedstudyGroup)
+                .studyGroup(savedStudyGroup)
                 .build();
         InterestedStudy savedInterestedStudy = interestedStudyRepository.save(interestedStudy);
 

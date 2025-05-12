@@ -14,7 +14,7 @@ public class AdminResponse {
 
     private String email;
 
-    private String password;
+    // private String password;
 
     private AccountRole role;
 
@@ -25,4 +25,10 @@ public class AdminResponse {
     private String updatedBy;
 
     private LocalDateTime updatedAt;
+
+    public static AdminResponse withId(Long id) {
+        return AdminResponse.builder()
+                .id(id)
+                .build();
+    }
 }

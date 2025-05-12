@@ -32,4 +32,10 @@ public class EnrollmentResponse {
     private String updatedBy;
 
     private LocalDateTime updatedAt;
+
+    public static EnrollmentResponse withId(Long id) {
+        return EnrollmentResponse.builder()
+                .id(id)
+                .build();
+    }
 }

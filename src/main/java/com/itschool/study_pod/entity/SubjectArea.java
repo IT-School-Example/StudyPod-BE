@@ -1,13 +1,11 @@
 package com.itschool.study_pod.entity;
 
-import com.itschool.study_pod.dto.request.SubjectAreaRequest;
+import com.itschool.study_pod.dto.request.subjectarea.SubjectAreaRequest;
 import com.itschool.study_pod.dto.response.SubjectAreaResponse;
 import com.itschool.study_pod.enumclass.Subject;
 import com.itschool.study_pod.ifs.Convertible;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
@@ -28,7 +26,6 @@ public class SubjectArea implements Convertible<SubjectAreaRequest, SubjectAreaR
     public static SubjectArea of(SubjectAreaRequest request) { // create용
         if(request != null) {
             return SubjectArea.builder()
-                    .id(request.getId())
                     .subject(request.getSubject())
                     .build();
         }
@@ -45,6 +42,12 @@ public class SubjectArea implements Convertible<SubjectAreaRequest, SubjectAreaR
         return SubjectAreaResponse.builder()
                 .id(this.id)
                 .subject(this.subject)
+                .build();
+    }
+
+    public static SubjectArea withId(Long id) {
+        return SubjectArea.builder()
+                .id(id)
                 .build();
     }
 }

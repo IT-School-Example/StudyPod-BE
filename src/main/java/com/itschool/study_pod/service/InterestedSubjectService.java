@@ -1,17 +1,15 @@
 package com.itschool.study_pod.service;
 
-import com.itschool.study_pod.dto.request.InterestedSubjectRequest;
+import com.itschool.study_pod.dto.request.interestedsubject.InterestedSubjectRequest;
 import com.itschool.study_pod.dto.response.InterestedSubjectResponse;
 import com.itschool.study_pod.entity.InterestedSubject;
 import com.itschool.study_pod.repository.InterestedSubjectRepository;
 import com.itschool.study_pod.repository.SubjectAreaRepository;
 import com.itschool.study_pod.repository.UserRepository;
 import com.itschool.study_pod.service.base.CrudService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor

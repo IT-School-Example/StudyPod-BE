@@ -1,11 +1,16 @@
 package com.itschool.study_pod.repository;
 
 import com.itschool.study_pod.StudyPodApplicationTests;
+import com.itschool.study_pod.embedable.WeeklySchedule;
 import com.itschool.study_pod.entity.Enrollment;
 import com.itschool.study_pod.entity.StudyGroup;
 import com.itschool.study_pod.entity.SubjectArea;
 import com.itschool.study_pod.entity.User;
+import com.itschool.study_pod.entity.address.Sgg;
+import com.itschool.study_pod.entity.address.Sido;
 import com.itschool.study_pod.enumclass.*;
+import com.itschool.study_pod.repository.address.SggRepository;
+import com.itschool.study_pod.repository.address.SidoRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,7 +18,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -31,25 +38,30 @@ class EnrollmentRepositoryTest extends StudyPodApplicationTests {
     private UserRepository userRepository;
 
     @Autowired
-    private StudyGroupRepository studyGroupRepository; // 수정 해야함
+    private StudyGroupRepository studyGroupRepository;
 
     @Autowired
     private SubjectAreaRepository subjectAreaRepository;
 
-    private User savedUser;
+    @Autowired
+    private SggRepository sggRepository;
 
-    private StudyGroup savedStudyGroup;
+    @Autowired
+    private SidoRepository sidoRepository;
+
+
+    private User savedUser;
 
     private SubjectArea savedSubject;
 
+    private StudyGroup savedStudyGroup;
+
+    private Sido savedSido;
+
+    private Sgg savedSgg;
+
     @BeforeEach
     public void beforeSetUp() {
-
-        SubjectArea subjectArea = SubjectArea.builder()
-                .subject(Subject.IT)
-                .build();
-
-        savedSubject = subjectAreaRepository.save(subjectArea);
 
         savedUser = userRepository.save(
                 User.builder()
@@ -61,15 +73,44 @@ class EnrollmentRepositoryTest extends StudyPodApplicationTests {
                         .build()
         );
 
-        // 수정 해야함
+        savedSubject = subjectAreaRepository.save(SubjectArea.builder()
+                .subject(Subject.IT)
+                .build());
+
+        Sido sido = Sido.builder()
+                .sidoCd("11")
+                .sidoNm("서울특별시")
+                .build();
+
+        savedSido = sidoRepository.save(sido);
+
+        Sgg sgg = Sgg.builder()
+                .sido(savedSido)
+                .sggCd("110")
+                .sggNm("종로구")
+                .build();
+
+        savedSgg = sggRepository.save(sgg);
+
+
         savedStudyGroup = studyGroupRepository.save(
                 StudyGroup.builder()
                         .title("자바 스터디")
+                        .description("설명")
                         .maxMembers(5)
                         .meetingMethod(MeetingMethod.ONLINE)
                         .recruitmentStatus(RecruitmentStatus.RECRUITING)
+                        .feeType(FeeType.MONTHLY)
+                        .amount(10000L)
+                        .leader(savedUser)
+                        .address(savedSgg)
                         .subjectArea(savedSubject)
                         .keywords(Set.of("키워드1", "키워드2"))
+                        .weeklySchedules(Set.of(WeeklySchedule.builder()
+                                .dayOfWeek(DayOfWeek.MONDAY)
+                                .startTime(LocalTime.of(9, 0))
+                                .endTime(LocalTime.of(10, 0))
+                                .build()))
                         .build()
         );
     }
@@ -85,8 +126,10 @@ class EnrollmentRepositoryTest extends StudyPodApplicationTests {
     @Test
     @DisplayName("저장 테스트")
     void create() {
+        Long beforeCount = enrollmentRepository.count();
+
         Enrollment enrollment = Enrollment.builder()
-                .appliedAt(LocalDateTime.now())
+                // .appliedAt(LocalDateTime.now())
                 .introduce("안녕하세요. 참여 신청합니다.")
                 .status(EnrollmentStatus.PENDING)
                 .user(savedUser)
@@ -95,14 +138,14 @@ class EnrollmentRepositoryTest extends StudyPodApplicationTests {
 
         enrollmentRepository.save(enrollment);
 
-        assertThat(enrollmentRepository.count()).isEqualTo(1);
+        assertThat(enrollmentRepository.count()).isEqualTo(beforeCount + 1);
     }
 
     @Test
     @DisplayName("유저 객체로 조회 테스트")
     void findByUser() {
         Enrollment enrollment = Enrollment.builder()
-                .appliedAt(LocalDateTime.now())
+                // .appliedAt(LocalDateTime.now())
                 .introduce("참여합니다.")
                 .status(EnrollmentStatus.PENDING)
                 .user(savedUser)
@@ -119,7 +162,7 @@ class EnrollmentRepositoryTest extends StudyPodApplicationTests {
     @DisplayName("스터디 그룹 id로 조회 테스트")
     void findByStudyGroupId() {
         Enrollment enrollment = Enrollment.builder()
-                .appliedAt(LocalDateTime.now())
+                // .appliedAt(LocalDateTime.now())
                 .introduce("스터디 신청합니다.")
                 .status(EnrollmentStatus.PENDING)
                 .user(savedUser)
@@ -136,7 +179,7 @@ class EnrollmentRepositoryTest extends StudyPodApplicationTests {
     @DisplayName("사용자id와 그룹 id로 조회 테스트")
     void findByUserIdAndStudyGroupId() {
         Enrollment enrollment = Enrollment.builder()
-                .appliedAt(LocalDateTime.now())
+                // .appliedAt(LocalDateTime.now())
                 .introduce("신청!")
                 .status(EnrollmentStatus.PENDING)
                 .user(savedUser)
