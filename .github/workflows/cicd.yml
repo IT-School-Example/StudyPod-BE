@@ -60,9 +60,9 @@ jobs:
         run: echo "artifact=$(ls ./build/libs)" >> $GITHUB_ENV
 
       # 배포 스크립트에 실행 권한 부여
-#      - name: Add execute permission to deploy script
-#        run: chmod +x execute-deploy.sh
-#        shell: bash
+      - name: Add execute permission to deploy script
+        run: chmod +x execute-deploy.sh
+        shell: bash
 
       # zip 파일 생성 (JAR 파일만 압축, deploy 디렉토리에 저장)
       - name: zip 파일 생성
@@ -75,18 +75,18 @@ jobs:
 
 # 아래는 실제 AWS에 배포하는 단계이며, 필요 시 주석 해제하여 사용
 
-#      # AWS 자격 증명 설정 (CodeDeploy 및 S3 연동을 위해 필요)
-#      - name: AWS 자격 증명
-#        uses: aws-actions/configure-aws-credentials@v1
-#        with:
-#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_ID }}
-#          aws-region: ap-northeast-2
-#
-#      # 생성된 zip 파일을 S3 버킷에 업로드
-#      - name: S3 업로드
-#        run: aws s3 cp --region ap-northeast-2 ./deploy/$GITHUB_SHA.zip s3://${{ secrets.S3_BUCKET_NAME }}/$GITHUB_SHA.zip
-#
+      # AWS 자격 증명 설정 (CodeDeploy 및 S3 연동을 위해 필요)
+      - name: AWS 자격 증명
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_ID }}
+          aws-region: ap-northeast-2
+
+      # 생성된 zip 파일을 S3 버킷에 업로드
+      - name: S3 업로드
+        run: aws s3 cp --region ap-northeast-2 ./deploy/$GITHUB_SHA.zip s3://${{ secrets.S3_BUCKET_NAME }}/$GITHUB_SHA.zip
+
 #      # AWS CodeDeploy로 배포 요청 실행
 #      - name: CodeDeploy 배포
 #        run: aws deploy create-deployment
