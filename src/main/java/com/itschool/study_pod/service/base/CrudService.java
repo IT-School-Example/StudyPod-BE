@@ -1,13 +1,20 @@
 package com.itschool.study_pod.service.base;
 
 
-import com.itschool.study_pod.ifs.CrudInterface;
-import com.itschool.study_pod.ifs.Convertible;
 import com.itschool.study_pod.dto.Header;
+import com.itschool.study_pod.dto.Pagination;
+import com.itschool.study_pod.ifs.Convertible;
+import com.itschool.study_pod.ifs.CrudInterface;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public abstract class CrudService<Req, Res, Entity extends Convertible<Req, Res>> implements CrudInterface<Req, Res> {
@@ -22,6 +29,7 @@ public abstract class CrudService<Req, Res, Entity extends Convertible<Req, Res>
         return Header.OK(entity.response());
     }
 
+    @Override
     public Header<Res> create(Header<Req> request) {
 
         Entity entity = toEntity(request.getData());
@@ -31,6 +39,7 @@ public abstract class CrudService<Req, Res, Entity extends Convertible<Req, Res>
         return apiResponse(entity);
     }
 
+    @Override
     public final Header<Res> read(Long id) {
         return apiResponse(getBaseRepository().findById(id)
                 .orElseThrow(()-> new EntityNotFoundException("해당 id " + id + "에 해당하는 객체가 없습니다.")));
@@ -38,6 +47,7 @@ public abstract class CrudService<Req, Res, Entity extends Convertible<Req, Res>
 
 
     @Transactional
+    @Override
     public Header<Res> update(Long id, Header<Req> request) {
 
         Entity entity = getBaseRepository().findById(id)
@@ -48,7 +58,7 @@ public abstract class CrudService<Req, Res, Entity extends Convertible<Req, Res>
         return apiResponse(entity);
     }
 
-
+    @Override
     public Header<Void> delete(Long id) {
         Entity entity = getBaseRepository().findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("해당 id " + id + "에 해당하는 객체가 없습니다."));
@@ -58,16 +68,30 @@ public abstract class CrudService<Req, Res, Entity extends Convertible<Req, Res>
         return Header.OK();
     }
 
-    /*public final ResponseEntity<ApiResponse<List<Res>>> getPaginatedList(Pageable pageable) {
+    public Header<List<Res>> findAll() {
+        List<Entity> entities = getBaseRepository().findAll();
+
+        return responseList(entities);
+    }
+
+    protected final Header<List<Res>> responseList(List<? extends Convertible<?, Res>> entities) {
+        List<Res> responseList = entities.stream()
+                .map(Convertible::response)
+                .collect(Collectors.toList());
+
+        return Header.OK(responseList);
+    }
+
+    public final Header<List<Res>> getPaginatedList(Pageable pageable) {
         Page<Entity> entities = getBaseRepository().findAll(pageable);
 
         return convertPageToList(entities);
-    }*/
+    }
 
-    /*public final ResponseEntity<ApiResponse<List<Res>>> convertPageToList(Page<Entity> entityPage) {
+    protected final Header<List<Res>> convertPageToList(Page<Entity> entityPage) {
 
         List<Res> entities = entityPage.stream()
-                .map(entity -> response(entity))
+                .map(entity -> entity.response())
                 .collect(Collectors.toList());
 
         Pagination pagination = Pagination.builder()
@@ -77,18 +101,8 @@ public abstract class CrudService<Req, Res, Entity extends Convertible<Req, Res>
                 .currentElements(entityPage.getNumberOfElements())
                 .build();
 
-        return ResponseEntity.ok(ApiResponse.OK(entities));
-    }*/
-
-    /*protected final List<Res> responseList(List<Entity> entities) {
-        List<Res> responseList = new ArrayList<>();
-
-        for(Entity entity : entities){
-            responseList.add((Res) entity.response());
-        }
-
-        return responseList;
-    }*/
+        return Header.OK(entities, pagination);
+    }
 
     /*public List<Res> createByList(List<Req> requestList) {
         List<Entity> entities = requestList.stream()

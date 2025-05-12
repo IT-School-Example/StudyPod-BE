@@ -1,9 +1,7 @@
 package com.itschool.study_pod.entity.address;
 
-import com.itschool.study_pod.dto.request.AdminRequest;
 import com.itschool.study_pod.dto.request.address.SggRequest;
 import com.itschool.study_pod.dto.response.address.SggResponse;
-import com.itschool.study_pod.entity.Admin;
 import com.itschool.study_pod.ifs.Convertible;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -38,12 +36,22 @@ public class Sgg implements Convertible<SggRequest, SggResponse> {
 
     @Deprecated
     public static Sgg of(SggRequest request) { // create용
+        if(request != null) {
+            return Sgg.builder()
+                    .id(request.getId())
+                    .sido(Sido.of(request.getSido()))
+                    .sggCd(request.getSggCd())
+                    .sggNm(request.getSggNm())
+                    .build();
+        }
+        return null;
+    }
+
+    public static Sgg withId(Long id) {
         return Sgg.builder()
-                .id(request.getId())
-                .sido(Sido.of(request.getSido()))
-                .sggCd(request.getSggCd())
-                .sggNm(request.getSggNm())
+                .id(id)
                 .build();
+
     }
 
     @Deprecated

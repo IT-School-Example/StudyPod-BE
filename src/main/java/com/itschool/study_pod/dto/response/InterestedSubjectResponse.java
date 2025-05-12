@@ -16,8 +16,6 @@ public class InterestedSubjectResponse {
 
     private SubjectAreaResponse subjectArea;
 
-    private boolean isDeleted;
-
     private String createdBy;
 
     private LocalDateTime createdAt;
@@ -26,4 +24,9 @@ public class InterestedSubjectResponse {
 
     private LocalDateTime updatedAt;
 
+    public static InterestedSubjectResponse withId(Long id) {
+        return InterestedSubjectResponse.builder()
+                .id(id)
+                .build();
+    }
 }

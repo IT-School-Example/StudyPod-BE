@@ -25,8 +25,6 @@ public class BoardResponse {
 
     private StudyGroupResponse studyGroup;
 
-    private boolean isDeleted;
-
     private String createdBy;
 
     private LocalDateTime createdAt;
@@ -34,4 +32,10 @@ public class BoardResponse {
     private String updatedBy;
 
     private LocalDateTime updatedAt;
+
+    public static BoardResponse withId(Long id) {
+        return BoardResponse.builder()
+                .id(id)
+                .build();
+    }
 }

@@ -1,11 +1,15 @@
 package com.itschool.study_pod.entity;
 
-import com.itschool.study_pod.dto.request.CommentRequest;
+import com.itschool.study_pod.dto.request.comment.CommentRequest;
+import com.itschool.study_pod.dto.response.BoardResponse;
 import com.itschool.study_pod.dto.response.CommentResponse;
+import com.itschool.study_pod.dto.response.UserResponse;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.ifs.Convertible;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
@@ -13,6 +17,8 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Table(name = "comments")
+@SQLDelete(sql = "UPDATE comments SET is_deleted = true WHERE comment_id = ?")
+@Where(clause = "is_deleted = false")
 public class Comment extends BaseEntity implements Convertible<CommentRequest, CommentResponse> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,11 +42,12 @@ public class Comment extends BaseEntity implements Convertible<CommentRequest, C
 
     public static Comment of(CommentRequest request) { // create용
         return Comment.builder()
-                .id(request.getId())
                 .content(request.getContent())
-                .board(Board.of(request.getBoard()))
-                .user(User.of(request.getUser()))
-                .parentComment(Comment.of(request.getParentComment()))
+                .board(Board.withId(request.getBoard().getId()))
+                .user(User.withId(request.getUser().getId()))
+                .parentComment(request.getParentComment() != null?
+                        Comment.withId(request.getParentComment().getId())
+                        : null)
                 .build();
     }
 
@@ -49,10 +56,12 @@ public class Comment extends BaseEntity implements Convertible<CommentRequest, C
         return CommentResponse.builder()
                 .id(this.id)
                 .content(this.content)
-                .board(this.board.response())
-                .user(this.user.response())
-                .parentComment(this.parentComment.response())
-                .isDeleted(this.isDeleted)
+                .board(BoardResponse.withId(this.board.getId()))
+                .user(UserResponse.withId(this.user.getId()))
+                .parentComment(
+                        this.parentComment != null?
+                            CommentResponse.withId(this.parentComment.getId())
+                            : null)
                 .createdAt(this.createdAt)
                 .createdBy(this.createdBy)
                 .updatedAt(this.updatedAt)
@@ -62,6 +71,17 @@ public class Comment extends BaseEntity implements Convertible<CommentRequest, C
 
     @Override
     public void update(CommentRequest request) {
-        this.content = request.getContent();
+        this.content = request.getContent() != null? request.getContent() : this.content;
+        this.board = request.getBoard() != null ? Board.withId(request.getBoard().getId()) : this.board;
+        this.user = request.getUser() != null ? User.withId(request.getUser().getId()) : this.user;
+        this.parentComment = request.getParentComment() != null ? Comment.withId(request.getParentComment().getId()) : null;
     }
+
+
+    public static Comment withId(Long id) {
+        return Comment.builder()
+                .id(id)
+                .build();
+    }
+
 }

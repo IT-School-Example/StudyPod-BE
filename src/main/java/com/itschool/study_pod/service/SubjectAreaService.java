@@ -1,15 +1,13 @@
 package com.itschool.study_pod.service;
 
-import com.itschool.study_pod.dto.request.SubjectAreaRequest;
+import com.itschool.study_pod.dto.request.subjectarea.SubjectAreaRequest;
 import com.itschool.study_pod.dto.response.SubjectAreaResponse;
 import com.itschool.study_pod.entity.SubjectArea;
 import com.itschool.study_pod.repository.SubjectAreaRepository;
 import com.itschool.study_pod.service.base.CrudService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +24,7 @@ public class SubjectAreaService extends CrudService<SubjectAreaRequest, SubjectA
     protected SubjectArea toEntity(SubjectAreaRequest requestEntity) {
         return SubjectArea.of(requestEntity);
     }
+
 
     /*public SubjectAreaResponse create(SubjectAreaRequest request) {
         return subjectAreaRepository.save(SubjectArea.of(request))

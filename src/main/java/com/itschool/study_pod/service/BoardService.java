@@ -1,6 +1,6 @@
 package com.itschool.study_pod.service;
 
-import com.itschool.study_pod.dto.request.BoardRequest;
+import com.itschool.study_pod.dto.request.board.BoardRequest;
 import com.itschool.study_pod.dto.response.BoardResponse;
 import com.itschool.study_pod.entity.Board;
 import com.itschool.study_pod.repository.BoardRepository;

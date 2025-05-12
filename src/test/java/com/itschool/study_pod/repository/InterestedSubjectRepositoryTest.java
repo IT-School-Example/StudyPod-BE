@@ -60,9 +60,9 @@ class InterestedSubjectRepositoryTest extends StudyPodApplicationTests {
 
     @AfterEach
     public void afterCleanUp() {
-        interestedSubjectRepository.deleteAll();
+        /*interestedSubjectRepository.deleteAll();
         userRepository.deleteAll();
-        subjectAreaRepository.deleteAll();
+        subjectAreaRepository.deleteAll();*/
     }
 
     // 생성(Create) 테스트

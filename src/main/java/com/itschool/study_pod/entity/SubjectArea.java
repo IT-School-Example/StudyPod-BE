@@ -1,6 +1,6 @@
 package com.itschool.study_pod.entity;
 
-import com.itschool.study_pod.dto.request.SubjectAreaRequest;
+import com.itschool.study_pod.dto.request.subjectarea.SubjectAreaRequest;
 import com.itschool.study_pod.dto.response.SubjectAreaResponse;
 import com.itschool.study_pod.enumclass.Subject;
 import com.itschool.study_pod.ifs.Convertible;
@@ -24,10 +24,12 @@ public class SubjectArea implements Convertible<SubjectAreaRequest, SubjectAreaR
     private Subject subject;
 
     public static SubjectArea of(SubjectAreaRequest request) { // create용
-        return SubjectArea.builder()
-                .id(request.getId())
-                .subject(request.getSubject())
-                .build();
+        if(request != null) {
+            return SubjectArea.builder()
+                    .subject(request.getSubject())
+                    .build();
+        }
+        return null;
     }
 
     @Override
@@ -40,6 +42,12 @@ public class SubjectArea implements Convertible<SubjectAreaRequest, SubjectAreaR
         return SubjectAreaResponse.builder()
                 .id(this.id)
                 .subject(this.subject)
+                .build();
+    }
+
+    public static SubjectArea withId(Long id) {
+        return SubjectArea.builder()
+                .id(id)
                 .build();
     }
 }

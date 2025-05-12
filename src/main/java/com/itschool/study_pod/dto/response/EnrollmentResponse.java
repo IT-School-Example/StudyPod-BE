@@ -25,8 +25,6 @@ public class EnrollmentResponse {
 
     private UserResponse user;
 
-    private boolean isDeleted;
-
     private String createdBy;
 
     private LocalDateTime createdAt;
@@ -34,4 +32,10 @@ public class EnrollmentResponse {
     private String updatedBy;
 
     private LocalDateTime updatedAt;
+
+    public static EnrollmentResponse withId(Long id) {
+        return EnrollmentResponse.builder()
+                .id(id)
+                .build();
+    }
 }

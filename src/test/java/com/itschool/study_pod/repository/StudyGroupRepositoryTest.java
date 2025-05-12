@@ -4,9 +4,12 @@ import com.itschool.study_pod.StudyPodApplicationTests;
 import com.itschool.study_pod.embedable.WeeklySchedule;
 import com.itschool.study_pod.entity.StudyGroup;
 import com.itschool.study_pod.entity.SubjectArea;
-import com.itschool.study_pod.enumclass.MeetingMethod;
-import com.itschool.study_pod.enumclass.RecruitmentStatus;
-import com.itschool.study_pod.enumclass.Subject;
+import com.itschool.study_pod.entity.User;
+import com.itschool.study_pod.entity.address.Sgg;
+import com.itschool.study_pod.entity.address.Sido;
+import com.itschool.study_pod.enumclass.*;
+import com.itschool.study_pod.repository.address.SggRepository;
+import com.itschool.study_pod.repository.address.SidoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,9 +34,23 @@ class StudyGroupRepositoryTest extends StudyPodApplicationTests {
     @Autowired
     SubjectAreaRepository subjectAreaRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private SggRepository sggRepository;
+
+    @Autowired
+    private SidoRepository sidoRepository;
+
 
     private SubjectArea savedSubject;
 
+    private User savedUser;
+
+    private Sido savedSido;
+
+    private Sgg savedSgg;
 
     @BeforeEach
     public void beforeSetUp() {
@@ -41,12 +59,37 @@ class StudyGroupRepositoryTest extends StudyPodApplicationTests {
                 .build();
 
         savedSubject = subjectAreaRepository.save(subjectArea);
+
+        User user = User.builder()
+                .email(UUID.randomUUID() + "@subject.com")
+                .password("1234")
+                .role(AccountRole.ROLE_USER)
+                .name("abc")
+                .nickname(UUID.randomUUID().toString())
+                .build();
+
+        savedUser = userRepository.save(user);
+
+        Sido sido = Sido.builder()
+                .sidoCd("11")
+                .sidoNm("서울특별시")
+                .build();
+
+        savedSido = sidoRepository.save(sido);
+
+        Sgg sgg = Sgg.builder()
+                .sido(savedSido)
+                .sggCd("110")
+                .sggNm("종로구")
+                .build();
+
+        savedSgg = sggRepository.save(sgg);
     }
 
     @AfterEach
     public void afterCleanUp() {
-        studyGroupRepository.deleteAll();
-        subjectAreaRepository.deleteAll();
+        // studyGroupRepository.deleteAll();
+        // subjectAreaRepository.deleteAll();
     }
 
     @Test
@@ -54,15 +97,21 @@ class StudyGroupRepositoryTest extends StudyPodApplicationTests {
     void create() {
         StudyGroup entity = StudyGroup.builder()
                 .title("자바 스터디")
+                .description("설명")
                 .maxMembers(5)
                 .meetingMethod(MeetingMethod.ONLINE)
                 .recruitmentStatus(RecruitmentStatus.RECRUITING)
+                .feeType(FeeType.MONTHLY)
+                .amount(10000L)
+                .leader(savedUser)
+                .address(savedSgg)
                 .subjectArea(savedSubject)
                 .keywords(Set.of("키워드1", "키워드2"))
-                /*.weeklySchedules(Set.of(WeeklySchedule.builder()
+                .weeklySchedules(Set.of(WeeklySchedule.builder()
                         .dayOfWeek(DayOfWeek.MONDAY)
-                        .timeRange(TimeRange.of(9, 0, 10, 0))
-                        .build()))*/
+                        .startTime(LocalTime.of(9, 0))
+                        .endTime(LocalTime.of(10, 0))
+                        .build()))
                 .build();
 
         StudyGroup savedEntity = studyGroupRepository.save(entity);
@@ -75,15 +124,21 @@ class StudyGroupRepositoryTest extends StudyPodApplicationTests {
     void read() {
         StudyGroup entity = StudyGroup.builder()
                 .title("Python 스터디")
-                .maxMembers(10)
-                .meetingMethod(MeetingMethod.OFFLINE)
+                .description("설명")
+                .maxMembers(5)
+                .meetingMethod(MeetingMethod.ONLINE)
                 .recruitmentStatus(RecruitmentStatus.RECRUITING)
+                .feeType(FeeType.MONTHLY)
+                .amount(10000L)
+                .leader(savedUser)
+                .address(savedSgg)
                 .subjectArea(savedSubject)
-                .keywords(Set.of("Python", "기초"))
-                /*.weeklySchedules(Set.of(WeeklySchedule.builder()
-                        .dayOfWeek(DayOfWeek.FRIDAY)
-                        .timeRange(TimeRange.of(10, 0, 11, 0))
-                        .build()))*/
+                .keywords(Set.of("키워드1", "키워드2"))
+                .weeklySchedules(Set.of(WeeklySchedule.builder()
+                        .dayOfWeek(DayOfWeek.MONDAY)
+                        .startTime(LocalTime.of(9, 0))
+                        .endTime(LocalTime.of(10, 0))
+                        .build()))
                 .build();
 
         StudyGroup saveEntity = studyGroupRepository.save(entity);
@@ -99,20 +154,28 @@ class StudyGroupRepositoryTest extends StudyPodApplicationTests {
     void update() {
         StudyGroup entity = StudyGroup.builder()
                 .title("초기제목")
+                .description("설명")
                 .maxMembers(5)
                 .meetingMethod(MeetingMethod.ONLINE)
                 .recruitmentStatus(RecruitmentStatus.RECRUITING)
+                .feeType(FeeType.MONTHLY)
+                .amount(10000L)
+                .leader(savedUser)
+                .address(savedSgg)
                 .subjectArea(savedSubject)
-                .keywords(Set.of("초기"))
-                /*.weeklySchedules(Set.of(WeeklySchedule.builder()
-                        .dayOfWeek(DayOfWeek.FRIDAY)
-                        .timeRange(TimeRange.of(10, 0, 11, 0))
+                /*.keywords(Set.of("키워드1", "키워드2"))
+                .weeklySchedules(Set.of(WeeklySchedule.builder()
+                        .dayOfWeek(DayOfWeek.MONDAY)
+                        .startTime(LocalTime.of(9, 0))
+                        .endTime(LocalTime.of(10, 0))
                         .build()))*/
                 .build();
 
         StudyGroup savedEntity = studyGroupRepository.save(entity);
 
         savedEntity.softDelete();
+
+        // savedEntity.setKeywords(Set.of("수정"));
 
         StudyGroup updatedEntity = studyGroupRepository.save(entity);
 
@@ -128,15 +191,21 @@ class StudyGroupRepositoryTest extends StudyPodApplicationTests {
         // 저장 엔티티 생성
         StudyGroup entity = StudyGroup.builder()
                 .title("삭제할 스터디")
+                .description("설명")
                 .maxMembers(5)
                 .meetingMethod(MeetingMethod.ONLINE)
                 .recruitmentStatus(RecruitmentStatus.RECRUITING)
+                .feeType(FeeType.MONTHLY)
+                .amount(10000L)
+                .leader(savedUser)
+                .address(savedSgg)
                 .subjectArea(savedSubject)
-                .keywords(Set.of("삭제"))
-                /*.weeklySchedules(Set.of(WeeklySchedule.builder()
-                        .dayOfWeek(DayOfWeek.FRIDAY)
-                        .timeRange(TimeRange.of(10, 0, 11, 0))
-                        .build()))*/
+                .keywords(Set.of("키워드1", "키워드2"))
+                .weeklySchedules(Set.of(WeeklySchedule.builder()
+                        .dayOfWeek(DayOfWeek.MONDAY)
+                        .startTime(LocalTime.of(9, 0))
+                        .endTime(LocalTime.of(10, 0))
+                        .build()))
                 .build();
 
         StudyGroup savedEntity = studyGroupRepository.save(entity);
