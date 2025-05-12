@@ -4,8 +4,6 @@ import com.itschool.study_pod.StudyPodApplicationTests;
 import com.itschool.study_pod.entity.Introduce;
 import com.itschool.study_pod.entity.StudyGroup;
 import com.itschool.study_pod.entity.SubjectArea;
-import com.itschool.study_pod.entity.User;
-import com.itschool.study_pod.enumclass.AccountRole;
 import com.itschool.study_pod.enumclass.MeetingMethod;
 import com.itschool.study_pod.enumclass.RecruitmentStatus;
 import com.itschool.study_pod.enumclass.Subject;
@@ -18,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
