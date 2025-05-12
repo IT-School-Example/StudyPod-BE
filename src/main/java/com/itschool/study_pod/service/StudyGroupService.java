@@ -128,4 +128,19 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
         return Header.OK(responseList);
     }
 
+    public Header<List<StudyGroupResponse>> searchByKeyword(String keyword) {
+        List<StudyGroup> results = studyGroupRepository.searchByKeyword(keyword);
+
+        if (results.isEmpty()) {
+            return Header.ERROR("해당 검색어와 관한 스터디를 조회하는데 실패했습니다.");
+        }
+
+        List<StudyGroupResponse> dtoList = results.stream()
+                .map(StudyGroup::response)
+                .toList();
+
+        return Header.OK(dtoList); // 메시지는 제거하거나 setMessage로 따로 붙여야 함
+    }
+
+
 }

@@ -15,10 +15,8 @@ import java.util.List;
 @Repository
 public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long> {
 
-    // 리더가 생성한 스터디 목록 조회
     List<StudyGroup> findAllByLeaderId(Long leaderId);
 
-    // 동적 쿼리로 스터디 그룹 목록 조회
     @Query("""
             SELECT sg FROM StudyGroup sg
             WHERE (
@@ -35,10 +33,15 @@ public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long> {
                                       @Param("subjectAreaId") Long subjectAreaId,
                                       Pageable pageable);
 
-    // 모집 상태로 조회
     List<StudyGroup> findAllByRecruitmentStatus(RecruitmentStatus recruitmentStatus);
 
-    //  스터디 방식으로 조회
     List<StudyGroup> findAllByMeetingMethod(MeetingMethod meetingMethod);
+
+    @Query("""
+                SELECT sg FROM StudyGroup sg
+                WHERE LOWER(sg.title) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                OR :keyword MEMBER OF sg.keywords
+            """)
+    List<StudyGroup> searchByKeyword(@Param("keyword") String keyword);
 
 }
