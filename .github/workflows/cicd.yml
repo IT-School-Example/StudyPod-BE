@@ -94,9 +94,9 @@ jobs:
         run: aws s3 cp --region ap-northeast-2 ./deploy/$GITHUB_SHA.zip s3://${{ secrets.S3_BUCKET_NAME }}/$GITHUB_SHA.zip
 
       # AWS CodeDeploy로 배포 요청 실행
-#      - name: CodeDeploy 배포
-#        run: aws deploy create-deployment
-#          --application-name tableq-product
-#          --deployment-config-name CodeDeployDefault.AllAtOnce
-#          --deployment-group-name tableq-product-group
-#          --s3-location bucket=${{ secrets.S3_BUCKET_NAME }},bundleType=zip,key=$GITHUB_SHA.zip
+      - name: CodeDeploy 배포
+        run: aws deploy create-deployment
+          --application-name studypod-product-deploy
+          --deployment-config-name CodeDeployDefault.AllAtOnce
+          --deployment-group-name studypod-product-deploy-group
+          --s3-location bucket=${{ secrets.S3_BUCKET_NAME }},bundleType=zip,key=$GITHUB_SHA.zip
