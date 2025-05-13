@@ -70,13 +70,54 @@ public class EnrollmentService extends CrudService<EnrollmentRequest, Enrollment
 
 
     @Transactional
-    public Header<Void> memberKick (Long id) {
+    public Header<EnrollmentResponse> kickMember(Long id) {
+        Enrollment enrollment = enrollmentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당 id " + id + "에 해당하는 객체가 없습니다."));
+
+
+
+        if (!(EnrollmentStatus.APPROVED.equals(enrollment.getStatus()) ||
+                EnrollmentStatus.BANNED.equals(enrollment.getStatus())))
+            return Header.ERROR("처리 할 수 없습니다.");
+
+        if (EnrollmentStatus.APPROVED.equals(enrollment.getStatus())) {
+            // 강제퇴장
+            enrollment.kickMember();
+        } else if (EnrollmentStatus.BANNED.equals(enrollment.getStatus())) {
+            // 재입장
+            enrollment.approveMember();
+        }
+
+        enrollmentRepository.save(enrollment);
+        return apiResponse(enrollment);
+
+    }
+//    // 재입장
+//    public Header<EnrollmentResponse> unmemberKick (Long userId, Long studyGroupId) {
+//        Enrollment enrollment = enrollmentRepository.findById(userId, studyGroupId)
+//                .orElseThrow(()-> new EntityNotFoundException("해당 객체가 없습니다."));
+//
+//        if (enrollment.memberKick() == EnrollmentStatus.BANNED) {
+//            enrollment.getStatus(EnrollmentStatus.APPROVED);
+//
+//            enrollmentRepository.save(enrollment);
+//        }
+//    }
+
+   /* @Transactional
+    public Header<EnrollmentResponse> memberKick (Long id) {
 
         Enrollment enrollment = enrollmentRepository.findById(id)
                 .orElseThrow(()-> new EntityNotFoundException("해당 id " + id + "에 해당하는 객체가 없습니다."));
 
         enrollment.memberKick();
-        return Header.OK();
-    }
+
+
+
+        return apiResponse(enrollment);
+//        return Header.OK();
+    }*/
+    // 삭제를 하지 않고 데이터는 있는데 차단만 한 상태(다시 입장 할 수 있다.)
+
 
 }

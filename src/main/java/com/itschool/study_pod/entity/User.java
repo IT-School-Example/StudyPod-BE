@@ -10,6 +10,8 @@ import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -40,6 +42,11 @@ public class User extends BaseEntity implements Convertible<UserRequest, UserRes
 
     @Column(unique = true)
     private String nickname;
+
+    // 여러명의 유저가 하나의 스터디그룹에 속한다.
+    @ManyToOne
+    @JoinColumn(name = "study_group_id", nullable = false)
+    private StudyGroup studyGroup;
 
     public static User of(UserRequest request) { // create용
         if(request != null) {
