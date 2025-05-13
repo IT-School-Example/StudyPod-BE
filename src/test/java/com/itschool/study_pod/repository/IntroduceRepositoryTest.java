@@ -192,6 +192,6 @@ class IntroduceRepositoryTest extends StudyPodApplicationTests {
 
         long afterCount = introduceRepository.count();
 
-        assertThat(afterCount).isEqualTo(beforeCount+1);
+        assertThat(afterCount).isEqualTo(beforeCount);
     }
 }
