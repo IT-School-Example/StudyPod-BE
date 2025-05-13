@@ -1,6 +1,9 @@
 package com.itschool.study_pod.ifs;
 
 import com.itschool.study_pod.dto.Header;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface CrudInterface <Req, Res> {
 
@@ -12,5 +15,5 @@ public interface CrudInterface <Req, Res> {
 
     Header<Void> delete(Long id);
 
-    // ResponseEntity<ApiResponse<List<Res>>> getPaginatedList(Pageable pageable);
+    Header<List<Res>> getPaginatedList(Pageable pageable);
 }
