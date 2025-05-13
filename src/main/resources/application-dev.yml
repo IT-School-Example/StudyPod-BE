@@ -6,9 +6,6 @@ spring:
       max-request-size: 10MB
   jackson:
     default-property-inclusion: non_null;
-  h2:
-    console:
-      enabled: true # /h2-console 설정
   datasource:
     url: jdbc:postgresql://192.168.1.95:5432/postgres
     username: postgres
@@ -44,6 +41,8 @@ spring:
 logging.level:
   org.hibernate.SQL: debug
   org.hibernate.orm.jdbc.bind: trace
+  software.amazon.awssdk: DEBUG  # AWS SDK 로깅을 DEBUG로 설정
+  # org.apache.http: DEBUG
 
 springdoc:
   swagger-ui:
