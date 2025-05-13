@@ -2,6 +2,7 @@ package com.itschool.study_pod.dto.response;
 
 import com.itschool.study_pod.dto.response.address.SggResponse;
 import com.itschool.study_pod.embedable.WeeklySchedule;
+import com.itschool.study_pod.entity.StudyGroup;
 import com.itschool.study_pod.enumclass.FeeType;
 import com.itschool.study_pod.enumclass.MeetingMethod;
 import com.itschool.study_pod.enumclass.RecruitmentStatus;
@@ -73,5 +74,17 @@ public class StudyGroupResponse {
         return StudyGroupResponse.builder()
                 .id(id)
                 .build();
+    }
+
+    // 필요한 부분만 가져오기(상세정보)
+    public StudyGroupResponse(StudyGroup studyGroup) {
+        this.title = studyGroup.getTitle();
+        this.description = studyGroup.getDescription();
+        this.subjectArea = getSubjectArea();
+        this.address = getAddress();
+        this.maxMembers = getMaxMembers();
+        this.weeklySchedules = getWeeklySchedules();
+        this.feeType = getFeeType();
+        this.amount = getAmount();
     }
 }
