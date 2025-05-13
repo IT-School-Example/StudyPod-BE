@@ -70,6 +70,8 @@ jobs:
       - name: zip 파일 생성
         run: |
           mkdir -p deploy  # deploy 폴더 생성
+          cp appspec.yml deploy/ # deploy에서 수행하는 파일
+          cp execute-deploy.sh deploy/  # 스크립트 파일 포함
           cp build/libs/*.jar deploy/  # JAR 파일 복사
           cd deploy && zip -r ./$GITHUB_SHA.zip *  # SHA 해시값으로 zip 파일 생성
           cd ../
