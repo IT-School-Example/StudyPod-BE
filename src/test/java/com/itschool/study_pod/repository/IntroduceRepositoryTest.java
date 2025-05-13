@@ -90,7 +90,6 @@ class IntroduceRepositoryTest extends StudyPodApplicationTests {
         savedSgg = sggRepository.save(sgg);
 
         StudyGroup studyGroup = StudyGroup.builder()
-                .id(1L)
                 .title("자바 스터디")
                 .description("설명")
                 .maxMembers(5)
@@ -129,10 +128,10 @@ class IntroduceRepositoryTest extends StudyPodApplicationTests {
 
         Introduce savedEntity = introduceRepository.save(entity);
 
-        System.out.println("entity : " + entity);
-        System.out.println("savedEntity : " + savedEntity);
+        long afterCount = introduceRepository.count();
 
         assertThat(entity).isEqualTo(savedEntity);
+        assertThat(afterCount).isEqualTo(beforeCount+1L);
         assertThat(savedEntity.isDeleted()).isFalse();
     }
 
@@ -193,6 +192,6 @@ class IntroduceRepositoryTest extends StudyPodApplicationTests {
 
         long afterCount = introduceRepository.count();
 
-        assertThat(afterCount).isEqualTo(beforeCount);
+        assertThat(afterCount).isEqualTo(beforeCount+1);
     }
 }
