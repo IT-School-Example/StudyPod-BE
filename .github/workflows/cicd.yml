@@ -17,9 +17,10 @@ jobs:
     # 환경 변수 설정 (Spring Profile 및 DB 연결 정보)
     env:
       SPRING_PROFILES_ACTIVE: local  # local 프로파일 활성화
-      spring.datasource.url: ${{ secrets.RDS_HOST }}  # RDS 주소
-      spring.datasource.username: ${{ secrets.RDS_USERNAME }}  # RDS 사용자명
-      spring.datasource.password: ${{ secrets.RDS_PASSWORD }}  # RDS 비밀번호
+      # 아래 설정 서버 환경 변수로 세팅 /etc/environment
+      # spring.datasource.url: ${{ secrets.RDS_HOST }}  # RDS 주소
+      # spring.datasource.username: ${{ secrets.RDS_USERNAME }}  # RDS 사용자명
+      # spring.datasource.password: ${{ secrets.RDS_PASSWORD }}  # RDS 비밀번호
       # JASYPT_PASSWORD: ${{ secrets.JASYPT_PASSWORD }}  # (선택) 암호화 키
 
     steps:
@@ -36,6 +37,7 @@ jobs:
         run: |
           echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
           echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
+          echo "S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }}" >> $GITHUB_ENV
 
       # JDK 17 설치 (corretto 배포판 사용)
       - name: JDK 17 설치
@@ -64,9 +66,9 @@ jobs:
           echo "artifact=$JAR_FILE" >> $GITHUB_ENV
 
       # 배포 스크립트에 실행 권한 부여
-#      - name: Add execute permission to deploy script
-#        run: chmod +x execute-deploy.sh
-#        shell: bash
+      - name: Add execute permission to deploy script
+        run: chmod +x execute-deploy.sh
+        shell: bash
 
       # zip 파일 생성 (JAR 파일만 압축, deploy 디렉토리에 저장)
       - name: zip 파일 생성
@@ -91,7 +93,7 @@ jobs:
       - name: S3 업로드
         run: aws s3 cp --region ap-northeast-2 ./deploy/$GITHUB_SHA.zip s3://${{ secrets.S3_BUCKET_NAME }}/$GITHUB_SHA.zip
 
-#      # AWS CodeDeploy로 배포 요청 실행
+      # AWS CodeDeploy로 배포 요청 실행
 #      - name: CodeDeploy 배포
 #        run: aws deploy create-deployment
 #          --application-name tableq-product
