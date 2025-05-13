@@ -16,7 +16,7 @@ spring:
   jpa:
     #show-sql: true # 전송 쿼리 확인, 애플리케이션 실행과정에 쿼리의 실행 구문을 모두 보여줌
     hibernate:
-      ddl-auto: validate  # 운영 환경에서는 'validate'
+      ddl-auto: update  # 운영 환경에서는 'validate'
     properties:
       hibernate:
         format_sql: true
