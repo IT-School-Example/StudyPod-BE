@@ -63,3 +63,7 @@ configurations {
 tasks.named('test') {
 	useJUnitPlatform() // JUnit 5 사용 설정
 }
+
+tasks.named('jar') {
+	enabled = false
+}
