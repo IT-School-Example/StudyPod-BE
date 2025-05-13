@@ -1,7 +1,7 @@
 plugins {
 	id 'java' // Java 플러그인 적용
-	id 'org.springframework.boot' version '3.0.2' // Spring Boot 플러그인 (3.0.2 버전)
-	id 'io.spring.dependency-management' version '1.1.7' // 의존성 버전 자동 관리
+	id 'org.springframework.boot' version '3.0.13' // Spring Boot 플러그인 (3.0.2 버전)
+	id 'io.spring.dependency-management' version '1.1.4' // 의존성 버전 자동 관리
 }
 
 group = 'com.itschool' // 그룹 ID
@@ -30,6 +30,9 @@ dependencies {
 	// DTO 유효성 검사(@Valid, @NotBlank 등)를 사용할 수 있도록 지원
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+
+	implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3:3.0.4'
+
 	// 개발 및 테스트용 인메모리 DB (H2)
 	runtimeOnly 'com.h2database:h2'
 
@@ -39,7 +42,7 @@ dependencies {
 
 	// API 문서 자동화
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
-	
+
 	// 테스트 관련 의존성
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
