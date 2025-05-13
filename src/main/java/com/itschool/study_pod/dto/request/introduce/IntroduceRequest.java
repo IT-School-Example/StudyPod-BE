@@ -1,7 +1,6 @@
 package com.itschool.study_pod.dto.request.introduce;
 
 import com.itschool.study_pod.dto.ReferenceDto;
-import com.itschool.study_pod.dto.request.studygroup.StudyGroupRequest;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
