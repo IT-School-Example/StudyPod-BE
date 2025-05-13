@@ -1,12 +1,16 @@
 package com.itschool.study_pod.repository;
 
 import com.itschool.study_pod.StudyPodApplicationTests;
+import com.itschool.study_pod.embedable.WeeklySchedule;
 import com.itschool.study_pod.entity.Introduce;
 import com.itschool.study_pod.entity.StudyGroup;
 import com.itschool.study_pod.entity.SubjectArea;
-import com.itschool.study_pod.enumclass.MeetingMethod;
-import com.itschool.study_pod.enumclass.RecruitmentStatus;
-import com.itschool.study_pod.enumclass.Subject;
+import com.itschool.study_pod.entity.User;
+import com.itschool.study_pod.entity.address.Sgg;
+import com.itschool.study_pod.entity.address.Sido;
+import com.itschool.study_pod.enumclass.*;
+import com.itschool.study_pod.repository.address.SggRepository;
+import com.itschool.study_pod.repository.address.SidoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +19,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,46 +33,92 @@ class IntroduceRepositoryTest extends StudyPodApplicationTests {
     private IntroduceRepository introduceRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private StudyGroupRepository studyGroupRepository;
 
     @Autowired
     private SubjectAreaRepository subjectAreaRepository;
 
+    @Autowired
+    private SggRepository sggRepository;
+
+    @Autowired
+    private SidoRepository sidoRepository;
+
     private StudyGroup savedStudyGroup;
 
     private SubjectArea savedSubject;
 
+    private User savedUser;
+
+    private Sido savedSido;
+
+    private Sgg savedSgg;
+
     @BeforeEach
     public void beforeSetUp() {
-        SubjectArea subjectArea = SubjectArea.builder()
-                .subject(Subject.IT)
-                .build();
 
-        savedSubject = subjectAreaRepository.save(subjectArea);
-
-        // 수정 해야함
-        savedStudyGroup = studyGroupRepository.save(
-                StudyGroup.builder()
-                        .title("자바 스터디")
-                        .maxMembers(5)
-                        .meetingMethod(MeetingMethod.ONLINE)
-                        .recruitmentStatus(RecruitmentStatus.RECRUITING)
-                        .subjectArea(savedSubject)
-                        .keywords(Set.of("키워드1", "키워드2"))
+        savedUser = userRepository.save(
+                User.builder()
+                        .email(UUID.randomUUID() +"@example.com")
+                        .password("1234")
+                        .role(AccountRole.ROLE_USER)
+                        .name("abc")
+                        .nickname(UUID.randomUUID().toString())
                         .build()
         );
+
+        savedSubject = subjectAreaRepository.save(SubjectArea.builder()
+                .subject(Subject.IT)
+                .build());
+
+        Sido sido = Sido.builder()
+                .sidoCd("11")
+                .sidoNm("서울특별시")
+                .build();
+
+        savedSido = sidoRepository.save(sido);
+
+        Sgg sgg = Sgg.builder()
+                .sido(savedSido)
+                .sggCd("110")
+                .sggNm("종로구")
+                .build();
+
+        savedSgg = sggRepository.save(sgg);
+
+        StudyGroup studyGroup = StudyGroup.builder()
+                .title("자바 스터디")
+                .description("설명")
+                .maxMembers(5)
+                .meetingMethod(MeetingMethod.ONLINE)
+                .recruitmentStatus(RecruitmentStatus.RECRUITING)
+                .feeType(FeeType.MONTHLY)
+                .amount(10000L)
+                .leader(savedUser)
+                .address(savedSgg)
+                .subjectArea(savedSubject)
+                .keywords(Set.of("키워드1", "키워드2"))
+                .weeklySchedules(Set.of(WeeklySchedule.builder()
+                        .dayOfWeek(DayOfWeek.MONDAY)
+                        .startTime(LocalTime.of(9, 0))
+                        .endTime(LocalTime.of(10, 0))
+                        .build()))
+                .build();
+
+        savedStudyGroup = studyGroupRepository.save(studyGroup);
     }
 
     @AfterEach
     public void afterCleanUp() {
-        introduceRepository.deleteAll();
-        studyGroupRepository.deleteAll(); // 수정 해야함
-        subjectAreaRepository.deleteAll();
     }
 
     @Test
     @DisplayName("저장 테스트")
     void create() {
+        Long beforeCount = introduceRepository.count();
 
         Introduce entity = Introduce.builder()
                 .content("내용")
@@ -75,10 +128,10 @@ class IntroduceRepositoryTest extends StudyPodApplicationTests {
 
         Introduce savedEntity = introduceRepository.save(entity);
 
-        System.out.println("entity : " + entity);
-        System.out.println("savedEntity : " + savedEntity);
+        long afterCount = introduceRepository.count();
 
         assertThat(entity).isEqualTo(savedEntity);
+        assertThat(afterCount).isEqualTo(beforeCount+1L);
         assertThat(savedEntity.isDeleted()).isFalse();
     }
 
@@ -139,6 +192,6 @@ class IntroduceRepositoryTest extends StudyPodApplicationTests {
 
         long afterCount = introduceRepository.count();
 
-        assertThat(afterCount).isEqualTo(beforeCount);
+        assertThat(afterCount).isEqualTo(beforeCount+1);
     }
 }

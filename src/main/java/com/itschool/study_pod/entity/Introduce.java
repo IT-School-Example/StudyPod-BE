@@ -2,6 +2,7 @@ package com.itschool.study_pod.entity;
 
 import com.itschool.study_pod.dto.request.introduce.IntroduceRequest;
 import com.itschool.study_pod.dto.response.IntroduceResponse;
+import com.itschool.study_pod.dto.response.StudyGroupResponse;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.ifs.Convertible;
 import jakarta.persistence.*;
@@ -30,12 +31,14 @@ public class Introduce extends BaseEntity implements Convertible<IntroduceReques
     protected boolean isPosted;
 
     public static Introduce of(IntroduceRequest request) { // create용
-        return Introduce.builder()
-                .id(request.getId())
-                .content(request.getContent())
-                .studyGroup(StudyGroup.of(request.getStudyGroup()))
-                .isPosted(request.isPosted())
-                .build();
+        if (request != null) {
+            return Introduce.builder()
+                    .content(request.getContent())
+                    .studyGroup(StudyGroup.withId(request.getStudyGroup().getId()))
+                    .isPosted(request.isPosted())
+                    .build();
+        }
+        return null;
     }
 
     @Override
@@ -50,13 +53,18 @@ public class Introduce extends BaseEntity implements Convertible<IntroduceReques
                 .id(this.id)
                 .content(this.content)
                 .isPosted(this.isPosted)
-                .studyGroup(this.studyGroup.response())
-                .isDeleted(this.isDeleted)
+                .studyGroup(StudyGroupResponse.withId(this.studyGroup.getId()))
                 .createdAt(this.createdAt)
                 .createdBy(this.createdBy)
                 .updatedAt(this.updatedAt)
                 .updatedBy(this.updatedBy)
                 .build();
 
+    }
+
+    public static Introduce withId(Long id) {
+        return Introduce.builder()
+                .id(id)
+                .build();
     }
 }
