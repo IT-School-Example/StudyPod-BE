@@ -37,6 +37,7 @@ jobs:
         run: |
           echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
           echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
+          echo "S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }}" >> $GITHUB_ENV
 
       # JDK 17 설치 (corretto 배포판 사용)
       - name: JDK 17 설치
@@ -89,9 +90,9 @@ jobs:
         run: aws s3 cp --region ap-northeast-2 ./deploy/$GITHUB_SHA.zip s3://${{ secrets.S3_BUCKET_NAME }}/$GITHUB_SHA.zip
 
       # AWS CodeDeploy로 배포 요청 실행
-      - name: CodeDeploy 배포
-        run: aws deploy create-deployment
-          --application-name tableq-product
-          --deployment-config-name CodeDeployDefault.AllAtOnce
-          --deployment-group-name tableq-product-group
-          --s3-location bucket=${{ secrets.S3_BUCKET_NAME }},bundleType=zip,key=$GITHUB_SHA.zip
+#      - name: CodeDeploy 배포
+#        run: aws deploy create-deployment
+#          --application-name tableq-product
+#          --deployment-config-name CodeDeployDefault.AllAtOnce
+#          --deployment-group-name tableq-product-group
+#          --s3-location bucket=${{ secrets.S3_BUCKET_NAME }},bundleType=zip,key=$GITHUB_SHA.zip
