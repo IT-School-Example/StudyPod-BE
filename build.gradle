@@ -49,6 +49,11 @@ dependencies {
 
 	// Spring Boot DevTools는 개발 편의성을 높이기 위해 제공되는 도구. 자동 재시작, 라이브 리로드, 설정 간소화
 	developmentOnly "org.springframework.boot:spring-boot-devtools"
+
+	// JWT
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
 }
 
 // 개발 환경에서만 필요한 라이브러리를 지정하는 사용자 정의 구성(Configuration)
