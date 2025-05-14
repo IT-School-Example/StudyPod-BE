@@ -160,5 +160,18 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
         }
     }
 
+    public Header<List<StudyGroupResponse>> findByAddressId(Long addressId) {
+        List<StudyGroup> results = studyGroupRepository.findByAddressId(addressId);
+
+        if (results.isEmpty()) {
+            return Header.ERROR("해당 조건의 스터디 그룹을 불러오지 못했습니다.");
+        }
+
+        List<StudyGroupResponse> dtoList = results.stream()
+                .map(StudyGroup::response)
+                .toList();
+
+        return Header.OK(dtoList);
+    }
 
 }

@@ -115,5 +115,15 @@ public class StudyGroupApiController extends CrudController<StudyGroupRequest, S
         return studyGroupService.findBySubjectAreaAndRecruiting(subjectAreaValue);
     }
 
+    @GetMapping("/filter/location")
+    @Operation(summary = "주소 ID로 스터디 그룹 조회", description = "주소 ID(address_id)로 스터디 그룹을 필터링합니다.")
+    public Header<List<StudyGroupResponse>> getByAddressId(@RequestParam(name = "value") Long addressId) {
+        try {
+            return studyGroupService.findByAddressId(addressId);
+        } catch (Exception e) {
+            return Header.ERROR("해당 조건의 스터디 그룹을 불러오지 못했습니다.");
+        }
+    }
+
 
 }
