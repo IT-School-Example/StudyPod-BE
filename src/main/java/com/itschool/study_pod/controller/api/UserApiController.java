@@ -2,6 +2,8 @@ package com.itschool.study_pod.controller.api;
 
 import com.itschool.study_pod.controller.base.CrudController;
 import com.itschool.study_pod.dto.Header;
+import com.itschool.study_pod.dto.request.user.UserEmailUpdateRequest;
+import com.itschool.study_pod.dto.request.user.UserNicknameUpdateRequest;
 import com.itschool.study_pod.dto.request.user.UserPasswordUpdateRequest;
 import com.itschool.study_pod.dto.request.user.UserRequest;
 import com.itschool.study_pod.dto.response.StudyGroupResponse;
@@ -47,6 +49,24 @@ public class UserApiController extends CrudController<UserRequest, UserResponse,
                                                 @RequestBody @Valid Header<UserPasswordUpdateRequest> request) {
         log.info("update password : {}에서 전체 조회 요청", this.getClass().getSimpleName());
         return userService.updatePassword(id, request);
+    }
+
+    @Operation(summary = "사용자 닉네임 수정", description = "사용자(User) 닉네임 수정하기")
+    @ResponseStatus(HttpStatus.NO_CONTENT) // 204, NO_CONTENT
+    @PatchMapping("update-nickname/{id}")
+    public Header<Void> updateNickname(@PathVariable(name = "id") Long id,
+                                       @RequestBody @Valid Header<UserNicknameUpdateRequest> request) {
+        log.info("update nickname : {}에서 전체 조회 요청", this.getClass().getSimpleName());
+        return userService.updateNickname(id, request);
+    }
+
+    @Operation(summary = "사용자 이메일 수정", description = "사용자(User) 이메일 수정하기")
+    @ResponseStatus(HttpStatus.NO_CONTENT) // 204, NO_CONTENT
+    @PatchMapping("update-email/{id}")
+    public Header<Void> updateEmail(@PathVariable(name = "id") Long id,
+                                       @RequestBody @Valid Header<UserEmailUpdateRequest> request) {
+        log.info("update email : {}에서 전체 조회 요청", this.getClass().getSimpleName());
+        return userService.updateEmail(id, request);
     }
 
     @Operation(summary = "회원id와 등록 상태로 스터디 내역 조회", description = "user_id와 등록 상태에 따른 스터디 내역을 조회")
