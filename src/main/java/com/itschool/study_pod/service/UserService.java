@@ -2,6 +2,8 @@ package com.itschool.study_pod.service;
 
 import com.itschool.study_pod.dto.Header;
 import com.itschool.study_pod.dto.request.admin.AdminPasswordUpdateRequest;
+import com.itschool.study_pod.dto.request.user.UserEmailUpdateRequest;
+import com.itschool.study_pod.dto.request.user.UserNicknameUpdateRequest;
 import com.itschool.study_pod.dto.request.user.UserPasswordUpdateRequest;
 import com.itschool.study_pod.dto.request.user.UserRequest;
 import com.itschool.study_pod.dto.response.AdminResponse;
@@ -11,6 +13,7 @@ import com.itschool.study_pod.entity.User;
 import com.itschool.study_pod.repository.UserRepository;
 import com.itschool.study_pod.service.base.CrudService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
@@ -42,6 +45,28 @@ public class UserService extends CrudService<UserRequest, UserResponse, User> {
                 .orElseThrow(() -> new EntityNotFoundException(this.getClass().getSimpleName() + " : 해당 id " + id + "에 해당하는 객체가 없습니다."));
 
         entity.updatePassword(request.getData().getPassword());
+
+        return Header.OK();
+    }
+
+    @Transactional
+    public Header<Void> updateNickname(Long id, Header<UserNicknameUpdateRequest> request) {
+
+        User entity = getBaseRepository().findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(this.getClass().getSimpleName() + " : 해당 id " + id + "에 해당하는 객체가 없습니다."));
+
+        entity.updatePassword(request.getData().getNickname());
+
+        return Header.OK();
+    }
+
+    @Transactional
+    public Header<Void> updateEmail(Long id, Header<UserEmailUpdateRequest> request) {
+
+        User entity = getBaseRepository().findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(this.getClass().getSimpleName() + " : 해당 id " + id + "에 해당하는 객체가 없습니다."));
+
+        entity.updatePassword(request.getData().getEmail());
 
         return Header.OK();
     }
