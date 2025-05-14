@@ -41,18 +41,22 @@ public class EnrollmentService extends CrudService<EnrollmentRequest, Enrollment
     }
 
     /*
-    * 회원id와 등록상태로 스터디 내역 조회
-    * */
-    public Header<List<StudyGroupResponse>> findEnrolledStudyGroupsByUserId(Long userId, EnrollmentStatus enrollmentStatus) {
+     * 회원id와 등록상태로 스터디 내역 조회
+     * */
+    public Header<List<StudyGroupResponse>> findEnrolledStudyGroupsByUserId(Long userId, EnrollmentStatus status) {
+        List<Enrollment> enrollments = enrollmentRepository.findWithStudyGroupByUserIdAndStatus(userId, status);
 
-        List<Enrollment> enrollmentList = enrollmentRepository.findWithStudyGroupByUserIdAndStatus(userId, EnrollmentStatus.APPROVED);
+        if (enrollments.isEmpty()) {
+            return Header.ERROR("신청한 스터디가 없습니다.");
+        }
 
-        List<StudyGroupResponse> studyGroupResponses = enrollmentList.stream()
-                .map(enrollment -> enrollment.getStudyGroup().response())
-                .collect(Collectors.toList());
+        List<StudyGroupResponse> responses = enrollments.stream()
+                .map(e -> e.getStudyGroup().response())
+                .toList();
 
-        return Header.OK(studyGroupResponses);
+        return Header.OK(responses);
     }
+
 
     /*
      * 스터디그룹별 등록 회원 조회
@@ -70,10 +74,10 @@ public class EnrollmentService extends CrudService<EnrollmentRequest, Enrollment
 
 
     @Transactional
-    public Header<Void> memberKick (Long id) {
+    public Header<Void> memberKick(Long id) {
 
         Enrollment enrollment = enrollmentRepository.findById(id)
-                .orElseThrow(()-> new EntityNotFoundException("해당 id " + id + "에 해당하는 객체가 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("해당 id " + id + "에 해당하는 객체가 없습니다."));
 
         enrollment.memberKick();
         return Header.OK();

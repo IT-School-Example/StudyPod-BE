@@ -58,7 +58,7 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
         MeetingMethod meetingMethod = (conditions.getMeetingMethod() == MeetingMethod.BOTH)
                 ? null
                 : conditions.getMeetingMethod();
-        
+
         Long subjectAreaId = (conditions.getSubjectArea() != null && conditions.getSubjectArea().getId() != 0)
                 ? conditions.getSubjectArea().getId()
                 : null;
@@ -133,4 +133,21 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
         }
         return convertPageToList(results);
     }
+
+    public Header<List<StudyGroupResponse>> findStudyGroupsByUserIdAndStatus(Long userId, EnrollmentStatus status) {
+        List<StudyGroup> studyGroups = enrollmentRepository.findByUserIdAndStatus(userId, status).stream()
+                .map(Enrollment::getStudyGroup)
+                .toList();
+
+        if (studyGroups.isEmpty()) {
+            return Header.ERROR("신청한 스터디가 없습니다.");
+        }
+
+        List<StudyGroupResponse> responses = studyGroups.stream()
+                .map(StudyGroup::response)
+                .toList();
+
+        return Header.OK(responses);
+    }
+
 }

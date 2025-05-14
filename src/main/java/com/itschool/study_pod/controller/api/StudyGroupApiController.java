@@ -113,4 +113,13 @@ public class StudyGroupApiController extends CrudController<StudyGroupRequest, S
             @ParameterObject @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return studyGroupService.findByAddressId(addressId, pageable);
     }
+
+    @GetMapping("/{userId}/studies")
+    @Operation(summary = "회원 ID와 등록 상태로 스터디 그룹 목록 조회", description = "특정 회원이 신청한 스터디 내역을 등록 상태로 필터링하여 반환합니다.")
+    public Header<List<StudyGroupResponse>> getStudiesByUserIdAndStatus(
+            @PathVariable Long userId,
+            @RequestParam(name = "enrollmentStatus") EnrollmentStatus enrollmentStatus) {
+        return studyGroupService.findStudyGroupsByUserIdAndStatus(userId, enrollmentStatus);
+    }
+
 }
