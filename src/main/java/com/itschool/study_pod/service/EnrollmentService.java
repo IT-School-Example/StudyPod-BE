@@ -6,6 +6,7 @@ import com.itschool.study_pod.dto.response.EnrollmentResponse;
 import com.itschool.study_pod.dto.response.StudyGroupResponse;
 import com.itschool.study_pod.dto.response.UserResponse;
 import com.itschool.study_pod.entity.Enrollment;
+import com.itschool.study_pod.entity.User;
 import com.itschool.study_pod.enumclass.EnrollmentStatus;
 import com.itschool.study_pod.repository.EnrollmentRepository;
 import com.itschool.study_pod.repository.StudyGroupRepository;
@@ -68,7 +69,6 @@ public class EnrollmentService extends CrudService<EnrollmentRequest, Enrollment
         return Header.OK(userResponses);
     }
 
-
     @Transactional
     public Header<EnrollmentResponse> kickMember(Long id) {
         Enrollment enrollment = enrollmentRepository.findById(id)
@@ -77,8 +77,11 @@ public class EnrollmentService extends CrudService<EnrollmentRequest, Enrollment
 
 
         if (!(EnrollmentStatus.APPROVED.equals(enrollment.getStatus()) ||
-                EnrollmentStatus.BANNED.equals(enrollment.getStatus())))
-            return Header.ERROR("처리 할 수 없습니다.");
+                EnrollmentStatus.BANNED.equals(enrollment.getStatus()))){
+            throw new IllegalStateException("처리할 수 없습니다.");
+            // return Header.ERROR("처리 할 수 없습니다."); // 500에러x(200으로 뜸)
+        }
+
 
         if (EnrollmentStatus.APPROVED.equals(enrollment.getStatus())) {
             // 강제퇴장

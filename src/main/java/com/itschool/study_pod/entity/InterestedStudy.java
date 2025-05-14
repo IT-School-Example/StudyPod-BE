@@ -6,8 +6,10 @@ import com.itschool.study_pod.dto.response.StudyGroupResponse;
 import com.itschool.study_pod.dto.response.UserResponse;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.ifs.Convertible;
+import com.itschool.study_pod.service.InterestedStudyService;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -20,8 +22,6 @@ import org.hibernate.annotations.Where;
         uniqueConstraints = {
         @UniqueConstraint(columnNames = {"user_id", "study_group_id"})
 })
-@SQLDelete(sql = "UPDATE interested_studies SET is_deleted = true WHERE interested_study_id = ?")
-@Where(clause = "is_deleted = false")
 public class InterestedStudy extends BaseEntity implements Convertible<InterestedStudyRequest, InterestedStudyResponse> {
     // 관심 목록(북마크 같은 역할)
     @Id
@@ -55,6 +55,7 @@ public class InterestedStudy extends BaseEntity implements Convertible<Intereste
                 .id(this.id)
                 .user(UserResponse.withId(this.user.getId()))
                 .studyGroup(StudyGroupResponse.withId(this.studyGroup.getId()))
+                .isDeleted(this.isDeleted)
                 .createdAt(this.createdAt)
                 .createdBy(this.createdBy)
                 .updatedAt(this.updatedAt)
@@ -66,6 +67,10 @@ public class InterestedStudy extends BaseEntity implements Convertible<Intereste
         return InterestedStudy.builder()
                 .id(id)
                 .build();
+    }
+
+    public void toggleIsDeleted() {
+        this.isDeleted = !this.isDeleted;
     }
 }
 
