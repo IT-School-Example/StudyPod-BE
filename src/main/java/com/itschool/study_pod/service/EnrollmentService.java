@@ -45,7 +45,7 @@ public class EnrollmentService extends CrudService<EnrollmentRequest, Enrollment
     * */
     public Header<List<StudyGroupResponse>> findEnrolledStudyGroupsByUserId(Long userId, EnrollmentStatus enrollmentStatus) {
 
-        List<Enrollment> enrollmentList = enrollmentRepository.findWithStudyGroupByUserIdAndStatus(userId, EnrollmentStatus.APPROVED);
+        List<Enrollment> enrollmentList = enrollmentRepository.findWithStudyGroupByUserIdAndStatus(userId, enrollmentStatus);
 
         List<StudyGroupResponse> studyGroupResponses = enrollmentList.stream()
                 .map(enrollment -> enrollment.getStudyGroup().response())
@@ -59,7 +59,7 @@ public class EnrollmentService extends CrudService<EnrollmentRequest, Enrollment
      * */
     public Header<List<UserResponse>> findEnrolledUsersByStudyGroupId(Long studyGroupId, EnrollmentStatus enrollmentStatus) {
 
-        List<Enrollment> enrollmentList = enrollmentRepository.findWithUserByStudyGroupIdAndStatus(studyGroupId, EnrollmentStatus.APPROVED);
+        List<Enrollment> enrollmentList = enrollmentRepository.findWithUserByStudyGroupIdAndStatus(studyGroupId, enrollmentStatus);
 
         List<UserResponse> userResponses = enrollmentList.stream()
                 .map(enrollment -> enrollment.getUser().response())
