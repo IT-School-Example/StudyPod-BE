@@ -74,7 +74,7 @@ public class StudyGroupApiController extends CrudController<StudyGroupRequest, S
         }
     }
 
-    @Operation(summary = "스터디그룹별 등록 회원 목록 조회", description = "스터디그룹 id와 등록 상태로 회원 목록 조회")
+    @Operation(summary = "스터디 그룹에 지원 신청한 회원 목록 조회", description = "study_group_id와 등록 상태에 따른 회원 목록을 조회")
     @GetMapping("{id}/users")
     public Header<List<UserResponse>> findEnrolledUsersByStudyGroupId(@PathVariable(name = "studyGroupId") Long studyGroupId,
                                                                       @RequestParam(name = "enrollmentStatus") EnrollmentStatus enrollmentStatus) {
