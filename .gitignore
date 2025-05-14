@@ -265,3 +265,4 @@ $RECYCLE.BIN/
 
 # application.yml 제외
 /src/main/resources/application.yml
+/src/main/resources/application-jwt.yml
