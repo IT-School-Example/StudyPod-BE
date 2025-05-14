@@ -16,18 +16,14 @@ import com.itschool.study_pod.service.StudyGroupService;
 import com.itschool.study_pod.service.base.CrudService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @Slf4j
@@ -110,39 +106,4 @@ public class StudyGroupApiController extends CrudController<StudyGroupRequest, S
         return studyGroupService.findStudyGroupsByLeaderId(leaderId);
     }
 
-
-    @Operation(summary = "스터디 그룹 상세정보 조회", description = "스터디 그룹에 속해 있는 멤버들만 열람 가능한 상세조회를 조회")
-    @GetMapping("{studyGroupId}/detail")
-    public Header<StudyGroupResponse> viewStudyGroupDetail(@PathVariable Long studyGroupId,
-                                                           HttpSession session,
-                                                           Model model) throws AccessDeniedException { // ??
-        // GrantedAuthority를 이용해 userDetails를 만들지 vs 세션로그인으로 하는지??..  -> Spring Security
-
-        // 세션에서 사용자 정보 가져오기 (로그인 후 세션에 사용자 정보를 저장)
-        User user = (User) session.getAttribute("user");
-
-        // ※ return은 html할 때 봐서 변경
-        if(user == null) {
-            // 로그인 안 되어 있으면 메시지를 표시하고, 그룹 상세 정보를 보여주지 않음
-            /*model.addAttribute("errorMessage", "로그인이 필요합니다.");
-            return "group/error"; // html 경로 작성*/
-            throw new RuntimeException("로그인이 필요합니다.");
-        }
-        // 로그인한 사용자가 그룹에 포함되어 있는지 확인
-        StudyGroup studyGroup = studyGroupService.studyGroupDetail(studyGroupId, user.getId());
-
-        if (studyGroup == null) {
-            // 로그인한 사용자만 권한이 있는 그룹
-            /*model.addAttribute("errorMessage", "그룹에 접근할 수 없습니다");
-            return "group/error"; // html경로 작성*/
-            throw new RuntimeException("그룹에 접근할 수 없습니다.");
-        }
-        // 필요한 필드만 담은
-        StudyGroupResponse studyGroupResponse = new StudyGroupResponse(studyGroup);
-        // 그룹 정보 모델에 담기
-        /*model.addAttribute("studyGroup", studyGroupResponse);
-        return "group/detail"; // html 경로 작성*/
-        return Header.OK(studyGroupResponse);
-
-    }
 }
