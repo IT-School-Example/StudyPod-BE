@@ -2,6 +2,7 @@ package com.itschool.study_pod.service;
 
 import com.itschool.study_pod.dto.Header;
 import com.itschool.study_pod.dto.request.admin.AdminPasswordUpdateRequest;
+import com.itschool.study_pod.dto.request.user.UserNicknameUpdateRequest;
 import com.itschool.study_pod.dto.request.user.UserPasswordUpdateRequest;
 import com.itschool.study_pod.dto.request.user.UserRequest;
 import com.itschool.study_pod.dto.response.AdminResponse;
@@ -42,6 +43,17 @@ public class UserService extends CrudService<UserRequest, UserResponse, User> {
                 .orElseThrow(() -> new EntityNotFoundException(this.getClass().getSimpleName() + " : 해당 id " + id + "에 해당하는 객체가 없습니다."));
 
         entity.updatePassword(request.getData().getPassword());
+
+        return Header.OK();
+    }
+
+    @Transactional
+    public Header<Void> updateNickname(Long id, Header<UserNicknameUpdateRequest> request) {
+
+        User entity = getBaseRepository().findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(this.getClass().getSimpleName() + " : 해당 id " + id + "에 해당하는 객체가 없습니다."));
+
+        entity.updatePassword(request.getData().getNickname());
 
         return Header.OK();
     }
