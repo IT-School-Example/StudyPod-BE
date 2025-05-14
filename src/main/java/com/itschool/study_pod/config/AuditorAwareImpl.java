@@ -1,6 +1,8 @@
 package com.itschool.study_pod.config;
 
 import org.springframework.data.domain.AuditorAware;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -9,14 +11,13 @@ import java.util.Optional;
 public class AuditorAwareImpl implements AuditorAware<String> {
     @Override
     public Optional<String> getCurrentAuditor() {
-        /*var authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()
                 || authentication.getPrincipal().equals("anonymousUser")) {
-            return Optional.empty();
+            return Optional.of("anonymousUser");
         }
 
-        return Optional.of(authentication.getName())*/;
-        return Optional.of("ADMIN");
+        return Optional.of(authentication.getName());
     }
 }
