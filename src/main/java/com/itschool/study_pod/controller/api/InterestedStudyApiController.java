@@ -7,11 +7,12 @@ import com.itschool.study_pod.dto.response.InterestedStudyResponse;
 import com.itschool.study_pod.entity.InterestedStudy;
 import com.itschool.study_pod.service.InterestedStudyService;
 import com.itschool.study_pod.service.base.CrudService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -31,5 +32,12 @@ public class InterestedStudyApiController extends CrudController<InterestedStudy
     @Deprecated
     public Header<InterestedStudyResponse> update(Long id, Header<InterestedStudyRequest> request) {
         throw new IllegalArgumentException("해당 연결 테이블에서 업데이트는 허용하지 않습니다. 삭제 후 다시 생성하세요");
+    }
+
+    @Operation(summary = "관심목록", description = "관심있는 스터디 등록 및 해제")
+    @PatchMapping("likes")
+    public Header<InterestedStudyResponse> findByInterestedStudy(@RequestBody Header<InterestedStudyRequest> request) {
+        return interestedStudyService.toggleInterestedStudy(request);
+
     }
 }

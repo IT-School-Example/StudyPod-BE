@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Repository
 public interface InterestedStudyRepository extends JpaRepository<InterestedStudy, Long> {
-    Optional<InterestedStudy> findByStudyGroupIdAndUserId(Long studyGroupId, Long userId);
+    Optional<InterestedStudy> findByStudyGroupAndUser(StudyGroup studyGroup, User user);
 //    Optional<InterestedStudy> findById(Long interestedStudyList);
 //
 //    List<InterestedStudy> findByName(String name);
