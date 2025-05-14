@@ -38,24 +38,30 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
         return StudyGroup.of(requestEntity);
     }
 
-    public Header<List<StudyGroup>> findAllByLeaderId(Long leaderId) {
-        return Header.OK(studyGroupRepository.findAllByLeaderId(leaderId));
+    public Header<List<StudyGroupResponse>> findAllByLeaderId(Long leaderId, Pageable pageable) {
+        Page<StudyGroup> results = studyGroupRepository.findAllByLeaderId(leaderId, pageable);
+        if (results.getTotalElements() == 0) {
+            return Header.ERROR("해당 조건의 스터디 그룹을 불러오지 못했습니다.");
+        }
+        return convertPageToList(results);
     }
 
-    public Header<List<StudyGroupResponse>> findAllByFilters(String searchStr,
-                                                             Header<StudyGroupSearchRequest> request,
-                                                             Pageable pageable) {
+    public Header<List<StudyGroupResponse>> findAllByFilters(
+            String searchStr,
+            Header<StudyGroupSearchRequest> request,
+            Pageable pageable
+    ) {
         StudyGroupSearchRequest conditions = request.getData();
 
         RecruitmentStatus recruitmentStatus = conditions.getRecruitmentStatus();
 
-        MeetingMethod meetingMethod = conditions.getMeetingMethod() == MeetingMethod.BOTH
+        MeetingMethod meetingMethod = (conditions.getMeetingMethod() == MeetingMethod.BOTH)
                 ? null
                 : conditions.getMeetingMethod();
-
-        Long subjectAreaId = conditions.getSubjectArea() == null
-                ? null
-                : conditions.getSubjectArea().getId();
+        
+        Long subjectAreaId = (conditions.getSubjectArea() != null && conditions.getSubjectArea().getId() != 0)
+                ? conditions.getSubjectArea().getId()
+                : null;
 
         Page<StudyGroup> groups = studyGroupRepository.findAllByFilters(
                 searchStr,
@@ -68,32 +74,21 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
         return convertPageToList(groups);
     }
 
-    public Header<List<StudyGroupResponse>> findAllByRecruitmentStatus(RecruitmentStatus recruitmentStatus) {
-        List<StudyGroup> results = studyGroupRepository.findAllByRecruitmentStatus(recruitmentStatus);
 
-        if (results.isEmpty()) {
+    public Header<List<StudyGroupResponse>> findAllByRecruitmentStatus(RecruitmentStatus recruitmentStatus, Pageable pageable) {
+        Page<StudyGroup> results = studyGroupRepository.findAllByRecruitmentStatus(recruitmentStatus, pageable);
+        if (results.getTotalElements() == 0) {
             return Header.ERROR("해당 조건의 스터디 그룹을 불러오지 못했습니다.");
         }
-
-        List<StudyGroupResponse> dtoList = results.stream()
-                .map(StudyGroup::response)
-                .toList();
-
-        return Header.OK(dtoList);
+        return convertPageToList(results);
     }
 
-    public Header<List<StudyGroupResponse>> findAllByMeetingMethod(MeetingMethod meetingMethod) {
-        List<StudyGroup> results = studyGroupRepository.findAllByMeetingMethod(meetingMethod);
-
-        if (results.isEmpty()) {
+    public Header<List<StudyGroupResponse>> findAllByMeetingMethod(MeetingMethod meetingMethod, Pageable pageable) {
+        Page<StudyGroup> results = studyGroupRepository.findAllByMeetingMethod(meetingMethod, pageable);
+        if (results.getTotalElements() == 0) {
             return Header.ERROR("해당 조건의 스터디 그룹을 불러오지 못했습니다.");
         }
-
-        List<StudyGroupResponse> dtoList = results.stream()
-                .map(StudyGroup::response)
-                .toList();
-
-        return Header.OK(dtoList);
+        return convertPageToList(results);
     }
 
     public Header<StudyGroupResponse> findStudyGroupByUserId(Long userId) {
@@ -109,69 +104,33 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
         return Header.OK(studyGroup.response());
     }
 
-    public Header<List<StudyGroupResponse>> findStudyGroupsByLeaderId(Long leaderId) {
-        List<StudyGroup> groups = studyGroupRepository.findAllByLeaderId(leaderId);
-
-        if (groups.isEmpty()) {
-            return Header.ERROR("스터디 리더로 있는 그룹을 찾을 수 없습니다.");
-        }
-
-        List<StudyGroupResponse> responseList = groups.stream()
-                .map(StudyGroup::response)
-                .toList();
-
-        return Header.OK(responseList);
-    }
-
-    public Header<List<StudyGroupResponse>> searchByKeywordOnly(String keyword) {
-        List<StudyGroup> results = studyGroupRepository.searchByKeyword(keyword);
-
-        if (results.isEmpty()) {
+    public Header<List<StudyGroupResponse>> searchByKeywordOnly(String keyword, Pageable pageable) {
+        Page<StudyGroup> results = studyGroupRepository.searchByKeyword(keyword, pageable);
+        if (results.getTotalElements() == 0) {
             return Header.ERROR("검색 결과가 없습니다.");
         }
-
-        List<StudyGroupResponse> dtoList = results.stream()
-                .map(StudyGroup::response)
-                .toList();
-
-        return Header.OK(dtoList);
+        return convertPageToList(results);
     }
 
-    public Header<List<StudyGroupResponse>> findBySubjectAreaAndRecruiting(String subjectValue) {
+    public Header<List<StudyGroupResponse>> findBySubjectAreaAndRecruiting(String subjectValue, Pageable pageable) {
         try {
             Subject subjectEnum = Subject.valueOf(subjectValue.toUpperCase());
+            Page<StudyGroup> results = studyGroupRepository.findBySubjectAreaAndRecruiting(subjectEnum, pageable);
 
-            List<StudyGroup> results = studyGroupRepository.findBySubjectAreaAndRecruiting(subjectEnum);
-
-            List<StudyGroupResponse> dtoList = results.stream()
-                    .map(StudyGroup::response)
-                    .toList();
-
-            Header<List<StudyGroupResponse>> response = Header.OK(dtoList);
-            if (dtoList.isEmpty()) {
-                response.setDescription("검색 결과가 없습니다.");
-            } else {
-                response.setDescription("조회에 성공했습니다.");
+            if (results.getTotalElements() == 0) {
+                return Header.ERROR("검색 결과가 없습니다.");
             }
-
-            return response;
+            return convertPageToList(results);
         } catch (IllegalArgumentException e) {
             return Header.ERROR("요청에 실패했습니다.");
         }
     }
 
-    public Header<List<StudyGroupResponse>> findByAddressId(Long addressId) {
-        List<StudyGroup> results = studyGroupRepository.findByAddressId(addressId);
-
-        if (results.isEmpty()) {
+    public Header<List<StudyGroupResponse>> findByAddressId(Long addressId, Pageable pageable) {
+        Page<StudyGroup> results = studyGroupRepository.findByAddressId(addressId, pageable);
+        if (results.getTotalElements() == 0) {
             return Header.ERROR("해당 조건의 스터디 그룹을 불러오지 못했습니다.");
         }
-
-        List<StudyGroupResponse> dtoList = results.stream()
-                .map(StudyGroup::response)
-                .toList();
-
-        return Header.OK(dtoList);
+        return convertPageToList(results);
     }
-
 }

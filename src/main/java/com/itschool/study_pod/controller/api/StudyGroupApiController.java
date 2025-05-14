@@ -41,35 +41,31 @@ public class StudyGroupApiController extends CrudController<StudyGroupRequest, S
     }
 
     @PostMapping("/search")
-    @Operation(summary = "스터디 그룹 필터링 검색", description = """
-            키워드(title 또는 keywords) + 모집 상태 + 스터디 방식 + 주제 영역을 기준으로 스터디 그룹을 필터링합니다.
-            searchStr 필드만 입력해도 키워드 검색이 가능합니다.
-            """)
+    @Operation(summary = "스터디 그룹 필터링 검색", description = "키워드(title 또는 keywords) + 모집 상태 + 스터디 방식 + 주제 영역을 기준으로 스터디 그룹을 필터링합니다.")
     public Header<List<StudyGroupResponse>> findAllByFilters(
             @RequestParam(required = false) String searchStr,
-            @RequestBody Header<StudyGroupSearchRequest> request,
-            @ParameterObject @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+            @RequestBody(required = false) Header<StudyGroupSearchRequest> request,
+            @ParameterObject @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        if (request == null || request.getData() == null) {
+            return Header.ERROR("검색 조건이 누락되었습니다.");
+        }
         return studyGroupService.findAllByFilters(searchStr, request, pageable);
     }
 
     @GetMapping("/filter/recruitment")
     @Operation(summary = "모집 상태로 스터디 그룹 조회", description = "RECRUITING 또는 CLOSED 상태로 필터링합니다.")
-    public Header<List<StudyGroupResponse>> getByRecruitmentStatus(@RequestParam(name = "recruitmentStatus") RecruitmentStatus recruitmentStatus) {
-        try {
-            return studyGroupService.findAllByRecruitmentStatus(recruitmentStatus);
-        } catch (Exception e) {
-            return Header.ERROR("해당 조건의 스터디 그룹을 불러오지 못했습니다.");
-        }
+    public Header<List<StudyGroupResponse>> getByRecruitmentStatus(
+            @RequestParam(name = "recruitmentStatus") RecruitmentStatus recruitmentStatus,
+            @ParameterObject @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        return studyGroupService.findAllByRecruitmentStatus(recruitmentStatus, pageable);
     }
 
     @GetMapping("/filter/meeting")
     @Operation(summary = "스터디 방식으로 스터디 그룹 조회", description = "ONLINE, OFFLINE, BOTH 중 하나의 스터디 방식으로 필터링합니다.")
-    public Header<List<StudyGroupResponse>> getByMeetingMethod(@RequestParam(name = "meetingMethod") MeetingMethod meetingMethod) {
-        try {
-            return studyGroupService.findAllByMeetingMethod(meetingMethod);
-        } catch (Exception e) {
-            return Header.ERROR("해당 조건의 스터디 그룹을 불러오지 못했습니다.");
-        }
+    public Header<List<StudyGroupResponse>> getByMeetingMethod(
+            @RequestParam(name = "meetingMethod") MeetingMethod meetingMethod,
+            @ParameterObject @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        return studyGroupService.findAllByMeetingMethod(meetingMethod, pageable);
     }
 
     @GetMapping("{id}/users")
@@ -96,34 +92,25 @@ public class StudyGroupApiController extends CrudController<StudyGroupRequest, S
 
     @GetMapping("/leader/{leaderId}")
     @Operation(summary = "스터디 리더가 개설한 스터디 그룹 조회", description = "리더 ID로 생성한 스터디 그룹을 조회합니다.")
-    public Header<List<StudyGroupResponse>> getStudyGroupsByLeaderId(@PathVariable Long leaderId) {
-        return studyGroupService.findStudyGroupsByLeaderId(leaderId);
-    }
-
-    @GetMapping("/search")
-    @Operation(summary = "키워드 기반 간단 검색", description = "스터디 그룹 이름 또는 키워드에 해당 문자열이 포함된 항목을 조회합니다.")
-    public Header<List<StudyGroupResponse>> searchByKeyword(@RequestParam(name = "keyword") String keyword) {
-        return studyGroupService.searchByKeywordOnly(keyword);
+    public Header<List<StudyGroupResponse>> getStudyGroupsByLeaderId(
+            @PathVariable Long leaderId,
+            @ParameterObject @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        return studyGroupService.findAllByLeaderId(leaderId, pageable);
     }
 
     @GetMapping("/filter/subject")
-    @Operation(summary = "주제 영역으로 모집 중인 스터디 그룹 조회",
-            description = "ENUM Subject 값 (예: LANGUAGE, IT, EXAM...)을 전달하면 해당 주제의 모집 중인 스터디 그룹만 반환합니다.")
+    @Operation(summary = "주제 영역으로 모집 중인 스터디 그룹 조회", description = "ENUM Subject 값 (예: LANGUAGE, IT, EXAM...)을 전달하면 해당 주제의 모집 중인 스터디 그룹만 반환합니다.")
     public Header<List<StudyGroupResponse>> getBySubjectArea(
-            @RequestParam(name = "value") String subjectAreaValue
-    ) {
-        return studyGroupService.findBySubjectAreaAndRecruiting(subjectAreaValue);
+            @RequestParam(name = "value") String subjectAreaValue,
+            @ParameterObject @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        return studyGroupService.findBySubjectAreaAndRecruiting(subjectAreaValue, pageable);
     }
 
     @GetMapping("/filter/location")
     @Operation(summary = "주소 ID로 스터디 그룹 조회", description = "주소 ID(address_id)로 스터디 그룹을 필터링합니다.")
-    public Header<List<StudyGroupResponse>> getByAddressId(@RequestParam(name = "value") Long addressId) {
-        try {
-            return studyGroupService.findByAddressId(addressId);
-        } catch (Exception e) {
-            return Header.ERROR("해당 조건의 스터디 그룹을 불러오지 못했습니다.");
-        }
+    public Header<List<StudyGroupResponse>> getByAddressId(
+            @RequestParam(name = "value") Long addressId,
+            @ParameterObject @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        return studyGroupService.findByAddressId(addressId, pageable);
     }
-
-
 }
