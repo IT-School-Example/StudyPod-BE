@@ -7,7 +7,6 @@ import com.itschool.study_pod.entity.User;
 import com.itschool.study_pod.enumclass.AccountRole;
 import com.itschool.study_pod.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.crypto.SecretKey;
 import java.time.Duration;
-import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
 
@@ -110,9 +107,9 @@ class TokenProviderTest {
 
 
         String token = JwtFactory.builder()
-                .subject(userEmail)
-                .claims(Map.of("id", 1L,
-                        "role", AccountRole.ROLE_USER.name()))
+                .subject(testUser.getEmail())
+                .claims(Map.of("id", testUser.getId(),
+                        "role", testUser.getRole().name()))
                 .build()
                 .createToken(jwtProperties);
 
