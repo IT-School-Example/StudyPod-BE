@@ -3,6 +3,7 @@ package com.itschool.study_pod.controller.api;
 import com.itschool.study_pod.dto.Header;
 import com.itschool.study_pod.dto.request.LoginRequest;
 import com.itschool.study_pod.dto.response.TokenResponse;
+import com.itschool.study_pod.entity.base.Account;
 import com.itschool.study_pod.service.TokenService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -20,7 +22,7 @@ public class TokenApiController {
     private final TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest request,
+    public ResponseEntity<Void> login(@RequestBody LoginRequest request,
                                                HttpServletResponse response) {
         TokenResponse tokenResponse = tokenService.login(request);
 
@@ -30,7 +32,6 @@ public class TokenApiController {
         // refreshToken 쿠키 (예: 2시간 유효)
         addCookie(response, "refreshToken", tokenResponse.getRefreshToken(), 60 * 60 * 2);
 
-        // 응답 바디는 토큰 노출 안 하거나 null 처리해도 됨
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(null);
     }
@@ -56,6 +57,12 @@ public class TokenApiController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(null);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<String> getCurrentUserName(@AuthenticationPrincipal Account userDetails) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(userDetails.getUsername());
     }
 
     // 쿠키 생성 메서드 (SameSite 속성은 헤더로 직접 추가)
