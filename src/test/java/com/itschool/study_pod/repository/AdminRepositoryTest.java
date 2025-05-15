@@ -29,7 +29,8 @@ class AdminRepositoryTest extends StudyPodApplicationTests {
         Admin entity = Admin.builder()
                 .email(UUID.randomUUID() +"@example.com")
                 .password("admin123")
-                .role(AccountRole.ROLE_MODERATOR)
+                .name("관리자")
+                .role(AccountRole.ROLE_ADMIN)
                 .build();
 
         Admin savedEntity = adminRepository.save(entity);
@@ -47,7 +48,8 @@ class AdminRepositoryTest extends StudyPodApplicationTests {
         Admin entity = Admin.builder()
                 .email(UUID.randomUUID() +"@example.com")
                 .password("admin123")
-                .role(AccountRole.ROLE_MODERATOR)
+                .name("관리자")
+                .role(AccountRole.ROLE_ADMIN)
                 .build();
 
         Admin savedEntity = adminRepository.save(entity);
@@ -64,7 +66,8 @@ class AdminRepositoryTest extends StudyPodApplicationTests {
         Admin entity = Admin.builder()
                 .email(UUID.randomUUID() +"@example.com")
                 .password("admin123")
-                .role(AccountRole.ROLE_MODERATOR)
+                .name("관리자")
+                .role(AccountRole.ROLE_ADMIN)
                 .build();
 
         Admin savedEntity = adminRepository.save(entity);
@@ -86,7 +89,8 @@ class AdminRepositoryTest extends StudyPodApplicationTests {
         Admin entity = Admin.builder()
                 .email(UUID.randomUUID() +"@example.com")
                 .password("admin123")
-                .role(AccountRole.ROLE_MODERATOR)
+                .name("관리자")
+                .role(AccountRole.ROLE_ADMIN)
                 .build();
 
         Admin savedEntity = adminRepository.save(entity);
@@ -107,7 +111,8 @@ class AdminRepositoryTest extends StudyPodApplicationTests {
         Admin entity = Admin.builder()
                 .email(testEmail)
                 .password("admin123")
-                .role(AccountRole.ROLE_MODERATOR)
+                .name("관리자")
+                .role(AccountRole.ROLE_ADMIN)
                 .build();
 
         adminRepository.save(entity);

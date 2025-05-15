@@ -33,7 +33,8 @@ public class AdminBoardRepositoryTest extends StudyPodApplicationTests {
         Admin admin = Admin.builder()
                 .email(UUID.randomUUID() +"@example.com")
                 .password("admin123")
-                .role(AccountRole.ROLE_MODERATOR)
+                .name("관리자")
+                .role(AccountRole.ROLE_ADMIN)
                 .build();
 
         savedAdmin = adminRepository.save(admin);
