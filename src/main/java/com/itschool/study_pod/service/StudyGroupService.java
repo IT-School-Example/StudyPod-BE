@@ -36,8 +36,8 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
     }
 
     @Override
-    protected StudyGroup toEntity(StudyGroupRequest requestEntity) {
-        return StudyGroup.of(requestEntity);
+    protected StudyGroup toEntity(StudyGroupRequest request) {
+        return StudyGroup.of(request);
     }
 
     public Header<List<StudyGroup>> findAllByLeaderId(Long leaderId) {

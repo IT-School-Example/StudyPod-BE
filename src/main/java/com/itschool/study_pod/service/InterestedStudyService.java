@@ -30,8 +30,8 @@ public class InterestedStudyService extends CrudService<InterestedStudyRequest, 
     protected JpaRepository<InterestedStudy, Long> getBaseRepository() { return interestedStudyRepository; }
 
     @Override
-    protected InterestedStudy toEntity(InterestedStudyRequest requestEntity) {
-        return InterestedStudy.of(requestEntity);
+    protected InterestedStudy toEntity(InterestedStudyRequest request) {
+        return InterestedStudy.of(request);
     }
 
 

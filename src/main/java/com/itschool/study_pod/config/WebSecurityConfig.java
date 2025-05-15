@@ -48,8 +48,7 @@ public class WebSecurityConfig {
                         .requestMatchers(
                                 new AntPathRequestMatcher("/api/admin/**")
                         ).hasAnyAuthority(
-                                AccountRole.ROLE_MODERATOR.name(), // 중간 관리자
-                                AccountRole.ROLE_SUPER.name()      // 최고 관리자
+                                AccountRole.ROLE_ADMIN.name()
                         )
 
                         // ✅ 일반 사용자 전용 API
@@ -65,11 +64,12 @@ public class WebSecurityConfig {
 
 
                 // ⛔️ [선택 사항] 폼 로그인 설정 (현재 주석 처리됨 - JWT 기반 로그인 등 커스텀 로그인 처리 예상)
-                /*.formLogin(formLogin -> formLogin
+                /*.formLogin(Customizer.withDefaults()
+                        *//*formLogin -> formLogin
                                 .loginPage("/login")              // 사용자 정의 로그인 페이지
                                 .usernameParameter("email")       // 로그인 시 사용할 파라미터명
                                 .defaultSuccessUrl("/")           // 로그인 성공 후 이동 경로
-                        // .successHandler(customSuccessHandler) // (선택) 로그인 성공 후 사용자 정의 처리
+                                .successHandler(customSuccessHandler) // (선택) 로그인 성공 후 사용자 정의 처리*//*
                 )*/
 
 

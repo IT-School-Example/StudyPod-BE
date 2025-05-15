@@ -20,7 +20,7 @@ public class FaqService extends CrudService<FaqRequest, FaqResponse, Faq> {
     }
 
     @Override
-    protected Faq toEntity(FaqRequest requestEntity) {
-        return Faq.of(requestEntity);
+    protected Faq toEntity(FaqRequest request) {
+        return Faq.of(request);
     }
 }

@@ -28,8 +28,8 @@ public class CommentService extends CrudService<CommentRequest, CommentResponse,
     }
 
     @Override
-    protected Comment toEntity(CommentRequest requestEntity) {
-        return Comment.of(requestEntity);
+    protected Comment toEntity(CommentRequest request) {
+        return Comment.of(request);
     }
 
     /*private final CommentRepository commentRepository;

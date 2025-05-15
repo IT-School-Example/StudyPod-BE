@@ -25,8 +25,8 @@ public class AdminRequest {
             message = "비밀번호는 최소 8자 이상, 숫자, 대문자 또는 소문자, 특수문자를 포함해야 합니다.")
     private String password;
 
-    @NotNull
+    /*@NotNull
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    private AccountRole role;
+    private AccountRole role;*/
 
 }

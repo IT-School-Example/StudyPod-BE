@@ -36,8 +36,8 @@ public class EnrollmentService extends CrudService<EnrollmentRequest, Enrollment
     }
 
     @Override
-    protected Enrollment toEntity(EnrollmentRequest requestEntity) {
-        return Enrollment.of(requestEntity);
+    protected Enrollment toEntity(EnrollmentRequest request) {
+        return Enrollment.of(request);
     }
 
     /*
