@@ -106,5 +106,4 @@ public class StudyGroupApiController extends CrudController<StudyGroupRequest, S
         return studyGroupService.findStudyGroupsByLeaderId(leaderId);
     }
 
-
 }

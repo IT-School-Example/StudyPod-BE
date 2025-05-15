@@ -47,8 +47,8 @@ class BoardRepositoryTest extends StudyPodApplicationTests {
 
     @AfterEach
     public void afterCleanUp() {
-        boardRepository.deleteAll();
-        userRepository.deleteAll();
+        /*boardRepository.deleteAll();
+        userRepository.deleteAll();*/
     }
 
     @Test

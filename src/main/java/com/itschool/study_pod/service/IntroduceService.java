@@ -20,7 +20,7 @@ public class IntroduceService extends CrudService<IntroduceRequest, IntroduceRes
     }
 
     @Override
-    protected Introduce toEntity(IntroduceRequest requestEntity) {
-        return Introduce.of(requestEntity);
+    protected Introduce toEntity(IntroduceRequest request) {
+        return Introduce.of(request);
     }
 }

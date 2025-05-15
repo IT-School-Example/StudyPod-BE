@@ -21,7 +21,7 @@ public class StudyBoardService extends CrudService<StudyBoardRequest, StudyBoard
     }
 
     @Override
-    protected StudyBoard toEntity(StudyBoardRequest requestEntity) {
-        return StudyBoard.of(requestEntity);
+    protected StudyBoard toEntity(StudyBoardRequest request) {
+        return StudyBoard.of(request);
     }
 }

@@ -2,56 +2,38 @@ package com.itschool.study_pod.entity;
 
 import com.itschool.study_pod.dto.request.user.UserRequest;
 import com.itschool.study_pod.dto.response.UserResponse;
+import com.itschool.study_pod.entity.base.Account;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.enumclass.AccountRole;
 import com.itschool.study_pod.ifs.Convertible;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
+@SuperBuilder
 @Table(name = "users")
-@SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE user_id = ?")
-@Where(clause = "is_deleted = false")
-public class User extends BaseEntity implements Convertible<UserRequest, UserResponse> {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    private Long id;
-
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @Column(nullable = false)
-    private String password;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private AccountRole role;
-
-    @Column(nullable = false)
-    private String name;
+/*@SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE account_id = ?")
+@Where(clause = "is_deleted = false")*/
+public class User extends Account implements Convertible<UserRequest, UserResponse> {
 
     @Column(unique = true)
     private String nickname;
 
+
     public static User of(UserRequest request) { // create용
-        if(request != null) {
-            return User.builder()
-                    .email(request.getEmail())
-                    .password(request.getPassword())
-                    .role(AccountRole.ROLE_USER)
-                    .name(request.getName())
-                    .nickname(request.getNickname())
-                    .build();
-        }
-        return null;
+        return User.builder()
+                .email(request.getEmail())
+                .password(request.getPassword())
+                .role(AccountRole.ROLE_USER)
+                .name(request.getName())
+                .nickname(request.getNickname())
+                .createdBy(request.getEmail())
+                .build();
     }
 
     // update용
@@ -61,8 +43,8 @@ public class User extends BaseEntity implements Convertible<UserRequest, UserRes
         // 이메일 수정
         this.email = request.getEmail();
 
-        // 비밀번호 수정
-        updatePassword(request.getPassword());
+        // 비밀번호 수정 x
+        // updatePassword(request.getPassword());
 
         // 역할 수정 x
         // this.role = request.getRole() != null? request.getRole() : this.role;

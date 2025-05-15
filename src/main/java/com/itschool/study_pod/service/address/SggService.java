@@ -24,7 +24,7 @@ public class SggService extends CrudService<SggRequest, SggResponse, Sgg> {
     }
 
     @Override
-    protected Sgg toEntity(SggRequest requestEntity) {
-        return Sgg.of(requestEntity);
+    protected Sgg toEntity(SggRequest request) {
+        return Sgg.of(request);
     }
 }
