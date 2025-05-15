@@ -9,8 +9,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -27,6 +33,25 @@ public class WebSecurityConfig {
                         // 모든 요청 제외 (local dev에서만)
                         new AntPathRequestMatcher("/**")
                 );
+    }
+
+    // 패스워드 인코더로 사용할 빈 등록
+    @Bean
+    public PasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:3000")); // 프론트 주소
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true); // 쿠키 전송 허용
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 
     // ✅ HTTP 요청에 대한 Spring Security 웹 기반 보안 구성
@@ -65,13 +90,12 @@ public class WebSecurityConfig {
 
                 // ⛔️ [선택 사항] 폼 로그인 설정 (현재 주석 처리됨 - JWT 기반 로그인 등 커스텀 로그인 처리 예상)
                 /*.formLogin(Customizer.withDefaults()
-                        *//*formLogin -> formLogin
+                 *//*formLogin -> formLogin
                                 .loginPage("/login")              // 사용자 정의 로그인 페이지
                                 .usernameParameter("email")       // 로그인 시 사용할 파라미터명
                                 .defaultSuccessUrl("/")           // 로그인 성공 후 이동 경로
                                 .successHandler(customSuccessHandler) // (선택) 로그인 성공 후 사용자 정의 처리*//*
                 )*/
-
 
 
                 // ⛔️ [선택 사항] 로그아웃 설정 (현재 주석 처리됨)
@@ -92,13 +116,12 @@ public class WebSecurityConfig {
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
                 )*/
 
+                // CORS 설정을 활성화
+                .cors()
+                .and()
                 .build();
     }
 
-
-    // 패스워드 인코더로 사용할 빈 등록
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 }
+
+
