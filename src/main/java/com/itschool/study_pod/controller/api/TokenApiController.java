@@ -25,7 +25,7 @@ public class TokenApiController {
         TokenResponse tokenResponse = tokenService.login(request);
 
         // accessToken 쿠키 (예: 1시간 유효)
-        addCookie(response, "accessToken", tokenResponse.getAccessToken(), 60 * 60);
+        addCookie(response, "accessToken", tokenResponse.getAccessToken(), 60 * 5);
 
         // refreshToken 쿠키 (예: 2시간 유효)
         addCookie(response, "refreshToken", tokenResponse.getRefreshToken(), 60 * 60 * 2);
