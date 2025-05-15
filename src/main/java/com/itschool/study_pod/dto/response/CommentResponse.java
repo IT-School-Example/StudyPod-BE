@@ -1,6 +1,6 @@
 package com.itschool.study_pod.dto.response;
 
-import com.itschool.study_pod.entity.Board;
+
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -15,7 +15,7 @@ public class CommentResponse {
 
     private String content;
 
-    private BoardResponse board;
+    private StudyBoardResponse studyBoard;
 
     private CommentResponse parentComment;
 

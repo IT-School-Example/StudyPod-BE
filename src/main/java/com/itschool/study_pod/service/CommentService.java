@@ -3,7 +3,6 @@ package com.itschool.study_pod.service;
 import com.itschool.study_pod.dto.request.comment.CommentRequest;
 import com.itschool.study_pod.dto.response.CommentResponse;
 import com.itschool.study_pod.entity.Comment;
-import com.itschool.study_pod.repository.BoardRepository;
 import com.itschool.study_pod.repository.CommentRepository;
 import com.itschool.study_pod.repository.UserRepository;
 import com.itschool.study_pod.service.base.CrudService;
@@ -16,8 +15,6 @@ import org.springframework.stereotype.Service;
 public class CommentService extends CrudService<CommentRequest, CommentResponse, Comment> {
 
     private final CommentRepository commentRepository;
-
-    private final BoardRepository boardRepository;
 
     private final UserRepository userRepository;
 

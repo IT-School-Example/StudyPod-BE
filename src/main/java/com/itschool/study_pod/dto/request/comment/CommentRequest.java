@@ -15,7 +15,7 @@ public class CommentRequest {
     private String content;
 
     @NotNull
-    private ReferenceDto board;
+    private ReferenceDto studyBoard;
 
     @NotNull
     private ReferenceDto user;
