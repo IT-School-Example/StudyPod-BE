@@ -2,7 +2,7 @@ package com.itschool.study_pod.entity.redis;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.redis.core.RedisHash;
+// import org.springframework.data.redis.core.RedisHash;
 
 @Entity
 @Getter

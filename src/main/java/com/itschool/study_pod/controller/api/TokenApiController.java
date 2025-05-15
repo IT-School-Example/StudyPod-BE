@@ -19,64 +19,66 @@ public class TokenApiController {
 
     private final TokenService tokenService;
 
-    // login 메서드 파라미터에 HttpServletResponse 추가
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest request,
                                                HttpServletResponse response) {
-
         TokenResponse tokenResponse = tokenService.login(request);
 
-        // Refresh Token을 HttpOnly + Secure 쿠키로 설정
-        Cookie refreshTokenCookie = new Cookie("refreshToken", tokenResponse.getRefreshToken());
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setSecure(true);  // HTTPS 환경에서만 전송 (탈취 불가)
-        refreshTokenCookie.setPath("/");     // 전체 도메인 경로에 대해 전송
-        refreshTokenCookie.setMaxAge(60 * 60 * 2); // 토큰 만료와 일치 시켜야함. 2시간 유효기간 (초 단위)
-        response.addCookie(refreshTokenCookie);
+        // accessToken 쿠키 (예: 1시간 유효)
+        addCookie(response, "accessToken", tokenResponse.getAccessToken(), 60 * 60);
 
-        // 응답 바디에는 Access Token만 보냄 (또는 Refresh Token을 null 처리)
-        TokenResponse responseBody = new TokenResponse(tokenResponse.getAccessToken(), null);
+        // refreshToken 쿠키 (예: 2시간 유효)
+        addCookie(response, "refreshToken", tokenResponse.getRefreshToken(), 60 * 60 * 2);
 
+        // 응답 바디는 토큰 노출 안 하거나 null 처리해도 됨
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(responseBody); // Access Toke은 클라이언트에서 Authorization Header에 삽입
+                .body(null);
     }
 
     @DeleteMapping("/logout")
-    public ResponseEntity<Void> logout(@CookieValue("refreshToken") String refreshToken,
-                                       HttpServletResponse response) {
-        tokenService.logout(refreshToken);
-
-        // 로그아웃 시 쿠키 삭제 (만료시켜서 클라이언트에서 삭제하도록 함)
-        Cookie deleteCookie = new Cookie("refreshToken", null);
-        deleteCookie.setHttpOnly(true);
-        deleteCookie.setSecure(true);
-        deleteCookie.setPath("/");
-        deleteCookie.setMaxAge(0);
-        response.addCookie(deleteCookie);
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
+        // 쿠키 삭제 (만료시간 0으로 설정)
+        addCookie(response, "accessToken", null, 0);
+        addCookie(response, "refreshToken", null, 0);
 
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/refresh-token")
-    public ResponseEntity<TokenResponse> refreshAccessToken(@CookieValue("refreshToken") String refreshToken) {
+    public ResponseEntity<TokenResponse> refreshAccessToken(@CookieValue("refreshToken") String refreshToken,
+                                                            HttpServletResponse response) {
         String newAccessToken = tokenService.refreshAccessToken(refreshToken);
+
+        // 새로운 accessToken 쿠키 발행
+        addCookie(response, "accessToken", newAccessToken, 60 * 60);
+
+        // refreshToken은 그대로 유지하거나 재발행 필요시 추가 코드 작성
+
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new TokenResponse(newAccessToken, null)); // Access Toke은 클라이언트에서 Authorization Header에 삽입
+                .body(null);
     }
 
-    // 전역 예외 핸들링용 핸들러 (Controller 내에서 발생하는 예외 처리)
+    // 쿠키 생성 메서드 (SameSite 속성은 헤더로 직접 추가)
+    private void addCookie(HttpServletResponse response, String name, String value, int maxAgeSeconds) {
+        Cookie cookie = new Cookie(name, value);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);   // HTTPS 환경에서만 전송
+        cookie.setPath("/");
+        cookie.setMaxAge(maxAgeSeconds);
+        response.addCookie(cookie);
+
+        // SameSite 직접 헤더로 추가 (Java Servlet API 쿠키 객체는 SameSite 미지원)
+        String cookieHeader = String.format("%s=%s; Max-Age=%d; Path=/; Secure; HttpOnly; SameSite=Strict",
+                name, value, maxAgeSeconds);
+        response.addHeader("Set-Cookie", cookieHeader);
+    }
+
+    // 전역 예외 핸들링
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Header> handleException(Exception e) {
-        // 예외 정보 로그
         log.error("Exception Occurred: ", e);
-
-        // 클라이언트에게 반환할 메시지 생성
         String errorMessage = e.getClass().getSimpleName() + " : " + e.getMessage();
-
-        // 에러 응답 본문 생성
         Header errorResponse = Header.ERROR(errorMessage);
-
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(errorResponse);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 }
