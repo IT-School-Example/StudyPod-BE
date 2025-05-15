@@ -21,8 +21,8 @@ public class SubjectAreaService extends CrudService<SubjectAreaRequest, SubjectA
     }
 
     @Override
-    protected SubjectArea toEntity(SubjectAreaRequest requestEntity) {
-        return SubjectArea.of(requestEntity);
+    protected SubjectArea toEntity(SubjectAreaRequest request) {
+        return SubjectArea.of(request);
     }
 
 

@@ -62,7 +62,7 @@ public class StudyGroup extends BaseEntity implements Convertible<StudyGroupRequ
     private Long amount;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "leader_id", referencedColumnName = "user_id", nullable = false)
+    @JoinColumn(name = "leader_id", referencedColumnName = "account_id", nullable = false)
     private User leader;
 
     @ManyToOne(fetch = FetchType.LAZY)

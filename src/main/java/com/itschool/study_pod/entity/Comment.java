@@ -37,7 +37,7 @@ public class Comment extends BaseEntity implements Convertible<CommentRequest, C
     private Comment parentComment;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "account_id", nullable = false)
     private User user;
 
     public static Comment of(CommentRequest request) { // create용

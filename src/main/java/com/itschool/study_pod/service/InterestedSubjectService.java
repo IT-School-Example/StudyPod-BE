@@ -28,8 +28,8 @@ public class InterestedSubjectService extends CrudService<InterestedSubjectReque
     }
 
     @Override
-    protected InterestedSubject toEntity(InterestedSubjectRequest requestEntity) {
-        return InterestedSubject.of(requestEntity);
+    protected InterestedSubject toEntity(InterestedSubjectRequest request) {
+        return InterestedSubject.of(request);
     }
 
     /*public InterestedSubjectResponse create(InterestedSubjectRequest request) {

@@ -43,7 +43,7 @@ public class Enrollment extends BaseEntity implements Convertible<EnrollmentRequ
     private StudyGroup studyGroup;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "account_id", nullable = false)
     private User user;
 
     public static Enrollment of(EnrollmentRequest request) { // create용
