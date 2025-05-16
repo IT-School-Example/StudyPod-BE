@@ -7,7 +7,6 @@ import com.itschool.study_pod.dto.request.studygroup.StudyGroupSearchRequest;
 import com.itschool.study_pod.dto.response.StudyGroupResponse;
 import com.itschool.study_pod.dto.response.UserResponse;
 import com.itschool.study_pod.entity.StudyGroup;
-import com.itschool.study_pod.entity.User;
 import com.itschool.study_pod.enumclass.EnrollmentStatus;
 import com.itschool.study_pod.enumclass.MeetingMethod;
 import com.itschool.study_pod.enumclass.RecruitmentStatus;
@@ -75,12 +74,13 @@ public class StudyGroupApiController extends CrudController<StudyGroupRequest, S
         }
     }
 
-    @Operation(summary = "스터디그룹 id와 등록 상태로 회원 목록 조회", description = "study_group_id와 등록 상태에 따른 회원 목록을 조회")
+    @Operation(summary = "스터디그룹별 등록 회원 목록 조회", description = "스터디그룹 id와 등록 상태로 회원 목록 조회")
     @GetMapping("{id}/users")
-    public Header<List<UserResponse>> findEnrolledUsersByStudyGroupId(@PathVariable(name = "id") Long id,
+    public Header<List<UserResponse>> findEnrolledUsersByStudyGroupId(@PathVariable(name = "studyGroupId") Long studyGroupId,
                                                                       @RequestParam(name = "enrollmentStatus") EnrollmentStatus enrollmentStatus) {
-        log.info("스터디그룹별 스터디 등록 내역 조회 : {}에서 id={}로 조회 요청", this.getClass().getSimpleName(), id);
-        return enrollmentService.findEnrolledUsersByStudyGroupId(id, enrollmentStatus);
+        log.info("스터디그룹별 등록 회원 목록 조회 : {}에서 id={}로 조회 요청", this.getClass().getSimpleName(), studyGroupId);
+
+        return enrollmentService.findEnrolledUsersByStudyGroupId(studyGroupId, enrollmentStatus);
     }
 
     @GetMapping("/my")
@@ -93,10 +93,16 @@ public class StudyGroupApiController extends CrudController<StudyGroupRequest, S
     @GetMapping("/user/{userId}/enrolled-groups")
     @Operation(summary = "사용자의 등록된 스터디 그룹 목록 조회", description = "회원 ID와 등록 상태로 스터디 그룹 리스트를 반환합니다.")
     public Header<List<StudyGroupResponse>> getStudyGroupsByUserId(
-            @PathVariable Long userId,
+            @PathVariable Long accountId,
             @RequestParam(name = "enrollmentStatus", required = false, defaultValue = "APPROVED") EnrollmentStatus enrollmentStatus
     ) {
-        return enrollmentService.findEnrolledStudyGroupsByUserId(userId, enrollmentStatus);
+        /*Long currentAccountId = getCurrentAccountId();
+
+        if(!accountId.equals(currentAccountId)) {
+            return Header.ERROR("가입한 회원만 조회가 가능합니다");
+        }*/
+
+        return enrollmentService.findEnrolledStudyGroupsByUserId(accountId, enrollmentStatus);
     }
 
     // 스터디 리더 개설한 스터디 그룹 조회

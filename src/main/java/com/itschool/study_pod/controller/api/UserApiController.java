@@ -69,13 +69,13 @@ public class UserApiController extends CrudController<UserRequest, UserResponse,
         return userService.updateEmail(id, request);
     }
 
-    @Operation(summary = "회원id와 등록 상태로 스터디 내역 조회", description = "user_id와 등록 상태에 따른 스터디 내역을 조회")
+    /*@Operation(summary = "회원id와 등록 상태로 스터디 내역 조회", description = "user_id와 등록 상태에 따른 스터디 내역을 조회")
     @GetMapping("{id}/studies")
     public Header<List<StudyGroupResponse>> findEnrolledStudyGroupsByUserId(@PathVariable(name = "id") Long id,
                                                                             @RequestParam EnrollmentStatus enrollmentStatus) {
         log.info("사용자별 스터디 등록 내역 조회 : {}에서 id={}로 조회 요청", this.getClass().getSimpleName(), id);
         return enrollmentService.findEnrolledStudyGroupsByUserId(id, enrollmentStatus);
-    }
+    }*/
 
     @Operation(summary = "이메일 중복 여부 조회", description = "이메일 중복 여부 조회")
     @GetMapping("/check-email")
