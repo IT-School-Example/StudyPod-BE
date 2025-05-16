@@ -50,8 +50,8 @@ public class WebSecurityConfig {
                 // 개발 및 테스트 환경에서만 허용할 경로
                 .requestMatchers(
                         // 해당 요청은 필터링 제외 (local dev에서만)
-                        new AntPathRequestMatcher("/"),
-                        new AntPathRequestMatcher("/*.html"),
+                        /*new AntPathRequestMatcher("/"),
+                        new AntPathRequestMatcher("/*.html"),*/
                         new AntPathRequestMatcher("/css/**"),
                         new AntPathRequestMatcher("/img/**"),
                         new AntPathRequestMatcher("/js/**"),
@@ -73,6 +73,8 @@ public class WebSecurityConfig {
 
                         // ✅ 비인증 사용자(비로그인 사용자)도 접근 가능한 경로
                         .requestMatchers(
+                                new AntPathRequestMatcher("/"),
+                                new AntPathRequestMatcher("/*.html"),
                                 new AntPathRequestMatcher("/login"),
                                 new AntPathRequestMatcher("/signup"),
                                 new AntPathRequestMatcher("/api/user"),
