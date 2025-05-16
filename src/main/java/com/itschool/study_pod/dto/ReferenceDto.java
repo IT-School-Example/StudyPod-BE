@@ -4,7 +4,7 @@ import lombok.*;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class ReferenceDto {
     private Long id;

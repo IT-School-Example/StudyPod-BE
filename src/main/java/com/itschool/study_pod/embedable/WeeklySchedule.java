@@ -11,7 +11,7 @@ import java.time.LocalTime;
 @Embeddable
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class WeeklySchedule {
 

@@ -10,7 +10,7 @@ import lombok.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @Table(name = "subject_areas")
 public class SubjectArea implements Convertible<SubjectAreaRequest, SubjectAreaResponse> {

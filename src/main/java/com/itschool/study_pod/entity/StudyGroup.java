@@ -23,7 +23,7 @@ import java.util.Set;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @Table(name = "study_groups")
 @SQLDelete(sql = "UPDATE study_groups SET is_deleted = true WHERE study_group_id = ?")

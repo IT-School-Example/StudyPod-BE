@@ -13,7 +13,7 @@ import org.hibernate.annotations.Where;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @Table(name = "admin_boards")
 @SQLDelete(sql = "UPDATE admin_boards SET is_deleted = true WHERE admin_board_id = ?")

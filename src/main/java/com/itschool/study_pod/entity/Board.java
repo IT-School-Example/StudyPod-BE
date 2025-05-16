@@ -16,7 +16,7 @@ import org.hibernate.annotations.Where;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @Table(name = "boards")
 @SQLDelete(sql = "UPDATE boards SET is_deleted = true WHERE board_id = ?")
