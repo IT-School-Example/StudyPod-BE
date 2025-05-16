@@ -1,5 +1,6 @@
 package com.itschool.study_pod.service;
 
+import com.itschool.study_pod.dto.Header;
 import com.itschool.study_pod.dto.request.comment.CommentRequest;
 import com.itschool.study_pod.dto.response.CommentResponse;
 import com.itschool.study_pod.entity.Comment;
@@ -10,13 +11,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.itschool.study_pod.dto.Header.OK;
+
 @Service
 @RequiredArgsConstructor
 public class CommentService extends CrudService<CommentRequest, CommentResponse, Comment> {
 
     private final CommentRepository commentRepository;
-
-    private final UserRepository userRepository;
 
 
     @Override
@@ -27,6 +31,15 @@ public class CommentService extends CrudService<CommentRequest, CommentResponse,
     @Override
     protected Comment toEntity(CommentRequest requestEntity) {
         return Comment.of(requestEntity);
+    }
+
+    // 자유게시판 댓글 전체 조회
+    public Header<List<CommentResponse>> findAllByStudyBoardId(Long studyBoardId) {
+        List<Comment> comments = commentRepository.findAllByStudyBoardId(studyBoardId);
+        List<CommentResponse> responseList = comments.stream()
+                .map(Comment::response)
+                .collect(Collectors.toList());
+        return Header.OK(responseList);
     }
 
     /*private final CommentRepository commentRepository;
