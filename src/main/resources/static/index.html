@@ -31,7 +31,11 @@
         <div class="logo">
             <a href="/"></a>
         </div>
-        <button class="btn btn-success" onclick="location.href='/login.html'" aria-label="로그인">로그인</button>
+        <!-- 로그인 버튼 -->
+        <button id="loginBtn" class="btn btn-success" onclick="location.href='/login.html'" aria-label="로그인">로그인</button>
+
+        <!-- 로그아웃 버튼 (form 대신 JS로 처리 예정) -->
+        <button id="logoutBtn" class="btn btn-danger" onclick="logout()" aria-label="로그아웃">로그아웃</button>
     </header>
     <main>
         <section>스터디팟<br>모집 중!</section>
@@ -49,6 +53,48 @@
             <a class="logo" href="#"></a>
         </div>
     </footer>
+
+    <script>
+        // 쿠키에서 토큰 확인 함수
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        // 토큰 유무에 따라 버튼 표시 제어
+        window.addEventListener("DOMContentLoaded", function () {
+            const accessToken = getCookie("accessToken");
+            const refreshToken = getCookie("refreshToken");
+
+            const loginBtn = document.getElementById("loginBtn");
+            const logoutBtn = document.getElementById("logoutBtn");
+
+            if (accessToken || refreshToken) {
+                loginBtn.style.display = "none";
+                logoutBtn.style.display = "inline-block";
+            } else {
+                loginBtn.style.display = "inline-block";
+                logoutBtn.style.display = "none";
+            }
+        });
+
+        // 로그아웃 처리
+        function logout() {
+            fetch("/logout", {
+                method: "DELETE",
+                credentials: "include"
+            }).then(response => {
+                if (response.ok) {
+                    window.location.href = "/login.html";
+                } else {
+                    alert("로그아웃 실패");
+                }
+            }).catch(error => {
+                console.error("로그아웃 오류:", error);
+            });
+        }
+    </script>
 </div>
 </body>
 </html>
