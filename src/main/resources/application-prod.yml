@@ -34,7 +34,7 @@ spring:
         secret-key: ${AWS_SECRET_ACCESS_KEY}
 
 logging.level:
-  org.hibernate.SQL: debug
+  root: debug
 
 jwt:
   # 운영 서버 내 /etc/environment 에 환경 변수 설정

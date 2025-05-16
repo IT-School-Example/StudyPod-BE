@@ -50,8 +50,9 @@ logging.level:
   org.hibernate.SQL: debug
   # 하이버네이트 6 이상
   org.hibernate.orm.jdbc.bind: trace
-  # 하이버네이트 5 이하
-  #org.hibernate.type.descriptor.sql.BasicBinder: trace
+  # org.apache.http: DEBUG
+  software.amazon.awssdk: DEBUG  # AWS SDK 로깅을 DEBUG로 설정
+  org.springframework.security: DEBUG
 
 springdoc:
   swagger-ui:
