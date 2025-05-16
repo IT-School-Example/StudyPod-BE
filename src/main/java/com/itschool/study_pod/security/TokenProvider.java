@@ -5,6 +5,8 @@ import com.itschool.study_pod.repository.AccountRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -151,6 +153,9 @@ public class TokenProvider {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("사용자 정보를 찾을 수 없습니다."));
 
+        // 비밀번호가 변경된 이후에 모든 연결을 끊기 위한 로직도 추후 필요.
+        // DB 에 있는 refresh token에 상태 값을 통해 유효하지 않으면 클라이언트의 access 토큰과 refresh 토큰 없애기
+        
         return new UsernamePasswordAuthenticationToken(account, token, account.getAuthorities());
     }
 
@@ -161,6 +166,22 @@ public class TokenProvider {
      */
     public Long getUserId(String token) {
         return getAccessTokenClaims(token).get(CLAIM_ID, Long.class);
+    }
+
+    
+    // 쿠키 생성 메서드 (SameSite 속성은 헤더로 직접 추가, 메소드 위치 다른 클래스 이관 고민)
+    public static void addCookie(HttpServletResponse response, String name, String value, int maxAgeSeconds) {
+        Cookie cookie = new Cookie(name, value);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);   // HTTPS 환경에서만 전송
+        cookie.setPath("/");
+        cookie.setMaxAge(maxAgeSeconds);
+        response.addCookie(cookie);
+
+        // SameSite 직접 헤더로 추가 (Java Servlet API 쿠키 객체는 SameSite 미지원)
+        String cookieHeader = String.format("%s=%s; Max-Age=%d; Path=/; Secure; HttpOnly; SameSite=Strict",
+                name, value, maxAgeSeconds);
+        response.addHeader("Set-Cookie", cookieHeader);
     }
 
     /**

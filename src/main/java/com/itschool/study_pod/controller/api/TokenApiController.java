@@ -4,8 +4,8 @@ import com.itschool.study_pod.dto.Header;
 import com.itschool.study_pod.dto.request.LoginRequest;
 import com.itschool.study_pod.dto.response.TokenResponse;
 import com.itschool.study_pod.entity.base.Account;
+import com.itschool.study_pod.security.TokenProvider;
 import com.itschool.study_pod.service.TokenService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,22 +27,27 @@ public class TokenApiController {
         TokenResponse tokenResponse = tokenService.login(request);
 
         // accessToken 쿠키 (예: 1시간 유효)
-        addCookie(response, "accessToken", tokenResponse.getAccessToken(), 60 * 5);
+        TokenProvider.addCookie(response, "accessToken", tokenResponse.getAccessToken(), 60 * 5);
 
         // refreshToken 쿠키 (예: 2시간 유효)
-        addCookie(response, "refreshToken", tokenResponse.getRefreshToken(), 60 * 60 * 2);
+        TokenProvider.addCookie(response, "refreshToken", tokenResponse.getRefreshToken(), 60 * 60 * 2);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(null);
     }
-
-    @DeleteMapping("/logout")
+    
+    // Security /logout 기본 method인 post 차용, 변경 시 클라이언트도 반영 필요
+    @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletResponse response) {
         // 쿠키 삭제 (만료시간 0으로 설정)
-        addCookie(response, "accessToken", null, 0);
-        addCookie(response, "refreshToken", null, 0);
+        TokenProvider.addCookie(response, "accessToken", null, 0);
+        TokenProvider.addCookie(response, "refreshToken", null, 0);
 
-        return ResponseEntity.noContent().build();
+        // 리다이렉트 응답
+        response.setStatus(HttpServletResponse.SC_FOUND); // 302
+        response.setHeader("Location", "/"); // 또는 원하는 URL
+
+        return ResponseEntity.status(HttpServletResponse.SC_FOUND).build();
     }
 
     @PostMapping("/refresh-token")
@@ -51,7 +56,7 @@ public class TokenApiController {
         String newAccessToken = tokenService.refreshAccessToken(refreshToken);
 
         // 새로운 accessToken 쿠키 발행
-        addCookie(response, "accessToken", newAccessToken, 60 * 60);
+        TokenProvider.addCookie(response, "accessToken", newAccessToken, 60 * 60);
 
         // refreshToken은 그대로 유지하거나 재발행 필요시 추가 코드 작성
 
@@ -63,21 +68,6 @@ public class TokenApiController {
     public ResponseEntity<String> getCurrentUserName(@AuthenticationPrincipal Account userDetails) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(userDetails.getUsername());
-    }
-
-    // 쿠키 생성 메서드 (SameSite 속성은 헤더로 직접 추가)
-    private void addCookie(HttpServletResponse response, String name, String value, int maxAgeSeconds) {
-        Cookie cookie = new Cookie(name, value);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);   // HTTPS 환경에서만 전송
-        cookie.setPath("/");
-        cookie.setMaxAge(maxAgeSeconds);
-        response.addCookie(cookie);
-
-        // SameSite 직접 헤더로 추가 (Java Servlet API 쿠키 객체는 SameSite 미지원)
-        String cookieHeader = String.format("%s=%s; Max-Age=%d; Path=/; Secure; HttpOnly; SameSite=Strict",
-                name, value, maxAgeSeconds);
-        response.addHeader("Set-Cookie", cookieHeader);
     }
 
     // 전역 예외 핸들링
