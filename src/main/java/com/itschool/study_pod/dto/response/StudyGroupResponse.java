@@ -74,4 +74,5 @@ public class StudyGroupResponse {
                 .id(id)
                 .build();
     }
+
 }

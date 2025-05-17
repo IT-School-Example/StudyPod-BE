@@ -38,7 +38,7 @@ public class Board extends BaseEntity implements Convertible<BoardRequest, Board
     private BoardCategory category;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "account_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)

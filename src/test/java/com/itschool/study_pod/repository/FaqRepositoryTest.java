@@ -32,7 +32,8 @@ public class FaqRepositoryTest extends StudyPodApplicationTests {
         Admin admin = Admin.builder()
                 .email(UUID.randomUUID().toString() + "example.com")
                 .password("admin123")
-                .role(AccountRole.ROLE_MODERATOR)
+                .name("관리자")
+                .role(AccountRole.ROLE_ADMIN)
                 .build();
 
         savedAdmin = adminRepository.save(admin);

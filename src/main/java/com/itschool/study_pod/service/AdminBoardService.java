@@ -21,7 +21,7 @@ public class AdminBoardService extends CrudService<AdminBoardRequest, AdminBoard
     }
 
     @Override
-    protected AdminBoard toEntity(AdminBoardRequest requestEntity) {
-        return AdminBoard.of(requestEntity);
+    protected AdminBoard toEntity(AdminBoardRequest request) {
+        return AdminBoard.of(request);
     }
 }

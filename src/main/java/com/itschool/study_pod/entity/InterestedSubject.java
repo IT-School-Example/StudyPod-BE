@@ -18,7 +18,7 @@ import org.hibernate.annotations.Where;
 @Builder
 @Table(name = "interested_subjects",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"user_id", "subject_area_id"})
+                @UniqueConstraint(columnNames = {"account_id", "subject_area_id"})
 })
 @SQLDelete(sql = "UPDATE interested_subjects SET is_deleted = true WHERE interested_subject_id = ?")
 @Where(clause = "is_deleted = false")
@@ -29,7 +29,7 @@ public class InterestedSubject extends BaseEntity implements Convertible<Interes
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "account_id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)

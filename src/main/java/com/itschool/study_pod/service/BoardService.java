@@ -21,8 +21,8 @@ public class BoardService extends CrudService<BoardRequest, BoardResponse, Board
     }
 
     @Override
-    protected Board toEntity(BoardRequest requestEntity) {
-        return Board.of(requestEntity);
+    protected Board toEntity(BoardRequest request) {
+        return Board.of(request);
     }
 
     /*private final BoardRepository boardRepository;

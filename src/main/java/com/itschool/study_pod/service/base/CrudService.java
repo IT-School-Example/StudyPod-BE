@@ -22,7 +22,7 @@ public abstract class CrudService<Req, Res, Entity extends Convertible<Req, Res>
     protected abstract JpaRepository<Entity, Long> getBaseRepository();
 
     // 요청 DTO를 Entity로 변환
-    protected abstract Entity toEntity(Req requestEntity);
+    protected abstract Entity toEntity(Req request);
 
     // 응답 처리(응답 DTO를 ApiResponse에 감싸서 return)
     protected Header<Res> apiResponse(Entity entity) {

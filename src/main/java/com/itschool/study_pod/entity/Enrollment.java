@@ -7,13 +7,10 @@ import com.itschool.study_pod.dto.response.UserResponse;
 import com.itschool.study_pod.entity.base.BaseEntity;
 import com.itschool.study_pod.enumclass.EnrollmentStatus;
 import com.itschool.study_pod.ifs.Convertible;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -46,7 +43,7 @@ public class Enrollment extends BaseEntity implements Convertible<EnrollmentRequ
     private StudyGroup studyGroup;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "account_id", nullable = false)
     private User user;
 
     public static Enrollment of(EnrollmentRequest request) { // create용
@@ -71,8 +68,12 @@ public class Enrollment extends BaseEntity implements Convertible<EnrollmentRequ
                 User.withId(request.getUser().getId()) : this.user;*/
     }
 
-    public void memberKick() {
+    public void kickMember() {
         this.status = EnrollmentStatus.BANNED;
+    }
+
+    public void approveMember() {
+        this.status = EnrollmentStatus.APPROVED;
     }
 
     @Override
