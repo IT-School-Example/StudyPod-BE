@@ -1,6 +1,8 @@
 package com.itschool.study_pod.config;
 
 import com.itschool.study_pod.enumclass.AccountRole;
+import com.itschool.study_pod.security.TokenAuthenticationFilter;
+import com.itschool.study_pod.security.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,23 +11,57 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
-    // 스프링 시큐리티 기능 비활성화 : Security FilterChain 자체를 거치지 않도록 설정하는 메서드
+    private final TokenProvider tokenProvider;
+
+    // 운영 프로필에서 Security FilterChain 자체를 거치지 않도록 설정하는 메서드
+    /*@Bean
+    @Profile("prod")
+    public WebSecurityCustomizer prodConfigure() {
+        return web -> web.ignoring()
+                // 운영 환경에서만 허용할 경로
+                .requestMatchers(
+                        // 해당 요청은 필터링 제외 (local dev에서만)
+                        new AntPathRequestMatcher("/css/**"),
+                        new AntPathRequestMatcher("/img/**"),
+                        new AntPathRequestMatcher("/js/**")
+                );
+    }*/
+
+    // 운영 외 프로필에서 Security FilterChain 자체를 거치지 않도록 설정하는 메서드
     @Bean
     @Profile({"local", "dev"})
-    public WebSecurityCustomizer configure() {
+    public WebSecurityCustomizer devConfigure() {
         return web -> web.ignoring()
                 // 개발 및 테스트 환경에서만 허용할 경로
                 .requestMatchers(
-                        // 모든 요청 제외 (local dev에서만)
-                        new AntPathRequestMatcher("/**")
+                        // 해당 요청은 필터링 제외 (local dev에서만)
+                        /*new AntPathRequestMatcher("/"),
+                        new AntPathRequestMatcher("/*.html"),*/
+                        new AntPathRequestMatcher("/css/**"),
+                        new AntPathRequestMatcher("/img/**"),
+                        new AntPathRequestMatcher("/js/**"),
+
+                        new AntPathRequestMatcher("/api/**"),
+                        new AntPathRequestMatcher("/api-docs"),
+                        new AntPathRequestMatcher("/api-docs/**"),
+                        new AntPathRequestMatcher("/v3/api-docs/**"),
+                        new AntPathRequestMatcher("/swagger*/**"),
+                        new AntPathRequestMatcher("/swagger-resources/**")
                 );
     }
 
@@ -37,23 +73,31 @@ public class WebSecurityConfig {
 
                         // ✅ 비인증 사용자(비로그인 사용자)도 접근 가능한 경로
                         .requestMatchers(
-
-                                new AntPathRequestMatcher("/login"),                        // 로그인 페이지
-                                new AntPathRequestMatcher("/signup"),                       // 회원가입 페이지
-                                new AntPathRequestMatcher("/api/user"),                     // 회원가입 처리 API
-                                new AntPathRequestMatcher("/api/user/check-email")        // 이메일 중복 확인 API
+                                new AntPathRequestMatcher("/"),
+                                new AntPathRequestMatcher("/*.html"),
+                                new AntPathRequestMatcher("/login"),
+                                new AntPathRequestMatcher("/signup"),
+                                new AntPathRequestMatcher("/api/user"),
+                                new AntPathRequestMatcher("/api/user/check-email"),
+                                new AntPathRequestMatcher("/index.html"),
+                                new AntPathRequestMatcher("/login.html")
                         ).permitAll() // 위 경로는 로그인 없이 접근 가능
 
                         // ✅ 관리자 전용 API
                         .requestMatchers(
-                                new AntPathRequestMatcher("/api/admin/**")
+                                new AntPathRequestMatcher("/api/admin/**"),
+                                new AntPathRequestMatcher("/api-docs"),
+                                new AntPathRequestMatcher("/api-docs/**"),
+                                new AntPathRequestMatcher("/v3/api-docs/**"),
+                                new AntPathRequestMatcher("/swagger*/**"),
+                                new AntPathRequestMatcher("/swagger-resources/**")
                         ).hasAnyAuthority(
                                 AccountRole.ROLE_ADMIN.name()
                         )
 
                         // ✅ 일반 사용자 전용 API
                         .requestMatchers(
-                                new AntPathRequestMatcher("api/**") // 모든 /api/** 경로 (단, admin 경로 제외)
+                                new AntPathRequestMatcher("/api/**") // 모든 /api/** 경로 (단, admin 경로 제외)
                         ).hasAnyAuthority(
                                 AccountRole.ROLE_USER.name()
                         )
@@ -63,25 +107,12 @@ public class WebSecurityConfig {
                 )
 
 
-                // ⛔️ [선택 사항] 폼 로그인 설정 (현재 주석 처리됨 - JWT 기반 로그인 등 커스텀 로그인 처리 예상)
-                /*.formLogin(Customizer.withDefaults()
-                        *//*formLogin -> formLogin
-                                .loginPage("/login")              // 사용자 정의 로그인 페이지
-                                .usernameParameter("email")       // 로그인 시 사용할 파라미터명
-                                .defaultSuccessUrl("/")           // 로그인 성공 후 이동 경로
-                                .successHandler(customSuccessHandler) // (선택) 로그인 성공 후 사용자 정의 처리*//*
-                )*/
+                // ⛔️ [선택 사항] 폼 로그인 설정 (JWT 기반 커스텀 로그인 처리)
+                .formLogin().disable()
 
 
-
-                // ⛔️ [선택 사항] 로그아웃 설정 (현재 주석 처리됨)
-                /*.logout(logout -> logout
-                        .logoutUrl("/logout")             // 로그아웃 요청 URL
-                        .logoutSuccessUrl("/")            // 로그아웃 후 이동 경로
-                        .invalidateHttpSession(true)      // 세션 무효화
-                        .deleteCookies("JSESSIONID")      // JSESSIONID 쿠키 삭제
-                )*/
-
+                // ⛔️ [선택 사항] 로그아웃 설정 (Spring security에서 제공하는 형태가 아닌 직접 api 구현 완료)
+                .logout().disable()
 
                 // ✅ CSRF 보호 비활성화 (REST API 방식에서는 보통 비활성화)
                 .csrf(csrf -> csrf.disable())
@@ -92,13 +123,33 @@ public class WebSecurityConfig {
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
                 )*/
 
+                // CORS 설정을 활성화
+                .cors()
+                .and()
+
+                .addFilterBefore(new TokenAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
+
                 .build();
     }
 
-
     // 패스워드 인코더로 사용할 빈 등록
     @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+    public PasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:3000")); // 프론트 주소
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true); // 쿠키 전송 허용
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
 }
+
+
