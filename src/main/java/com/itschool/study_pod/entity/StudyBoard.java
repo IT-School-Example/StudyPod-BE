@@ -35,7 +35,7 @@ public class StudyBoard extends BaseEntity implements Convertible<StudyBoardRequ
     private StudyBoardCategory studyBoardCategory;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "account_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
