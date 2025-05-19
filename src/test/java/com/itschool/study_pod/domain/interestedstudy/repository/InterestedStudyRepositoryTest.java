@@ -1,4 +1,4 @@
-package com.itschool.study_pod.repository;
+package com.itschool.study_pod.domain.interestedstudy.repository;
 
 import com.itschool.study_pod.StudyPodApplicationTests;
 import com.itschool.study_pod.global.embedable.WeeklySchedule;
@@ -6,7 +6,6 @@ import com.itschool.study_pod.domain.interestedstudy.entity.InterestedStudy;
 import com.itschool.study_pod.domain.studygroup.entity.StudyGroup;
 import com.itschool.study_pod.domain.subjectarea.entity.SubjectArea;
 import com.itschool.study_pod.domain.user.entity.User;
-import com.itschool.study_pod.domain.interestedstudy.repository.InterestedStudyRepository;
 import com.itschool.study_pod.domain.studygroup.repository.StudyGroupRepository;
 import com.itschool.study_pod.domain.subjectarea.repository.SubjectAreaRepository;
 import com.itschool.study_pod.domain.user.repository.UserRepository;

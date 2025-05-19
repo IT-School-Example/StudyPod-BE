@@ -1,7 +1,6 @@
-package com.itschool.study_pod.repository.address;
+package com.itschool.study_pod.global.address.repository;
 
 import com.itschool.study_pod.StudyPodApplicationTests;
-import com.itschool.study_pod.global.address.repository.SidoRepository;
 import com.itschool.study_pod.global.address.entity.Sido;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
