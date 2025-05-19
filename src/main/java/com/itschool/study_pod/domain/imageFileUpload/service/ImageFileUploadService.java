@@ -23,20 +23,9 @@ public class ImageFileUploadService {
 
     @Value("${spring.cloud.aws.s3.bucket}")
     private String bucketName;
-
-    @Autowired
-    private Environment env;
-
-    public void debugAwsConfig() {
-        System.out.println(env.getProperty("spring.cloud.aws.s3.bucket"));
-        System.out.println(env.getProperty("spring.cloud.aws.credentials.access-key"));
-        System.out.println(env.getProperty("spring.cloud.aws.credentials.secret-key"));
-        System.out.println(env.getProperty("spring.cloud.aws.region.static"));
-    }
-
+    
     // 파일 업로드
     public String upload(MultipartFile file, String dirName) throws IOException, S3Exception {
-        debugAwsConfig();
 
         // 이미지 파일 검증
         FileUtil.validateImageFile(file);

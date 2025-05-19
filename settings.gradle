@@ -1,6 +1,4 @@
 // 리눅스에서 gradle 오류로 추가 start
-// 리눅스 환경에서 JDK가 JAVA_HOME 설정만으로도 인식이 안 되어 플러그인 추가
-// Foojay의 API를 이용해서 JDK 위치를 더 잘 파악하거나, 필요시 다운로드
 pluginManagement {
     plugins {
         id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
