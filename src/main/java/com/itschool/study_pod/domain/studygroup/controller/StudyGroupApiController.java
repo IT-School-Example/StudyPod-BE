@@ -1,18 +1,20 @@
-package com.itschool.study_pod.controller.api;
+package com.itschool.study_pod.domain.studygroup.controller;
 
-import com.itschool.study_pod.controller.base.CrudController;
-import com.itschool.study_pod.dto.Header;
-import com.itschool.study_pod.dto.request.studygroup.StudyGroupRequest;
-import com.itschool.study_pod.dto.request.studygroup.StudyGroupSearchRequest;
-import com.itschool.study_pod.dto.response.StudyGroupResponse;
-import com.itschool.study_pod.dto.response.UserResponse;
-import com.itschool.study_pod.entity.StudyGroup;
-import com.itschool.study_pod.enumclass.EnrollmentStatus;
-import com.itschool.study_pod.enumclass.MeetingMethod;
-import com.itschool.study_pod.enumclass.RecruitmentStatus;
-import com.itschool.study_pod.service.EnrollmentService;
-import com.itschool.study_pod.service.StudyGroupService;
-import com.itschool.study_pod.service.base.CrudService;
+import com.itschool.study_pod.domain.enrollment.service.EnrollmentService;
+import com.itschool.study_pod.domain.studygroup.dto.request.StudyGroupRequest;
+import com.itschool.study_pod.domain.studygroup.dto.request.StudyGroupSearchRequest;
+import com.itschool.study_pod.domain.studygroup.dto.response.StudyGroupResponse;
+import com.itschool.study_pod.domain.studygroup.entity.StudyGroup;
+import com.itschool.study_pod.domain.studygroup.service.StudyGroupService;
+import com.itschool.study_pod.domain.user.dto.response.UserResponse;
+import com.itschool.study_pod.global.base.crud.CrudController;
+import com.itschool.study_pod.global.base.crud.CrudService;
+import com.itschool.study_pod.global.base.dto.Header;
+import com.itschool.study_pod.global.enumclass.EnrollmentStatus;
+import com.itschool.study_pod.global.enumclass.MeetingMethod;
+import com.itschool.study_pod.global.enumclass.RecruitmentStatus;
+
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

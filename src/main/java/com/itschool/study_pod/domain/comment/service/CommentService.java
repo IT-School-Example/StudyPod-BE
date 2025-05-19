@@ -1,22 +1,20 @@
-package com.itschool.study_pod.service;
+package com.itschool.study_pod.domain.comment.service;
 
-import com.itschool.study_pod.dto.Header;
-import com.itschool.study_pod.dto.request.comment.CommentRequest;
-import com.itschool.study_pod.dto.response.CommentResponse;
-import com.itschool.study_pod.entity.Comment;
-import com.itschool.study_pod.entity.StudyBoard;
-import com.itschool.study_pod.enumclass.StudyBoardCategory;
-import com.itschool.study_pod.repository.CommentRepository;
-import com.itschool.study_pod.repository.UserRepository;
-import com.itschool.study_pod.service.base.CrudService;
+import com.itschool.study_pod.domain.comment.dto.request.CommentRequest;
+import com.itschool.study_pod.domain.comment.dto.response.CommentResponse;
+import com.itschool.study_pod.domain.comment.entity.Comment;
+import com.itschool.study_pod.domain.comment.repository.CommentRepository;
+import com.itschool.study_pod.domain.studyboard.entity.StudyBoard;
+import com.itschool.study_pod.domain.studyboard.service.StudyBoardService;
+import com.itschool.study_pod.global.base.crud.CrudService;
+import com.itschool.study_pod.global.base.dto.Header;
+import com.itschool.study_pod.global.enumclass.StudyBoardCategory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.itschool.study_pod.dto.Header.OK;
 
 @Service
 @RequiredArgsConstructor

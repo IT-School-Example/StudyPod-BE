@@ -1,6 +1,8 @@
-package com.itschool.study_pod.dto.response;
+package com.itschool.study_pod.domain.comment.dto.response;
 
 
+import com.itschool.study_pod.domain.studyboard.dto.response.StudyBoardResponse;
+import com.itschool.study_pod.domain.user.dto.response.UserResponse;
 import lombok.*;
 
 import java.time.LocalDateTime;

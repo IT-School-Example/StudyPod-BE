@@ -1,5 +1,6 @@
 package com.itschool.study_pod.domain.user.controller;
 
+import com.itschool.study_pod.global.base.account.Account;
 import com.itschool.study_pod.global.base.crud.CrudController;
 import com.itschool.study_pod.global.base.dto.Header;
 import com.itschool.study_pod.domain.studygroup.dto.response.StudyGroupResponse;
@@ -19,6 +20,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Hashtable;
@@ -54,9 +57,14 @@ public class UserApiController extends CrudController<UserRequest, UserResponse,
     @ResponseStatus(HttpStatus.NO_CONTENT) // 204, NO_CONTENT
     @PatchMapping("update-nickname/{id}")
     public Header<Void> updateNickname(@PathVariable(name = "id") Long id,
-                                       @RequestBody @Valid Header<UserNicknameUpdateRequest> request) {
+                                       @RequestBody @Valid Header<UserNicknameUpdateRequest> request,
+                                       @AuthenticationPrincipal Account account) {
         log.info("update nickname : {}에서 전체 조회 요청", this.getClass().getSimpleName());
-        return userService.updateNickname(id, request);
+        if (id.equals(account.getId())) {
+            return userService.updateNickname(id, request);
+        } else {
+            throw new IllegalArgumentException("사용자 정보는 사용자 본인만 수정할 수 있습니다.");
+        }
     }
 
     @Operation(summary = "사용자 이메일 수정", description = "사용자(User) 이메일 수정하기")

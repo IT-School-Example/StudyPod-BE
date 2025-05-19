@@ -1,9 +1,9 @@
-package com.itschool.study_pod.repository;
+package com.itschool.study_pod.domain.studygroup.repository;
 
-import com.itschool.study_pod.entity.StudyGroup;
-import com.itschool.study_pod.enumclass.MeetingMethod;
-import com.itschool.study_pod.enumclass.RecruitmentStatus;
-import com.itschool.study_pod.enumclass.Subject;
+import com.itschool.study_pod.domain.studygroup.entity.StudyGroup;
+import com.itschool.study_pod.global.enumclass.MeetingMethod;
+import com.itschool.study_pod.global.enumclass.RecruitmentStatus;
+import com.itschool.study_pod.global.enumclass.Subject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

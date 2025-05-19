@@ -1,7 +1,7 @@
-package com.itschool.study_pod.repository;
+package com.itschool.study_pod.domain.adminboard.repository;
 
-import com.itschool.study_pod.entity.AdminBoard;
-import com.itschool.study_pod.enumclass.AdminBoardCategory;
+import com.itschool.study_pod.domain.adminboard.entity.AdminBoard;
+import com.itschool.study_pod.global.enumclass.AdminBoardCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

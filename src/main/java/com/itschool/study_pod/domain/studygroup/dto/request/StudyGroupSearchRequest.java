@@ -1,8 +1,8 @@
-package com.itschool.study_pod.dto.request.studygroup;
+package com.itschool.study_pod.domain.studygroup.dto.request;
 
-import com.itschool.study_pod.dto.ReferenceDto;
-import com.itschool.study_pod.enumclass.MeetingMethod;
-import com.itschool.study_pod.enumclass.RecruitmentStatus;
+import com.itschool.study_pod.global.base.dto.ReferenceDto;
+import com.itschool.study_pod.global.enumclass.MeetingMethod;
+import com.itschool.study_pod.global.enumclass.RecruitmentStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

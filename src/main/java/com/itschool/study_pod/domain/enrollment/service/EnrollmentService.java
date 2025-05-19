@@ -36,30 +36,34 @@ public class EnrollmentService extends CrudService<EnrollmentRequest, Enrollment
     }
 
     @Override
-    protected Enrollment toEntity(EnrollmentRequest request) {
-        return Enrollment.of(request);
+    protected Enrollment toEntity(EnrollmentRequest requestEntity) {
+        return Enrollment.of(requestEntity);
     }
 
     /*
-    * 회원id와 등록상태로 스터디 내역 조회
-    * */
-    public Header<List<StudyGroupResponse>> findEnrolledStudyGroupsByUserId(Long userId, EnrollmentStatus enrollmentStatus) {
+     * 회원id와 등록상태로 스터디 내역 조회
+     * */
+    public Header<List<StudyGroupResponse>> findEnrolledStudyGroupsByUserId(Long userId, EnrollmentStatus status) {
+        List<Enrollment> enrollments = enrollmentRepository.findWithStudyGroupByUserIdAndStatus(userId, status);
 
-        List<Enrollment> enrollmentList = enrollmentRepository.findWithStudyGroupByUserIdAndStatus(userId, enrollmentStatus);
+        if (enrollments.isEmpty()) {
+            return Header.ERROR("신청한 스터디가 없습니다.");
+        }
 
-        List<StudyGroupResponse> studyGroupResponses = enrollmentList.stream()
-                .map(enrollment -> enrollment.getStudyGroup().response())
-                .collect(Collectors.toList());
+        List<StudyGroupResponse> responses = enrollments.stream()
+                .map(e -> e.getStudyGroup().response())
+                .toList();
 
-        return Header.OK(studyGroupResponses);
+        return Header.OK(responses);
     }
+
 
     /*
      * 스터디그룹별 등록 회원 조회
      * */
     public Header<List<UserResponse>> findEnrolledUsersByStudyGroupId(Long studyGroupId, EnrollmentStatus enrollmentStatus) {
 
-        List<Enrollment> enrollmentList = enrollmentRepository.findWithUserByStudyGroupIdAndStatus(studyGroupId, enrollmentStatus);
+        List<Enrollment> enrollmentList = enrollmentRepository.findWithUserByStudyGroupIdAndStatus(studyGroupId, EnrollmentStatus.APPROVED);
 
         List<UserResponse> userResponses = enrollmentList.stream()
                 .map(enrollment -> enrollment.getUser().response())
@@ -71,56 +75,12 @@ public class EnrollmentService extends CrudService<EnrollmentRequest, Enrollment
 
     @Transactional
     public Header<EnrollmentResponse> kickMember(Long id) {
+
         Enrollment enrollment = enrollmentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("해당 id " + id + "에 해당하는 객체가 없습니다."));
 
-
-
-        if (!(EnrollmentStatus.APPROVED.equals(enrollment.getStatus()) ||
-                EnrollmentStatus.BANNED.equals(enrollment.getStatus()))){
-            throw new IllegalStateException("처리할 수 없습니다.");
-            // return Header.ERROR("처리 할 수 없습니다."); // 500에러x(200으로 뜸)
-        }
-
-
-        if (EnrollmentStatus.APPROVED.equals(enrollment.getStatus())) {
-            // 강제퇴장
-            enrollment.kickMember();
-        } else if (EnrollmentStatus.BANNED.equals(enrollment.getStatus())) {
-            // 재입장
-            enrollment.approveMember();
-        }
-
-        enrollmentRepository.save(enrollment);
+        enrollment.kickMember();
         return apiResponse(enrollment);
-
     }
-//    // 재입장
-//    public Header<EnrollmentResponse> unmemberKick (Long userId, Long studyGroupId) {
-//        Enrollment enrollment = enrollmentRepository.findById(userId, studyGroupId)
-//                .orElseThrow(()-> new EntityNotFoundException("해당 객체가 없습니다."));
-//
-//        if (enrollment.memberKick() == EnrollmentStatus.BANNED) {
-//            enrollment.getStatus(EnrollmentStatus.APPROVED);
-//
-//            enrollmentRepository.save(enrollment);
-//        }
-//    }
-
-   /* @Transactional
-    public Header<EnrollmentResponse> memberKick (Long id) {
-
-        Enrollment enrollment = enrollmentRepository.findById(id)
-                .orElseThrow(()-> new EntityNotFoundException("해당 id " + id + "에 해당하는 객체가 없습니다."));
-
-        enrollment.memberKick();
-
-
-
-        return apiResponse(enrollment);
-//        return Header.OK();
-    }*/
-    // 삭제를 하지 않고 데이터는 있는데 차단만 한 상태(다시 입장 할 수 있다.)
-
 
 }

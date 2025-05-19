@@ -1,14 +1,14 @@
-package com.itschool.study_pod.controller.api;
+package com.itschool.study_pod.domain.subjectarea.controller;
 
-import com.itschool.study_pod.controller.base.CrudController;
-import com.itschool.study_pod.dto.Header;
-import com.itschool.study_pod.dto.request.subjectarea.SubjectAreaRequest;
-import com.itschool.study_pod.dto.response.StudyGroupResponse;
-import com.itschool.study_pod.dto.response.SubjectAreaResponse;
-import com.itschool.study_pod.entity.SubjectArea;
-import com.itschool.study_pod.service.SubjectAreaService;
-import com.itschool.study_pod.service.StudyGroupService;
-import com.itschool.study_pod.service.base.CrudService;
+import com.itschool.study_pod.domain.studygroup.dto.response.StudyGroupResponse;
+import com.itschool.study_pod.domain.studygroup.service.StudyGroupService;
+import com.itschool.study_pod.domain.subjectarea.dto.request.SubjectAreaRequest;
+import com.itschool.study_pod.domain.subjectarea.dto.response.SubjectAreaResponse;
+import com.itschool.study_pod.domain.subjectarea.entity.SubjectArea;
+import com.itschool.study_pod.domain.subjectarea.service.SubjectAreaService;
+import com.itschool.study_pod.global.base.crud.CrudController;
+import com.itschool.study_pod.global.base.crud.CrudService;
+import com.itschool.study_pod.global.base.dto.Header;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

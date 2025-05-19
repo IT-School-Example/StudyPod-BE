@@ -1,11 +1,12 @@
-package com.itschool.study_pod.entity;
-
-import com.itschool.study_pod.dto.request.comment.CommentRequest;
-import com.itschool.study_pod.dto.response.CommentResponse;
-import com.itschool.study_pod.dto.response.StudyBoardResponse;
-import com.itschool.study_pod.dto.response.UserResponse;
-import com.itschool.study_pod.entity.base.BaseEntity;
-import com.itschool.study_pod.ifs.Convertible;
+package com.itschool.study_pod.domain.comment.entity;
+import com.itschool.study_pod.domain.comment.dto.request.CommentRequest;
+import com.itschool.study_pod.domain.comment.dto.response.CommentResponse;
+import com.itschool.study_pod.domain.studyboard.dto.response.StudyBoardResponse;
+import com.itschool.study_pod.domain.studyboard.entity.StudyBoard;
+import com.itschool.study_pod.domain.user.dto.response.UserResponse;
+import com.itschool.study_pod.domain.user.entity.User;
+import com.itschool.study_pod.global.base.BaseEntity;
+import com.itschool.study_pod.global.base.crud.Convertible;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;

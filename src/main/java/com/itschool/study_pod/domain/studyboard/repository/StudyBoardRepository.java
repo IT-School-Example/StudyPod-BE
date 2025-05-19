@@ -1,7 +1,7 @@
-package com.itschool.study_pod.repository;
+package com.itschool.study_pod.domain.studyboard.repository;
 
-import com.itschool.study_pod.entity.StudyBoard;
-import com.itschool.study_pod.enumclass.StudyBoardCategory;
+import com.itschool.study_pod.domain.studyboard.entity.StudyBoard;
+import com.itschool.study_pod.global.enumclass.StudyBoardCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,13 +1,13 @@
-package com.itschool.study_pod.controller.api;
+package com.itschool.study_pod.domain.adminboard.controller;
 
-import com.itschool.study_pod.controller.base.CrudController;
-import com.itschool.study_pod.dto.Header;
-import com.itschool.study_pod.dto.request.adminboard.AdminBoardRequest;
-import com.itschool.study_pod.dto.response.AdminBoardResponse;
-import com.itschool.study_pod.entity.AdminBoard;
-import com.itschool.study_pod.enumclass.AdminBoardCategory;
-import com.itschool.study_pod.service.AdminBoardService;
-import com.itschool.study_pod.service.base.CrudService;
+import com.itschool.study_pod.domain.adminboard.dto.request.AdminBoardRequest;
+import com.itschool.study_pod.domain.adminboard.dto.response.AdminBoardResponse;
+import com.itschool.study_pod.domain.adminboard.entity.AdminBoard;
+import com.itschool.study_pod.domain.adminboard.service.AdminBoardService;
+import com.itschool.study_pod.global.base.crud.CrudController;
+import com.itschool.study_pod.global.base.crud.CrudService;
+import com.itschool.study_pod.global.base.dto.Header;
+import com.itschool.study_pod.global.enumclass.AdminBoardCategory;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
