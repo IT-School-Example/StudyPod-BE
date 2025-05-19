@@ -1,6 +1,5 @@
-package com.itschool.study_pod.config;
+package com.itschool.study_pod.global.security.jwt;
 
-import com.itschool.study_pod.global.security.jwt.TokenProvider;
 import com.itschool.study_pod.domain.user.entity.User;
 import com.itschool.study_pod.global.enumclass.AccountRole;
 import com.itschool.study_pod.domain.user.repository.UserRepository;

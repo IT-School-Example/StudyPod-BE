@@ -1,4 +1,4 @@
-package com.itschool.study_pod.controller.api;
+package com.itschool.study_pod.domain.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itschool.study_pod.MockMvcTest;
@@ -23,7 +23,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
-class UserRequestApiControllerTest extends MockMvcTest {
+class UserApiControllerTest extends MockMvcTest {
     @Autowired
     private UserRepository userRepository;
 
