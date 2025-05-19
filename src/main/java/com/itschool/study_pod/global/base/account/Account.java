@@ -17,7 +17,6 @@ import java.util.List;
 
 @Entity
 @Getter
-@DiscriminatorColumn(name = "dtype") // optional
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuperBuilder
 @Inheritance(strategy = InheritanceType.JOINED)
