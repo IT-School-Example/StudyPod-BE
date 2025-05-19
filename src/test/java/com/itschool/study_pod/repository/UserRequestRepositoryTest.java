@@ -1,8 +1,9 @@
 package com.itschool.study_pod.repository;
 
 import com.itschool.study_pod.StudyPodApplicationTests;
-import com.itschool.study_pod.entity.User;
-import com.itschool.study_pod.enumclass.AccountRole;
+import com.itschool.study_pod.domain.user.entity.User;
+import com.itschool.study_pod.global.enumclass.AccountRole;
+import com.itschool.study_pod.domain.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

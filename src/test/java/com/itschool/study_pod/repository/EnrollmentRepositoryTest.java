@@ -1,16 +1,20 @@
 package com.itschool.study_pod.repository;
 
 import com.itschool.study_pod.StudyPodApplicationTests;
-import com.itschool.study_pod.embedable.WeeklySchedule;
-import com.itschool.study_pod.entity.Enrollment;
-import com.itschool.study_pod.entity.StudyGroup;
-import com.itschool.study_pod.entity.SubjectArea;
-import com.itschool.study_pod.entity.User;
-import com.itschool.study_pod.entity.address.Sgg;
-import com.itschool.study_pod.entity.address.Sido;
-import com.itschool.study_pod.enumclass.*;
-import com.itschool.study_pod.repository.address.SggRepository;
-import com.itschool.study_pod.repository.address.SidoRepository;
+import com.itschool.study_pod.global.embedable.WeeklySchedule;
+import com.itschool.study_pod.domain.enrollment.entity.Enrollment;
+import com.itschool.study_pod.domain.studygroup.entity.StudyGroup;
+import com.itschool.study_pod.domain.subjectarea.entity.SubjectArea;
+import com.itschool.study_pod.domain.user.entity.User;
+import com.itschool.study_pod.global.address.entity.Sgg;
+import com.itschool.study_pod.global.address.entity.Sido;
+import com.itschool.study_pod.domain.enrollment.repository.EnrollmentRepository;
+import com.itschool.study_pod.domain.studygroup.repository.StudyGroupRepository;
+import com.itschool.study_pod.domain.subjectarea.repository.SubjectAreaRepository;
+import com.itschool.study_pod.domain.user.repository.UserRepository;
+import com.itschool.study_pod.global.address.repository.SggRepository;
+import com.itschool.study_pod.global.address.repository.SidoRepository;
+import com.itschool.study_pod.global.enumclass.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;

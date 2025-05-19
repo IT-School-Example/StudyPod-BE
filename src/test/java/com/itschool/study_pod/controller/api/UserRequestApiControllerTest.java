@@ -2,12 +2,12 @@ package com.itschool.study_pod.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itschool.study_pod.MockMvcTest;
-import com.itschool.study_pod.dto.Header;
-import com.itschool.study_pod.dto.request.user.UserRequest;
-import com.itschool.study_pod.entity.User;
-import com.itschool.study_pod.enumclass.AccountRole;
-import com.itschool.study_pod.repository.StudyGroupRepository;
-import com.itschool.study_pod.repository.UserRepository;
+import com.itschool.study_pod.global.base.dto.Header;
+import com.itschool.study_pod.domain.user.dto.request.UserRequest;
+import com.itschool.study_pod.domain.user.entity.User;
+import com.itschool.study_pod.global.enumclass.AccountRole;
+import com.itschool.study_pod.domain.studygroup.repository.StudyGroupRepository;
+import com.itschool.study_pod.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

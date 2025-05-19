@@ -1,9 +1,9 @@
 package com.itschool.study_pod.repository.address;
 
 import com.itschool.study_pod.StudyPodApplicationTests;
-import com.itschool.study_pod.entity.address.Sido;
+import com.itschool.study_pod.global.address.repository.SidoRepository;
+import com.itschool.study_pod.global.address.entity.Sido;
 import jakarta.persistence.EntityNotFoundException;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

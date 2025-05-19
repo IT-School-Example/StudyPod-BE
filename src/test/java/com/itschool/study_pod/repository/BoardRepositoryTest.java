@@ -1,10 +1,12 @@
 package com.itschool.study_pod.repository;
 
 import com.itschool.study_pod.StudyPodApplicationTests;
-import com.itschool.study_pod.entity.Board;
-import com.itschool.study_pod.entity.User;
-import com.itschool.study_pod.enumclass.AccountRole;
-import com.itschool.study_pod.enumclass.BoardCategory;
+import com.itschool.study_pod.domain.board.entity.Board;
+import com.itschool.study_pod.domain.user.entity.User;
+import com.itschool.study_pod.global.enumclass.AccountRole;
+import com.itschool.study_pod.global.enumclass.BoardCategory;
+import com.itschool.study_pod.domain.board.repository.BoardRepository;
+import com.itschool.study_pod.domain.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,8 +49,8 @@ class BoardRepositoryTest extends StudyPodApplicationTests {
 
     @AfterEach
     public void afterCleanUp() {
-        boardRepository.deleteAll();
-        userRepository.deleteAll();
+        /*boardRepository.deleteAll();
+        userRepository.deleteAll();*/
     }
 
     @Test

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 400px;
+            margin: 80px auto;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        input, button {
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<h2>로그인</h2>
+
+<form id="login-form">
+    <input type="email" name="email" placeholder="이메일" required>
+    <input type="password" name="password" placeholder="비밀번호" required>
+    <button type="submit">로그인</button>
+    <div class="error" id="error-msg"></div>
+</form>
+
+<script>
+    document.getElementById("login-form").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const email = e.target.email.value;
+        const password = e.target.password.value;
+
+        const payload = { email, password };
+
+        try {
+            const res = await fetch("/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+                credentials: "include"  // 쿠키 전송을 위해 필수!
+            });
+
+            if (res.ok) {
+                // accessToken이 쿠키에 저장되어 있으니 따로 꺼내지 않고
+                // 로그인 성공 후 홈으로 이동
+                window.location.href = "/";
+            } else {
+                const errorData = await res.json();
+                document.getElementById("error-msg").innerText =
+                    errorData?.description || "로그인에 실패했습니다.";
+            }
+        } catch (err) {
+            document.getElementById("error-msg").innerText = "서버 오류가 발생했습니다.";
+            console.error("Login failed", err);
+        }
+    });
+</script>
+
+</body>
+</html>

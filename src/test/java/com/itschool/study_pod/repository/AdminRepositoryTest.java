@@ -1,8 +1,9 @@
 package com.itschool.study_pod.repository;
 
 import com.itschool.study_pod.StudyPodApplicationTests;
-import com.itschool.study_pod.entity.Admin;
-import com.itschool.study_pod.enumclass.AccountRole;
+import com.itschool.study_pod.domain.admin.entity.Admin;
+import com.itschool.study_pod.global.enumclass.AccountRole;
+import com.itschool.study_pod.domain.admin.repository.AdminRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +30,8 @@ class AdminRepositoryTest extends StudyPodApplicationTests {
         Admin entity = Admin.builder()
                 .email(UUID.randomUUID() +"@example.com")
                 .password("admin123")
-                .role(AccountRole.ROLE_MODERATOR)
+                .name("관리자")
+                .role(AccountRole.ROLE_ADMIN)
                 .build();
 
         Admin savedEntity = adminRepository.save(entity);
@@ -47,7 +49,8 @@ class AdminRepositoryTest extends StudyPodApplicationTests {
         Admin entity = Admin.builder()
                 .email(UUID.randomUUID() +"@example.com")
                 .password("admin123")
-                .role(AccountRole.ROLE_MODERATOR)
+                .name("관리자")
+                .role(AccountRole.ROLE_ADMIN)
                 .build();
 
         Admin savedEntity = adminRepository.save(entity);
@@ -64,7 +67,8 @@ class AdminRepositoryTest extends StudyPodApplicationTests {
         Admin entity = Admin.builder()
                 .email(UUID.randomUUID() +"@example.com")
                 .password("admin123")
-                .role(AccountRole.ROLE_MODERATOR)
+                .name("관리자")
+                .role(AccountRole.ROLE_ADMIN)
                 .build();
 
         Admin savedEntity = adminRepository.save(entity);
@@ -86,7 +90,8 @@ class AdminRepositoryTest extends StudyPodApplicationTests {
         Admin entity = Admin.builder()
                 .email(UUID.randomUUID() +"@example.com")
                 .password("admin123")
-                .role(AccountRole.ROLE_MODERATOR)
+                .name("관리자")
+                .role(AccountRole.ROLE_ADMIN)
                 .build();
 
         Admin savedEntity = adminRepository.save(entity);
@@ -107,7 +112,8 @@ class AdminRepositoryTest extends StudyPodApplicationTests {
         Admin entity = Admin.builder()
                 .email(testEmail)
                 .password("admin123")
-                .role(AccountRole.ROLE_MODERATOR)
+                .name("관리자")
+                .role(AccountRole.ROLE_ADMIN)
                 .build();
 
         adminRepository.save(entity);
