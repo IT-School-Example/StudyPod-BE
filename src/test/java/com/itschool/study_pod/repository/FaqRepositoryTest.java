@@ -1,9 +1,11 @@
 package com.itschool.study_pod.repository;
 
 import com.itschool.study_pod.StudyPodApplicationTests;
-import com.itschool.study_pod.entity.Admin;
-import com.itschool.study_pod.entity.Faq;
-import com.itschool.study_pod.enumclass.AccountRole;
+import com.itschool.study_pod.domain.admin.entity.Admin;
+import com.itschool.study_pod.domain.faq.entity.Faq;
+import com.itschool.study_pod.global.enumclass.AccountRole;
+import com.itschool.study_pod.domain.admin.repository.AdminRepository;
+import com.itschool.study_pod.domain.faq.repository.FaqRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,13 +1,20 @@
 package com.itschool.study_pod.repository;
 
 import com.itschool.study_pod.StudyPodApplicationTests;
-import com.itschool.study_pod.embedable.WeeklySchedule;
-import com.itschool.study_pod.entity.*;
-import com.itschool.study_pod.entity.address.Sgg;
-import com.itschool.study_pod.entity.address.Sido;
-import com.itschool.study_pod.enumclass.*;
-import com.itschool.study_pod.repository.address.SggRepository;
-import com.itschool.study_pod.repository.address.SidoRepository;
+import com.itschool.study_pod.global.embedable.WeeklySchedule;
+import com.itschool.study_pod.domain.interestedstudy.entity.InterestedStudy;
+import com.itschool.study_pod.domain.studygroup.entity.StudyGroup;
+import com.itschool.study_pod.domain.subjectarea.entity.SubjectArea;
+import com.itschool.study_pod.domain.user.entity.User;
+import com.itschool.study_pod.domain.interestedstudy.repository.InterestedStudyRepository;
+import com.itschool.study_pod.domain.studygroup.repository.StudyGroupRepository;
+import com.itschool.study_pod.domain.subjectarea.repository.SubjectAreaRepository;
+import com.itschool.study_pod.domain.user.repository.UserRepository;
+import com.itschool.study_pod.global.address.entity.Sgg;
+import com.itschool.study_pod.global.address.entity.Sido;
+import com.itschool.study_pod.global.address.repository.SggRepository;
+import com.itschool.study_pod.global.address.repository.SidoRepository;
+import com.itschool.study_pod.global.enumclass.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

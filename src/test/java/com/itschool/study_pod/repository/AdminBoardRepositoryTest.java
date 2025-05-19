@@ -1,10 +1,12 @@
 package com.itschool.study_pod.repository;
 
 import com.itschool.study_pod.StudyPodApplicationTests;
-import com.itschool.study_pod.entity.Admin;
-import com.itschool.study_pod.entity.AdminBoard;
-import com.itschool.study_pod.enumclass.AccountRole;
-import com.itschool.study_pod.enumclass.AdminBoardCategory;
+import com.itschool.study_pod.domain.admin.entity.Admin;
+import com.itschool.study_pod.domain.adminboard.entity.AdminBoard;
+import com.itschool.study_pod.global.enumclass.AccountRole;
+import com.itschool.study_pod.global.enumclass.AdminBoardCategory;
+import com.itschool.study_pod.domain.adminboard.repository.AdminBoardRepository;
+import com.itschool.study_pod.domain.admin.repository.AdminRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

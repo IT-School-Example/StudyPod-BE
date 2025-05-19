@@ -1,9 +1,9 @@
 package com.itschool.study_pod.config;
 
-import com.itschool.study_pod.security.TokenProvider;
-import com.itschool.study_pod.entity.User;
-import com.itschool.study_pod.enumclass.AccountRole;
-import com.itschool.study_pod.repository.UserRepository;
+import com.itschool.study_pod.global.security.jwt.TokenProvider;
+import com.itschool.study_pod.domain.user.entity.User;
+import com.itschool.study_pod.global.enumclass.AccountRole;
+import com.itschool.study_pod.domain.user.repository.UserRepository;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

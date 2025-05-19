@@ -1,15 +1,13 @@
 package com.itschool.study_pod.repository;
 
 import com.itschool.study_pod.StudyPodApplicationTests;
-import com.itschool.study_pod.embedable.WeeklySchedule;
-import com.itschool.study_pod.entity.*;
-import com.itschool.study_pod.entity.address.Sgg;
-import com.itschool.study_pod.entity.address.Sido;
-import com.itschool.study_pod.enumclass.*;
-import com.itschool.study_pod.repository.address.SggRepository;
-import com.itschool.study_pod.repository.address.SidoRepository;
+import com.itschool.study_pod.domain.studyboard.entity.StudyBoard;
+import com.itschool.study_pod.domain.user.entity.User;
+import com.itschool.study_pod.global.enumclass.AccountRole;
+import com.itschool.study_pod.global.enumclass.StudyBoardCategory;
+import com.itschool.study_pod.domain.studyboard.repository.StudyBoardRepository;
+import com.itschool.study_pod.domain.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

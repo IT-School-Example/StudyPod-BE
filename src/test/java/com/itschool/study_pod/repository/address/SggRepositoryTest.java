@@ -1,19 +1,16 @@
 package com.itschool.study_pod.repository.address;
 
 import com.itschool.study_pod.StudyPodApplicationTests;
-import com.itschool.study_pod.entity.address.Sgg;
-import com.itschool.study_pod.entity.address.Sido;
-import com.itschool.study_pod.enumclass.AccountRole;
+import com.itschool.study_pod.global.address.repository.SggRepository;
+import com.itschool.study_pod.global.address.repository.SidoRepository;
+import com.itschool.study_pod.global.address.entity.Sgg;
+import com.itschool.study_pod.global.address.entity.Sido;
 import jakarta.persistence.EntityNotFoundException;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
