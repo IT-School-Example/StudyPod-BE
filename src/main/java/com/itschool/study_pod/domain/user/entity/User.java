@@ -12,31 +12,11 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
 @SuperBuilder
 @Table(name = "users")
-@SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE user_id = ?")
-@Where(clause = "is_deleted = false")
-public class User extends BaseEntity implements Convertible<UserRequest, UserResponse> {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    private Long id;
-
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @Column(nullable = false)
-    private String password;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private AccountRole role;
-
-    @Column(nullable = false)
-    private String name;
+/*@SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE account_id = ?")
+@Where(clause = "is_deleted = false")*/
+public class User extends Account implements Convertible<UserRequest, UserResponse> {
 
     @Column(unique = true)
     private String nickname;

@@ -4,6 +4,7 @@ import com.itschool.study_pod.global.base.BaseEntity;
 import com.itschool.study_pod.global.enumclass.AccountRole;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;

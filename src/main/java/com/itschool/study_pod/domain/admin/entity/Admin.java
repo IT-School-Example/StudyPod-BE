@@ -12,8 +12,6 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
 @SuperBuilder
 @Table(name = "admins")
 /*@SQLDelete(sql = "UPDATE admins SET is_deleted = true WHERE admin_id = ?")
