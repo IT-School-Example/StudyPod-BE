@@ -1,13 +1,11 @@
-package com.itschool.study_pod.domain.comment.entity;
+package com.itschool.study_pod.entity;
 
-import com.itschool.study_pod.domain.board.entity.Board;
-import com.itschool.study_pod.domain.comment.dto.request.CommentRequest;
-import com.itschool.study_pod.domain.board.dto.response.BoardResponse;
-import com.itschool.study_pod.domain.comment.dto.response.CommentResponse;
-import com.itschool.study_pod.domain.user.dto.response.UserResponse;
-import com.itschool.study_pod.domain.user.entity.User;
-import com.itschool.study_pod.global.base.BaseEntity;
-import com.itschool.study_pod.global.base.crud.Convertible;
+import com.itschool.study_pod.dto.request.comment.CommentRequest;
+import com.itschool.study_pod.dto.response.CommentResponse;
+import com.itschool.study_pod.dto.response.StudyBoardResponse;
+import com.itschool.study_pod.dto.response.UserResponse;
+import com.itschool.study_pod.entity.base.BaseEntity;
+import com.itschool.study_pod.ifs.Convertible;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
@@ -16,7 +14,7 @@ import org.hibernate.annotations.Where;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 @Builder
 @Table(name = "comments")
 @SQLDelete(sql = "UPDATE comments SET is_deleted = true WHERE comment_id = ?")
@@ -31,21 +29,21 @@ public class Comment extends BaseEntity implements Convertible<CommentRequest, C
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_id", nullable = false)
-    private Board board;
+    @JoinColumn(name = "study_board_id", nullable = false)
+    private StudyBoard studyBoard;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private Comment parentComment;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     public static Comment of(CommentRequest request) { // create용
         return Comment.builder()
                 .content(request.getContent())
-                .board(Board.withId(request.getBoard().getId()))
+                .studyBoard(StudyBoard.withId(request.getStudyBoard().getId()))
                 .user(User.withId(request.getUser().getId()))
                 .parentComment(request.getParentComment() != null?
                         Comment.withId(request.getParentComment().getId())
@@ -58,7 +56,7 @@ public class Comment extends BaseEntity implements Convertible<CommentRequest, C
         return CommentResponse.builder()
                 .id(this.id)
                 .content(this.content)
-                .board(BoardResponse.withId(this.board.getId()))
+                .studyBoard(StudyBoardResponse.withId(this.studyBoard.getId()))
                 .user(UserResponse.withId(this.user.getId()))
                 .parentComment(
                         this.parentComment != null?
@@ -74,7 +72,7 @@ public class Comment extends BaseEntity implements Convertible<CommentRequest, C
     @Override
     public void update(CommentRequest request) {
         this.content = request.getContent() != null? request.getContent() : this.content;
-        this.board = request.getBoard() != null ? Board.withId(request.getBoard().getId()) : this.board;
+        this.studyBoard = request.getStudyBoard() != null ? StudyBoard.withId(request.getStudyBoard().getId()) : this.studyBoard;
         this.user = request.getUser() != null ? User.withId(request.getUser().getId()) : this.user;
         this.parentComment = request.getParentComment() != null ? Comment.withId(request.getParentComment().getId()) : null;
     }
