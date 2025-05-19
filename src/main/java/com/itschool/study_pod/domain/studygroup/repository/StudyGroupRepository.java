@@ -58,7 +58,7 @@ public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long> {
 
     @Query("""
                 SELECT sg FROM StudyGroup sg
-                WHERE sg.recruitmentStatus = com.itschool.study_pod.enumclass.RecruitmentStatus.RECRUITING
+                WHERE sg.recruitmentStatus = 'RECRUITING'
                 AND sg.subjectArea.subject = :subjectEnum
             """)
     Page<StudyGroup> findBySubjectAreaAndRecruiting(@Param("subjectEnum") Subject subjectEnum, Pageable pageable);
