@@ -1,5 +1,6 @@
 package com.itschool.study_pod.global.security.jwt.dto.response;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

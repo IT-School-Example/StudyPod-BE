@@ -9,6 +9,7 @@ import com.itschool.study_pod.domain.user.entity.User;
 import com.itschool.study_pod.domain.studygroup.repository.StudyGroupRepository;
 import com.itschool.study_pod.domain.user.repository.UserRepository;
 import com.itschool.study_pod.global.base.crud.CrudService;
+import com.itschool.study_pod.global.base.dto.Header;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;

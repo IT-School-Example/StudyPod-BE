@@ -1,14 +1,5 @@
 package com.itschool.study_pod.domain.enrollment.controller;
 
-import com.itschool.study_pod.controller.base.CrudController;
-import com.itschool.study_pod.dto.Header;
-import com.itschool.study_pod.dto.request.enrollment.EnrollmentRequest;
-import com.itschool.study_pod.dto.response.EnrollmentResponse;
-import com.itschool.study_pod.dto.response.UserResponse;
-import com.itschool.study_pod.entity.Enrollment;
-import com.itschool.study_pod.enumclass.EnrollmentStatus;
-import com.itschool.study_pod.service.EnrollmentService;
-import com.itschool.study_pod.service.base.CrudService;
 import com.itschool.study_pod.global.base.crud.CrudController;
 import com.itschool.study_pod.global.base.dto.Header;
 import com.itschool.study_pod.domain.enrollment.dto.request.EnrollmentRequest;
