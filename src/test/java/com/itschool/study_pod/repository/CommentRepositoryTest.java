@@ -1,14 +1,15 @@
 package com.itschool.study_pod.repository;
 
 import com.itschool.study_pod.StudyPodApplicationTests;
-import com.itschool.study_pod.domain.board.entity.Board;
+
 import com.itschool.study_pod.domain.comment.entity.Comment;
-import com.itschool.study_pod.domain.user.entity.User;
-import com.itschool.study_pod.global.enumclass.AccountRole;
-import com.itschool.study_pod.global.enumclass.BoardCategory;
-import com.itschool.study_pod.domain.board.repository.BoardRepository;
 import com.itschool.study_pod.domain.comment.repository.CommentRepository;
+import com.itschool.study_pod.domain.studyboard.entity.StudyBoard;
+import com.itschool.study_pod.domain.studyboard.repository.StudyBoardRepository;
+import com.itschool.study_pod.domain.user.entity.User;
 import com.itschool.study_pod.domain.user.repository.UserRepository;
+import com.itschool.study_pod.global.enumclass.AccountRole;
+import com.itschool.study_pod.global.enumclass.StudyBoardCategory;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +29,7 @@ public class CommentRepositoryTest extends StudyPodApplicationTests {
     private CommentRepository commentRepository;
 
     @Autowired
-    private BoardRepository boardRepository;
+    private StudyBoardRepository studyBoardRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -37,7 +38,7 @@ public class CommentRepositoryTest extends StudyPodApplicationTests {
 
     private User savedUser;
 
-    private Board savedBoard;
+    private StudyBoard savedStudyBoard;
 
 
 
@@ -54,20 +55,20 @@ public class CommentRepositoryTest extends StudyPodApplicationTests {
 
         savedUser = userRepository.save(user);
 
-        Board board = Board.builder()
+        StudyBoard studyBoard = StudyBoard.builder()
                 .title("제목")
                 .content("내용")
-                .category(BoardCategory.FREE)
+                .studyBoardCategory(StudyBoardCategory.FREE)
                 .user(savedUser)
                 .build();
 
-        savedBoard = boardRepository.save(board);
+        savedStudyBoard = studyBoardRepository.save(studyBoard);
     }
 
     @AfterEach
     public void afterCleanUp() {
-        /*boardRepository.deleteAll();
-        userRepository.deleteAll();*/
+        //studyBoardRepository.deleteAll();
+        //userRepository.deleteAll();
     }
 
     @Test
@@ -75,7 +76,7 @@ public class CommentRepositoryTest extends StudyPodApplicationTests {
     void create() {
         Comment comment = Comment.builder()
                 .content("댓글")
-                .board(savedBoard)
+                .studyBoard(savedStudyBoard)
                 .user(savedUser)
                 .build();
 
@@ -90,7 +91,7 @@ public class CommentRepositoryTest extends StudyPodApplicationTests {
     void read() {
         Comment comment = Comment.builder()
                 .content("댓글")
-                .board(savedBoard)
+                .studyBoard(savedStudyBoard)
                 .user(savedUser)
                 .build();
 
@@ -108,7 +109,7 @@ public class CommentRepositoryTest extends StudyPodApplicationTests {
 
         Comment comment = Comment.builder()
                 .content("댓글")
-                .board(savedBoard)
+                .studyBoard(savedStudyBoard)
                 .user(savedUser)
                 .build();
 
@@ -131,7 +132,7 @@ public class CommentRepositoryTest extends StudyPodApplicationTests {
 
         Comment comment = Comment.builder()
                 .content("댓글")
-                .board(savedBoard)
+                .studyBoard(savedStudyBoard)
                 .user(savedUser)
                 .build();
 

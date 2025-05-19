@@ -1,6 +1,7 @@
 package com.itschool.study_pod.domain.comment.dto.response;
 
-import com.itschool.study_pod.domain.board.dto.response.BoardResponse;
+
+import com.itschool.study_pod.domain.studyboard.dto.response.StudyBoardResponse;
 import com.itschool.study_pod.domain.user.dto.response.UserResponse;
 import lombok.*;
 
@@ -8,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Data // 종합선물세트 : @Getter, @Setter, @ToString, @EqualsAndHashCode, @RequiredArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 @Builder
 public class CommentResponse {
 
@@ -16,7 +17,7 @@ public class CommentResponse {
 
     private String content;
 
-    private BoardResponse board;
+    private StudyBoardResponse studyBoard;
 
     private CommentResponse parentComment;
 

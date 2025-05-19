@@ -1,10 +1,10 @@
 package com.itschool.study_pod.domain.comment.controller;
 
-import com.itschool.study_pod.global.base.crud.CrudController;
 import com.itschool.study_pod.domain.comment.dto.request.CommentRequest;
 import com.itschool.study_pod.domain.comment.dto.response.CommentResponse;
 import com.itschool.study_pod.domain.comment.entity.Comment;
 import com.itschool.study_pod.domain.comment.service.CommentService;
+import com.itschool.study_pod.global.base.crud.CrudController;
 import com.itschool.study_pod.global.base.crud.CrudService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
