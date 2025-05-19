@@ -4,6 +4,8 @@ import com.itschool.study_pod.dto.Header;
 import com.itschool.study_pod.dto.request.comment.CommentRequest;
 import com.itschool.study_pod.dto.response.CommentResponse;
 import com.itschool.study_pod.entity.Comment;
+import com.itschool.study_pod.entity.StudyBoard;
+import com.itschool.study_pod.enumclass.StudyBoardCategory;
 import com.itschool.study_pod.repository.CommentRepository;
 import com.itschool.study_pod.repository.UserRepository;
 import com.itschool.study_pod.service.base.CrudService;
@@ -21,6 +23,7 @@ import static com.itschool.study_pod.dto.Header.OK;
 public class CommentService extends CrudService<CommentRequest, CommentResponse, Comment> {
 
     private final CommentRepository commentRepository;
+    private final StudyBoardService studyBoardService;
 
 
     @Override
@@ -33,8 +36,26 @@ public class CommentService extends CrudService<CommentRequest, CommentResponse,
         return Comment.of(requestEntity);
     }
 
-    // 자유게시판 댓글 전체 조회
-    public Header<List<CommentResponse>> findAllByStudyBoardId(Long studyBoardId) {
+    // 자유게시판 여부 검증
+    private void validateFreeBoard(Long studyBoardId) {
+        StudyBoard board = studyBoardService.findById(studyBoardId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시판이 존재하지 않습니다."));
+        if (board.getStudyBoardCategory() != StudyBoardCategory.FREE) {
+            throw new IllegalStateException("댓글은 자유게시판에만 작성할 수 있습니다.");
+        }
+    }
+
+    // 댓글 생성
+    public Header<CommentResponse> createCommentIfFreeBoard(Long studyBoardId, CommentRequest request) {
+        validateFreeBoard(studyBoardId);
+        request.getStudyBoard().setId(studyBoardId); // DTO에 studyBoardId 설정
+        Comment comment = commentRepository.save(Comment.of(request));
+        return Header.OK(comment.response());
+    }
+
+    // 댓글 목록 조회
+    public Header<List<CommentResponse>> getCommentsByFreeBoardId(Long studyBoardId) {
+        validateFreeBoard(studyBoardId);
         List<Comment> comments = commentRepository.findAllByStudyBoardId(studyBoardId);
         List<CommentResponse> responseList = comments.stream()
                 .map(Comment::response)
@@ -42,51 +63,22 @@ public class CommentService extends CrudService<CommentRequest, CommentResponse,
         return Header.OK(responseList);
     }
 
-    /*private final CommentRepository commentRepository;
-
-    public CommentResponse create(CommentRequest request) {
-
-        Board board = boardRepository.findById(request.getBoardId())
-                .orElseThrow(()-> new EntityNotFoundException());
-
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(()-> new EntityNotFoundException());
-
-        Long commentId = request.getParentCommentId();
-        Comment comment = null;
-
-        if(request.getParentCommentId() != null) {
-            comment = commentRepository.findById(commentId)
-                    .orElseThrow(()-> new EntityNotFoundException());
-        }
-
-        return commentRepository.save(Comment.of(request, board, user, comment))
-                .response();
+    // 댓글 수정
+    public Header<CommentResponse> updateCommentIfFreeBoard(Long studyBoardId, Long commentId, CommentRequest request) {
+        validateFreeBoard(studyBoardId);
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("댓글이 존재하지 않습니다."));
+        comment.update(request);
+        Comment updated = commentRepository.save(comment);
+        return Header.OK(updated.response());
     }
 
-    public CommentResponse read(Long id) {
-        return commentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException())
-                .response();
+    // 댓글 삭제
+    public Header<CommentResponse> deleteCommentIfFreeBoard(Long studyBoardId, Long commentId) {
+        validateFreeBoard(studyBoardId);
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("댓글이 존재하지 않습니다."));
+        commentRepository.delete(comment);
+        return Header.OK(comment.response());
     }
-
-    @Transactional
-    public CommentResponse update(Long id, CommentRequest commentRequest) {
-
-        Comment entity = commentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException());
-
-        entity.update(commentRequest);
-
-        return entity.response();
-    }
-
-    public void delete(long id) {
-        // commentRepository.deleteById(id);
-
-        Comment findEntity = commentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException());
-
-        commentRepository.delete(findEntity);
-    }*/
 }

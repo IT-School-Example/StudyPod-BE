@@ -53,4 +53,44 @@ public class StudyBoardApiController extends CrudController<StudyBoardRequest, S
     ) {
         return studyBoardService.findAdminBoardDetail(studyGroupId, studyBoardId);
     }
+
+    // 자유게시판 댓글 생성
+    @PostMapping("/{studyBoardId}/comments")
+    @Operation(summary = "자유게시판 댓글 생성")
+    public Header<CommentResponse> createFreeBoardComment(
+            @PathVariable(name = "studyBoardId") Long studyBoardId,
+            @Valid @RequestBody CommentRequest request
+    ) {
+        return commentService.createCommentIfFreeBoard(studyBoardId, request);
+    }
+
+    // 자유게시판 댓글 전체 조회
+    @GetMapping("/{studyBoardId}/comments")
+    @Operation(summary = "자유게시판 댓글 목록 조회")
+    public Header<List<CommentResponse>> getCommentsByFreeBoard(
+            @PathVariable(name = "studyBoardId") Long studyBoardId
+    ) {
+        return commentService.getCommentsByFreeBoardId(studyBoardId);
+    }
+
+    // 자유게시판 댓글 수정
+    @PutMapping("/{studyBoardId}/comments/{commentId}")
+    @Operation(summary = "자유게시판 댓글 수정")
+    public Header<CommentResponse> updateFreeBoardComment(
+            @PathVariable(name = "studyBoardId") Long studyBoardId,
+            @PathVariable(name = "commentId") Long commentId,
+            @Valid @RequestBody CommentRequest request
+    ) {
+        return commentService.updateCommentIfFreeBoard(studyBoardId, commentId, request);
+    }
+
+    // 자유게시판 댓글 삭제
+    @DeleteMapping("/{studyBoardId}/comments/{commentId}")
+    @Operation(summary = "자유게시판 댓글 삭제")
+    public Header<CommentResponse> deleteFreeBoardComment(
+            @PathVariable(name = "studyBoardId") Long studyBoardId,
+            @PathVariable(name = "commentId") Long commentId
+    ) {
+        return commentService.deleteCommentIfFreeBoard(studyBoardId, commentId);
+    }
 }
