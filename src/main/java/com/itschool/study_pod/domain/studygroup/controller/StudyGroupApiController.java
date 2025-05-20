@@ -141,5 +141,4 @@ public class StudyGroupApiController extends CrudController<StudyGroupRequest, S
             @RequestParam(name = "enrollmentStatus") EnrollmentStatus enrollmentStatus) {
         return studyGroupService.findStudyGroupsByUserIdAndStatus(userId, enrollmentStatus);
     }
-
 }
