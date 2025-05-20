@@ -14,13 +14,12 @@ public class MailController {
     private final MailService mailService;
     private int number; // 이메일 인증 숫자를 저장하는 변수
 
-    // 인증 이메일 전송
     @PostMapping("/mailSend")
     public HashMap<String, Object> mailSend(@RequestBody MailRequest request) {
         HashMap<String, Object> map = new HashMap<>();
 
         try {
-            number = mailService.sendMail(request.getSenderEmail());
+            number = mailService.sendMail(request.getReceiverEmail());
             map.put("success", true);
             map.put("number", String.valueOf(number));
         } catch (Exception e) {
@@ -30,6 +29,7 @@ public class MailController {
 
         return map;
     }
+
 
     // 인증번호 일치여부 확인
     @GetMapping("/mailCheck")
