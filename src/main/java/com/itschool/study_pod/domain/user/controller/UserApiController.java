@@ -53,6 +53,15 @@ public class UserApiController extends CrudController<UserRequest, UserResponse,
         return userService.updatePassword(id, request);
     }
 
+    @Operation(summary = "사용자 비밀번호 찾기", description = "사용자(User) 비밀번호 재설정")
+    @ResponseStatus(HttpStatus.NO_CONTENT) // 204 No Content
+    @PatchMapping("find-pw/{email}")
+    public Header<Void> findPassword(@PathVariable(name = "email") String email,
+                                     @RequestBody @Valid Header<UserPasswordUpdateRequest> request) {
+        log.info("find password : {} 비밀번호 재설정 요청", email);
+        return userService.findPassword(email, request);
+    }
+
     @Operation(summary = "사용자 닉네임 수정", description = "사용자(User) 닉네임 수정하기")
     @ResponseStatus(HttpStatus.NO_CONTENT) // 204, NO_CONTENT
     @PatchMapping("update-nickname/{id}")
