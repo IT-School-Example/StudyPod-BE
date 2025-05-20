@@ -54,28 +54,39 @@
     </footer>
 
     <script>
-        // 쿠키에서 토큰 확인 함수
-        function getCookie(name) {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop().split(';').shift();
-        }
-
-        // 토큰 유무에 따라 버튼 표시 제어
         window.addEventListener("DOMContentLoaded", function () {
-            const accessToken = getCookie("accessToken");
-            const refreshToken = getCookie("refreshToken");
-
             const loginBtn = document.getElementById("loginBtn");
             const logoutBtn = document.getElementById("logoutBtn");
 
-            if (accessToken || refreshToken) {
-                loginBtn.style.display = "none";
-                logoutBtn.style.display = "inline-block";
-            } else {
+            let userNameSpan = document.createElement('span');
+            userNameSpan.id = "userNameDisplay";
+            userNameSpan.style.marginRight = "10px";
+            logoutBtn.parentNode.insertBefore(userNameSpan, logoutBtn);
+
+            fetch("/me", {
+                method: "GET",
+                credentials: "include"
+            }).then(response => {
+                if (response.status === 200) {
+                    return response.text().then(username => {
+                        userNameSpan.textContent = `${username} 님 환영합니다.`;
+                        loginBtn.style.display = "none";
+                        logoutBtn.style.display = "inline-block";
+                    });
+                } else if (response.status === 403) {
+                    // 인증 실패 시 (로그인 안됨)
+                    userNameSpan.textContent = "";
+                    loginBtn.style.display = "inline-block";
+                    logoutBtn.style.display = "none";
+                } else {
+                    throw new Error(`Unexpected status: ${response.status}`);
+                }
+            }).catch(error => {
+                console.error("Error fetching /me:", error);
+                userNameSpan.textContent = "";
                 loginBtn.style.display = "inline-block";
                 logoutBtn.style.display = "none";
-            }
+            });
         });
 
         // 로그아웃 처리
