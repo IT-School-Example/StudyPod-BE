@@ -101,18 +101,17 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
     }
 
     public Header<StudyGroupResponse> findStudyGroupByUserId(Long userId) {
-        Enrollment enrollment = enrollmentRepository.findByUserIdAndStatus(userId, EnrollmentStatus.APPROVED)
-                .orElseThrow(() -> new RuntimeException("스터디원으로 있는 그룹을 찾을 수 없습니다."));
-
-        StudyGroup studyGroup = enrollment.getStudyGroup();
-
-        if (studyGroup == null) {
-            throw new RuntimeException("스터디 그룹 정보를 찾을 수 없습니다.");
-        }
-
-        return Header.OK(studyGroup.response());
+        return enrollmentRepository.findByUserIdAndStatus(userId, EnrollmentStatus.APPROVED)
+                .map(enrollment -> {
+                    StudyGroup studyGroup = enrollment.getStudyGroup();
+                    if (studyGroup == null) {
+                        return Header.<StudyGroupResponse>ERROR("스터디 그룹 정보를 찾을 수 없습니다.");
+                    }
+                    return Header.OK(studyGroup.response());
+                })
+                .orElseGet(() -> Header.<StudyGroupResponse>ERROR("스터디원으로 있는 그룹을 찾을 수 없습니다."));
     }
-
+    
     public Header<List<StudyGroupResponse>> searchByKeywordOnly(String keyword, Pageable pageable) {
         Page<StudyGroup> results = studyGroupRepository.searchByKeyword(keyword, pageable);
         if (results.getTotalElements() == 0) {
