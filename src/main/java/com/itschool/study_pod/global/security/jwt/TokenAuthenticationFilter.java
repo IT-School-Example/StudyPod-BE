@@ -18,9 +18,9 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenProvider tokenProvider;
 
-    private final static String HEADER_AUTHORIZATION = "Authorization";
+    // private final static String HEADER_AUTHORIZATION = "Authorization";
 
-    private final static String TOKEN_PREFIX = "Bearer";
+    // private final static String TOKEN_PREFIX = "Bearer";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -75,10 +75,10 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         return null;
     }
 
-    private String getAccessToken(String authorizationHeader) {
+    /*private String getAccessToken(String authorizationHeader) {
         if(authorizationHeader != null && authorizationHeader.startsWith(TOKEN_PREFIX)) {
             return authorizationHeader.substring(TOKEN_PREFIX.length()).trim();
         }
         return null;
-    }
+    }*/
 }
