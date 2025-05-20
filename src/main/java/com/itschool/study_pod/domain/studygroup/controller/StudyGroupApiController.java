@@ -23,6 +23,8 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,6 +43,13 @@ public class StudyGroupApiController extends CrudController<StudyGroupRequest, S
     @Override
     protected CrudService<StudyGroupRequest, StudyGroupResponse, StudyGroup> getBaseService() {
         return studyGroupService;
+    }
+
+    @DeleteMapping("/{id}")
+    @Override
+    public Header<Void> delete(@PathVariable(name = "id") Long id) {
+        log.info("delete: {}에서 id={}인 객체 삭제 요청", this.getClass().getSimpleName(), id);
+        return studyGroupService.deleteById(id);
     }
 
     @PostMapping("/search")

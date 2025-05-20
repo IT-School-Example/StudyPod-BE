@@ -13,6 +13,7 @@ import com.itschool.study_pod.global.enumclass.EnrollmentStatus;
 import com.itschool.study_pod.global.enumclass.MeetingMethod;
 import com.itschool.study_pod.global.enumclass.RecruitmentStatus;
 import com.itschool.study_pod.global.enumclass.Subject;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,6 +37,14 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
     @Override
     protected StudyGroup toEntity(StudyGroupRequest request) {
         return StudyGroup.of(request);
+    }
+
+    //  ID로 스터디 그룹을 삭제하는 메서드
+    public Header<Void> deleteById(Long id) {
+        StudyGroup studyGroup = studyGroupRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당 id " + id + "에 해당하는 객체가 없습니다."));
+        studyGroupRepository.delete(studyGroup);
+        return Header.OK();
     }
 
     public Header<List<StudyGroupResponse>> findAllByLeaderId(Long leaderId, Pageable pageable) {
