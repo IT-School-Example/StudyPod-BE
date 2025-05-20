@@ -33,9 +33,6 @@ spring:
         access-key: ${AWS_ACCESS_KEY_ID}
         secret-key: ${AWS_SECRET_ACCESS_KEY}
 
-logging.level:
-  root: debug
-
 jwt:
   # 운영 서버 내 /etc/environment 에 환경 변수 설정
   # jjwt 라이브러리 0.11.0 버전부터 secret_key에 Base64로 인코딩된 문자열을 요구하는 방식으로 변경
