@@ -12,6 +12,7 @@ import java.util.HashMap;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/api/user")
 public class MailController {
     private final MailService mailService;
 

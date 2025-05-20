@@ -32,7 +32,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "사용자", description = "사용자 API")
-@RequestMapping("/api/users")
+@RequestMapping("/api/user")
 public class UserApiController extends CrudController<UserRequest, UserResponse, User> {
 
     private final UserService userService;
