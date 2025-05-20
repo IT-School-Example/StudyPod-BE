@@ -13,7 +13,7 @@ spring:
   jpa:
     #show-sql: true # 전송 쿼리 확인, 애플리케이션 실행과정에 쿼리의 실행 구문을 모두 보여줌
     hibernate:
-      ddl-auto: update  # 개발 환경에서 추가분(테이블, 컬럼)만 반영, 테이블이나 컬럼의 삭제 또는 수정은 반영되지 않음
+      ddl-auto: validate  # 개발 환경에서는 담당자 외 'validate'로 변경
     properties:
       hibernate:
         format_sql: true
@@ -40,9 +40,11 @@ spring:
 
 logging.level:
   org.hibernate.SQL: debug
+  # 하이버네이트 6 이상
   org.hibernate.orm.jdbc.bind: trace
-  software.amazon.awssdk: DEBUG  # AWS SDK 로깅을 DEBUG로 설정
   # org.apache.http: DEBUG
+  software.amazon.awssdk: DEBUG  # AWS SDK 로깅을 DEBUG로 설정
+  org.springframework.security: DEBUG
 
 springdoc:
   swagger-ui:
@@ -60,3 +62,11 @@ springdoc:
   default-produces-media-type: application/json
   paths-to-match:
     - /api/**
+
+jwt:
+  issuer: studypod@studypod.com
+  # jjwt 라이브러리 0.11.0 버전부터 secret_key에 Base64로 인코딩된 문자열을 요구하는 방식으로 변경
+  # JJWT 라이브러리는 HMAC-SHA 알고리즘 사용 시 256비트(32바이트) 미만의 키를 강제로 거부
+  # 256비트 미만 키는 보안상 취약해서 라이브러리가 애초에 안전하지 않은 키 사용을 막으려는 목적
+  access-secret: c3R1ZHlwb2Qtc3ByaW5nYm9vdC1hY2Nlc3Mtc2VjcmV0LWtleQ==  # studypod-springboot-access-secret-key를 BASE 64로 인코딩한 값
+  refresh-secret: c3R1ZHlwb2Qtc3ByaW5nYm9vdC1yZWZyZXNoLXNlY3JldC1rZXk= # studypod-springboot-refresh-secret-key를 BASE 64로 인코딩한 값

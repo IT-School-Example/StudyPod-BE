@@ -27,6 +27,9 @@ dependencies {
 	// PostgreSQL JDBC 드라이버 (버전 생략: Spring Boot BOM이 자동으로 관리)
 	implementation 'org.postgresql:postgresql'
 
+	// Servlet API 의존성 추가 (HttpServletRequest 사용을 위해 필요)
+	implementation 'javax.servlet:javax.servlet-api:4.0.1'
+
 	// DTO 유효성 검사(@Valid, @NotBlank 등)를 사용할 수 있도록 지원
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
@@ -49,6 +52,16 @@ dependencies {
 
 	// Spring Boot DevTools는 개발 편의성을 높이기 위해 제공되는 도구. 자동 재시작, 라이브 리로드, 설정 간소화
 	developmentOnly "org.springframework.boot:spring-boot-devtools"
+
+	// security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	// JWT
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+	// implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
 // 개발 환경에서만 필요한 라이브러리를 지정하는 사용자 정의 구성(Configuration)
