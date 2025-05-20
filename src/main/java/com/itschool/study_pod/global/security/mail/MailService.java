@@ -8,24 +8,26 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class MailService {
-
     private final JavaMailSender javaMailSender;
+    private final Map<String, Integer> verificationCodes = new HashMap<>();
 
-    private static int number;
-
-    public static void createNumber() {
-        number = (int)(Math.random() * (90000)) + 100000;
+    private int generateNumber() {
+        return (int)(Math.random() * 900000) + 100000;
     }
 
     public MimeMessage createMail(String toEmail) {
-        createNumber();
-        MimeMessage message = javaMailSender.createMimeMessage();
+        int number = generateNumber();
+        verificationCodes.put(toEmail, number);
 
+        MimeMessage message = javaMailSender.createMimeMessage();
         try {
-            message.setFrom(new InternetAddress("noreply@yourdomain.com")); // 설정값 사용 권장
+            message.setFrom(new InternetAddress("noreply@yourdomain.com"));
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
             message.setSubject("이메일 인증");
 
@@ -41,9 +43,14 @@ public class MailService {
         return message;
     }
 
-    public int sendMail(String toEmail) {
-        MimeMessage message = createMail(toEmail);
+    public int sendMail(String email) {
+        MimeMessage message = createMail(email);
         javaMailSender.send(message);
-        return number;
+        return verificationCodes.get(email);
+    }
+
+    public boolean verifyCode(String email, String inputCode) {
+        Integer storedCode = verificationCodes.get(email);
+        return storedCode != null && storedCode.toString().equals(inputCode);
     }
 }
