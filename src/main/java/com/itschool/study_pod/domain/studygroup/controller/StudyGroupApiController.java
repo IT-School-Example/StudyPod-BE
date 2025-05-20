@@ -98,16 +98,10 @@ public class StudyGroupApiController extends CrudController<StudyGroupRequest, S
     @GetMapping("/user/{userId}/enrolled-groups")
     @Operation(summary = "사용자의 등록된 스터디 그룹 목록 조회", description = "회원 ID와 등록 상태로 스터디 그룹 리스트를 반환합니다.")
     public Header<List<StudyGroupResponse>> getStudyGroupsByUserId(
-            @PathVariable Long accountId,
+            @PathVariable(name = "userId") Long userId,
             @RequestParam(name = "enrollmentStatus", required = false, defaultValue = "APPROVED") EnrollmentStatus enrollmentStatus
     ) {
-        /*Long currentAccountId = getCurrentAccountId();
-
-        if(!accountId.equals(currentAccountId)) {
-            return Header.ERROR("가입한 회원만 조회가 가능합니다");
-        }*/
-
-        return enrollmentService.findEnrolledStudyGroupsByUserId(accountId, enrollmentStatus);
+        return enrollmentService.findEnrolledStudyGroupsByUserId(userId, enrollmentStatus);
     }
 
     @GetMapping("/leader/{leaderId}")
