@@ -8,12 +8,18 @@ import com.itschool.study_pod.global.security.jwt.redis.RefreshToken;
 import com.itschool.study_pod.global.base.account.AccountRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class TokenService {
+
+    private final AuthenticationManager authenticationManager;
 
     private final TokenProvider tokenProvider;  // JWT 토큰 생성, 검증 담당
 
@@ -26,14 +32,11 @@ public class TokenService {
 
     public TokenResponse login(LoginRequest request) {
 
-        // 1. 이메일로 계정 조회 (존재하지 않으면 예외 발생)
-        Account account = accountRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("잘못된 이메일"));
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+        );
 
-        // 2. 입력한 비밀번호와 DB에 저장된 암호화된 비밀번호 비교
-        if (!bCryptPasswordEncoder.matches(request.getPassword(), account.getPassword())) {
-            throw new IllegalArgumentException("잘못된 이메일 또는 비밀번호");
-        }
+        Account account = (Account) authentication.getPrincipal();
 
         // 3. 액세스 토큰과 리프레시 토큰 생성
         String accessToken = tokenProvider.generateAccessToken(account);
