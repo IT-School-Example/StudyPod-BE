@@ -3,7 +3,6 @@ package com.itschool.study_pod.domain.user.controller;
 import com.itschool.study_pod.global.base.account.Account;
 import com.itschool.study_pod.global.base.crud.CrudController;
 import com.itschool.study_pod.global.base.dto.Header;
-import com.itschool.study_pod.domain.studygroup.dto.response.StudyGroupResponse;
 import com.itschool.study_pod.domain.user.dto.request.UserEmailUpdateRequest;
 import com.itschool.study_pod.domain.user.dto.request.UserNicknameUpdateRequest;
 import com.itschool.study_pod.domain.user.dto.request.UserPasswordUpdateRequest;
@@ -11,7 +10,6 @@ import com.itschool.study_pod.domain.user.dto.request.UserRequest;
 import com.itschool.study_pod.domain.user.dto.response.UserResponse;
 import com.itschool.study_pod.domain.user.entity.User;
 import com.itschool.study_pod.domain.user.service.UserService;
-import com.itschool.study_pod.global.enumclass.EnrollmentStatus;
 import com.itschool.study_pod.domain.enrollment.service.EnrollmentService;
 import com.itschool.study_pod.global.base.crud.CrudService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,11 +19,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
