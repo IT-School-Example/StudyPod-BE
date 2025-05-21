@@ -9,9 +9,11 @@ import com.itschool.study_pod.domain.studygroup.entity.StudyGroup;
 import com.itschool.study_pod.domain.studygroup.repository.StudyGroupRepository;
 import com.itschool.study_pod.domain.subjectarea.entity.SubjectArea;
 import com.itschool.study_pod.domain.subjectarea.repository.SubjectAreaRepository;
+import com.itschool.study_pod.domain.user.entity.User;
 import com.itschool.study_pod.domain.user.repository.UserRepository;
+import com.itschool.study_pod.global.address.entity.Sgg;
 import com.itschool.study_pod.global.address.repository.SggRepository;
-import com.itschool.study_pod.global.base.crud.CrudService;
+import com.itschool.study_pod.global.base.crud.CrudWithFileService;
 import com.itschool.study_pod.global.base.dto.Header;
 import com.itschool.study_pod.global.enumclass.EnrollmentStatus;
 import com.itschool.study_pod.global.enumclass.MeetingMethod;
@@ -23,22 +25,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
-import com.itschool.study_pod.domain.user.entity.User;
-import com.itschool.study_pod.global.address.entity.Sgg;
-import com.itschool.study_pod.domain.subjectarea.entity.SubjectArea;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroupResponse, StudyGroup> {
+public class StudyGroupService extends CrudWithFileService<StudyGroupRequest, StudyGroupResponse, StudyGroup> {
 
     private final StudyGroupRepository studyGroupRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final UserRepository userRepository;
     private final SggRepository sggRepository;
     private final SubjectAreaRepository subjectAreaRepository;
-
 
     @Override
     protected JpaRepository<StudyGroup, Long> getBaseRepository() {
@@ -48,6 +46,16 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
     @Override
     protected StudyGroup toEntity(StudyGroupRequest request) {
         return StudyGroup.of(request);
+    }
+
+    @Override
+    protected Class<StudyGroupRequest> getRequestClass() {
+        return StudyGroupRequest.class;
+    }
+
+    @Override
+    protected String getDirName() {
+        return "study-group";
     }
 
     //  ID로 스터디 그룹을 삭제하는 메서드
@@ -169,7 +177,7 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
         return Header.OK(responses);
     }
 
-    @Override
+    // @Override
     public Header<StudyGroupResponse> create(Header<StudyGroupRequest> request) {
         StudyGroupRequest data = request.getData();
 

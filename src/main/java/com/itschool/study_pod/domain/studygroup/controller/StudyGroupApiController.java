@@ -9,6 +9,8 @@ import com.itschool.study_pod.domain.studygroup.service.StudyGroupService;
 import com.itschool.study_pod.domain.user.dto.response.UserResponse;
 import com.itschool.study_pod.global.base.crud.CrudController;
 import com.itschool.study_pod.global.base.crud.CrudService;
+import com.itschool.study_pod.global.base.crud.CrudWithFileController;
+import com.itschool.study_pod.global.base.crud.CrudWithFileService;
 import com.itschool.study_pod.global.base.dto.Header;
 import com.itschool.study_pod.global.enumclass.EnrollmentStatus;
 import com.itschool.study_pod.global.enumclass.MeetingMethod;
@@ -34,14 +36,14 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "스터디 그룹", description = "스터디 그룹 API")
 @RequestMapping("/api/study-groups")
-public class StudyGroupApiController extends CrudController<StudyGroupRequest, StudyGroupResponse, StudyGroup> {
+public class StudyGroupApiController extends CrudWithFileController<StudyGroupRequest, StudyGroupResponse, StudyGroup> {
 
     private final StudyGroupService studyGroupService;
 
     private final EnrollmentService enrollmentService;
 
     @Override
-    protected CrudService<StudyGroupRequest, StudyGroupResponse, StudyGroup> getBaseService() {
+    protected CrudWithFileService<StudyGroupRequest, StudyGroupResponse, StudyGroup> getBaseService() {
         return studyGroupService;
     }
 

@@ -71,18 +71,18 @@ public abstract class CrudService<Req, Res, Entity extends Convertible<Req, Res>
         return responseList(entities);
     }
 
+    public final Header<List<Res>> getPaginatedList(Pageable pageable) {
+        Page<Entity> entities = getBaseRepository().findAll(pageable);
+
+        return convertPageToList(entities);
+    }
+
     protected final Header<List<Res>> responseList(List<? extends Convertible<?, Res>> entities) {
         List<Res> responseList = entities.stream()
                 .map(Convertible::response)
                 .collect(Collectors.toList());
 
         return Header.OK(responseList);
-    }
-
-    public final Header<List<Res>> getPaginatedList(Pageable pageable) {
-        Page<Entity> entities = getBaseRepository().findAll(pageable);
-
-        return convertPageToList(entities);
     }
 
     protected final Header<List<Res>> convertPageToList(Page<Entity> entityPage) {

@@ -17,6 +17,4 @@ public interface CrudWithFileInterface<Req, Res> {
 
     Header<List<Res>> getPaginatedList(Pageable pageable);
 
-    // 아래는 컨트롤러에서 필요함.
-    // Req parseStringToJson(String requestString);
 }
