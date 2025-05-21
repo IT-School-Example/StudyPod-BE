@@ -53,7 +53,7 @@ class UserApiControllerTest extends MockMvcTest {
     @DisplayName("저장 테스트")
     void create() throws Exception {
         // given
-        final String url = "/api/users";
+        final String url = "/api/user";
         final String email = UUID.randomUUID() +"@example.com";
 
         final UserRequest userRequest = UserRequest.builder()
@@ -85,7 +85,7 @@ class UserApiControllerTest extends MockMvcTest {
     @DisplayName("조회 테스트")
     void read() throws Exception {
         // given
-        final StringBuilder url = new StringBuilder().append("/api/users");
+        final StringBuilder url = new StringBuilder().append("/api/user");
         final String email = UUID.randomUUID() +"@example.com";
 
         // repo 직접 저장
@@ -113,7 +113,7 @@ class UserApiControllerTest extends MockMvcTest {
     @DisplayName("수정 테스트")
     void update() throws Exception {
         // given
-        final StringBuilder url = new StringBuilder().append("/api/users");
+        final StringBuilder url = new StringBuilder().append("/api/user");
         final String newEmail = "newEmail@example.com";
         final String newPassword = "Password1234!@#$";
         final String newName = "새이름";
@@ -161,7 +161,7 @@ class UserApiControllerTest extends MockMvcTest {
     @DisplayName("삭제 테스트")
     void delete() throws Exception {
         // given
-        final StringBuilder url = new StringBuilder().append("/api/users");
+        final StringBuilder url = new StringBuilder().append("/api/user");
 
         // repo 직접 저장
         final User savedUser = userRepository.save(User.builder()
