@@ -47,12 +47,12 @@ public class StudyGroupApiController extends CrudWithFileController<StudyGroupRe
         return studyGroupService;
     }
 
-    @DeleteMapping("/{id}")
+    /*@DeleteMapping("/{id}")
     @Override
     public Header<Void> delete(@PathVariable(name = "id") Long id) {
         log.info("delete: {}에서 id={}인 객체 삭제 요청", this.getClass().getSimpleName(), id);
         return studyGroupService.deleteById(id);
-    }
+    }*/
 
     @PostMapping("/search")
     @Operation(summary = "스터디 그룹 필터링 검색", description = "키워드(title 또는 keywords) + 모집 상태 + 스터디 방식 + 주제 영역을 기준으로 스터디 그룹을 필터링합니다.")
