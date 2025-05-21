@@ -7,9 +7,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -75,7 +78,11 @@ public class WebSecurityConfig {
                         .requestMatchers(
                                 new AntPathRequestMatcher("/login.html"),
                                 new AntPathRequestMatcher("/me"),
+                                new AntPathRequestMatcher("/api/user/mailSend"),
+                                new AntPathRequestMatcher("/api/user/mailCheck"),
+                                new AntPathRequestMatcher("/api/user/find-pw"),
                                 new AntPathRequestMatcher("/login"),
+                                new AntPathRequestMatcher("/logout"),
                                 new AntPathRequestMatcher("/signup"),
                                 new AntPathRequestMatcher("/api/user"),
                                 new AntPathRequestMatcher("/api/user/check-email")
@@ -131,6 +138,10 @@ public class WebSecurityConfig {
                 .cors()
                 .and()
 
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+
                 .addFilterBefore(new TokenAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
 
                 .build();
@@ -140,6 +151,11 @@ public class WebSecurityConfig {
     @Bean
     public PasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
@@ -169,5 +185,3 @@ public class WebSecurityConfig {
         return source;
     }
 }
-
-
