@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "관리자", description = "관리자 API")
-@RequestMapping("/api/admins")
+@RequestMapping("/api/admin")
 public class AdminApiController extends CrudController<AdminRequest, AdminResponse, Admin> {
 
     private final AdminService adminService;
