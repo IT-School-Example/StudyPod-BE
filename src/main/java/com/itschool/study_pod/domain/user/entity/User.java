@@ -22,14 +22,15 @@ public class User extends Account implements Convertible<UserRequest, UserRespon
     private String nickname;
 
     public static User of(UserRequest request) { // create용
-        return User.builder()
+        throw new UnsupportedOperationException("사용되지 않는 메서드. 서비스 계층 toEntity() 참조");
+        /*return User.builder()
                 .email(request.getEmail())
                 .password(request.getPassword())
                 .role(AccountRole.ROLE_USER)
                 .name(request.getName())
                 .nickname(request.getNickname())
                 .createdBy(request.getEmail())
-                .build();
+                .build();*/
     }
 
     // update용

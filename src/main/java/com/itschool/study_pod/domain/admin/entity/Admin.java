@@ -18,12 +18,15 @@ import lombok.experimental.SuperBuilder;
 @Where(clause = "is_deleted = false")*/
 public class Admin extends Account implements Convertible<AdminRequest, AdminResponse> {
 
+    @Deprecated
     public static Admin of(AdminRequest request) { // create용
-        return Admin.builder()
+        throw new UnsupportedOperationException("사용되지 않는 메서드. 서비스 계층 toEntity() 참조");
+        /*return Admin.builder()
                 .email(request.getEmail())
                 .password(request.getPassword())
+                .name(request.getName())
                 .role(AccountRole.ROLE_ADMIN)
-                .build();
+                .build();*/
     }
 
     @Override
@@ -33,6 +36,7 @@ public class Admin extends Account implements Convertible<AdminRequest, AdminRes
         // 이메일 변경
         this.email = request.getEmail() != null? request.getEmail() : this.email;
 
+        this.name = request.getName() != null? request.getName() : this.name;
         // 역할 변경
         // this.role = request.getRole() != null? request.getRole() : this.role;
 
@@ -52,6 +56,7 @@ public class Admin extends Account implements Convertible<AdminRequest, AdminRes
                 .id(this.id)
                 .email(this.email)
                 // .password(this.password)
+                .name(this.name)
                 .role(this.role)
                 .createdAt(this.createdAt)
                 .createdBy(this.createdBy)

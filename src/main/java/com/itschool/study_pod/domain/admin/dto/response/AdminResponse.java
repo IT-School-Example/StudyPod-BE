@@ -16,6 +16,8 @@ public class AdminResponse {
 
     // private String password;
 
+    private String name;
+
     private AccountRole role;
 
     private String createdBy;

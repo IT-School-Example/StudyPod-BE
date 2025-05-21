@@ -32,6 +32,7 @@ public class AdminService extends CrudService<AdminRequest, AdminResponse, Admin
     protected Admin toEntity(AdminRequest request) {
         return Admin.builder()
                 .email(request.getEmail())
+                .name(request.getName())
                 .password(bCryptPasswordEncoder.encode(request.getPassword()))
                 .role(AccountRole.ROLE_ADMIN)
                 .build();
