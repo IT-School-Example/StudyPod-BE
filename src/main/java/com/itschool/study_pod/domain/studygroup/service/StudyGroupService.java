@@ -7,6 +7,10 @@ import com.itschool.study_pod.domain.studygroup.dto.request.StudyGroupSearchRequ
 import com.itschool.study_pod.domain.studygroup.dto.response.StudyGroupResponse;
 import com.itschool.study_pod.domain.studygroup.entity.StudyGroup;
 import com.itschool.study_pod.domain.studygroup.repository.StudyGroupRepository;
+import com.itschool.study_pod.domain.subjectarea.entity.SubjectArea;
+import com.itschool.study_pod.domain.subjectarea.repository.SubjectAreaRepository;
+import com.itschool.study_pod.domain.user.repository.UserRepository;
+import com.itschool.study_pod.global.address.repository.SggRepository;
 import com.itschool.study_pod.global.base.crud.CrudService;
 import com.itschool.study_pod.global.base.dto.Header;
 import com.itschool.study_pod.global.enumclass.EnrollmentStatus;
@@ -19,6 +23,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+import com.itschool.study_pod.domain.user.entity.User;
+import com.itschool.study_pod.global.address.entity.Sgg;
+import com.itschool.study_pod.domain.subjectarea.entity.SubjectArea;
 
 import java.util.List;
 
@@ -28,6 +35,10 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
 
     private final StudyGroupRepository studyGroupRepository;
     private final EnrollmentRepository enrollmentRepository;
+    private final UserRepository userRepository;
+    private final SggRepository sggRepository;
+    private final SubjectAreaRepository subjectAreaRepository;
+
 
     @Override
     protected JpaRepository<StudyGroup, Long> getBaseRepository() {
@@ -111,7 +122,7 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
                 })
                 .orElseGet(() -> Header.<StudyGroupResponse>ERROR("스터디원으로 있는 그룹을 찾을 수 없습니다."));
     }
-    
+
     public Header<List<StudyGroupResponse>> searchByKeywordOnly(String keyword, Pageable pageable) {
         Page<StudyGroup> results = studyGroupRepository.searchByKeyword(keyword, pageable);
         if (results.getTotalElements() == 0) {
@@ -158,4 +169,37 @@ public class StudyGroupService extends CrudService<StudyGroupRequest, StudyGroup
         return Header.OK(responses);
     }
 
+    @Override
+    public Header<StudyGroupResponse> create(Header<StudyGroupRequest> request) {
+        StudyGroupRequest data = request.getData();
+
+        // 외래키 참조 대상 검증
+        User leader = userRepository.findById(data.getLeader().getId())
+                .orElseThrow(() -> new EntityNotFoundException("리더 ID가 존재하지 않습니다."));
+
+        Sgg address = sggRepository.findById(data.getAddress().getId())
+                .orElseThrow(() -> new EntityNotFoundException("주소 ID가 존재하지 않습니다."));
+
+        SubjectArea subjectArea = subjectAreaRepository.findById(data.getSubjectArea().getId())
+                .orElseThrow(() -> new EntityNotFoundException("주제영역 ID가 존재하지 않습니다."));
+
+        // 엔티티 생성
+        StudyGroup studyGroup = StudyGroup.builder()
+                .title(data.getTitle())
+                .description(data.getDescription())
+                .maxMembers(data.getMaxMembers())
+                .meetingMethod(data.getMeetingMethod())
+                .recruitmentStatus(data.getRecruitmentStatus())
+                .feeType(data.getFeeType())
+                .amount(data.getAmount())
+                .leader(leader)
+                .address(address)
+                .subjectArea(subjectArea)
+                .keywords(data.getKeywords())
+                .weeklySchedules(data.getWeeklySchedules())
+                .build();
+
+        StudyGroup saved = studyGroupRepository.save(studyGroup);
+        return Header.OK(saved.response());
+    }
 }
