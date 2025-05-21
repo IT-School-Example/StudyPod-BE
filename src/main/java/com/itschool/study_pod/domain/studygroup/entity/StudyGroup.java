@@ -106,7 +106,7 @@ public class StudyGroup extends IncludeFileUrl<StudyGroupRequest, StudyGroupResp
                 .subjectArea(SubjectArea.withId(request.getSubjectArea().getId()))
                 .keywords(request.getKeywords())
                 .weeklySchedules(request.getWeeklySchedules())
-                .fileUrl(request.getFileUrl())
+                // .fileUrl(request.getFileUrl())
                 .build();
     }
 

@@ -1,6 +1,5 @@
 package com.itschool.study_pod.domain.studygroup.dto.request;
 
-import com.itschool.study_pod.global.base.dto.FileDto;
 import com.itschool.study_pod.global.base.dto.ReferenceDto;
 import com.itschool.study_pod.global.embedable.WeeklySchedule;
 import com.itschool.study_pod.global.enumclass.FeeType;
@@ -16,7 +15,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class StudyGroupRequest extends FileDto {
+public class StudyGroupRequest {
 
     @NotBlank(message = "제목은 필수입니다.")
     private String title;

@@ -1,6 +1,5 @@
 package com.itschool.study_pod.global.base.crud;
 
-import com.itschool.study_pod.global.base.dto.FileDto;
 import com.itschool.study_pod.global.base.dto.Header;
 import com.itschool.study_pod.global.base.account.IncludeFileUrl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,7 +18,7 @@ import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
-public abstract class CrudWithFileController<Req extends FileDto, Res, Entity extends IncludeFileUrl<Req, Res>> implements CrudWithFileInterface<Req, Res> {
+public abstract class CrudWithFileController<Req, Res, Entity extends IncludeFileUrl<Req, Res>> implements CrudWithFileInterface<Req, Res> {
 
     protected abstract CrudWithFileService<Req, Res, Entity> getBaseService();
 

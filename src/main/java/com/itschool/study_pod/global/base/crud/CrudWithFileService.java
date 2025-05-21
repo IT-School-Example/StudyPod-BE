@@ -2,7 +2,6 @@ package com.itschool.study_pod.global.base.crud;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itschool.study_pod.domain.imageFileUpload.service.ImageFileUploadService;
-import com.itschool.study_pod.global.base.dto.FileDto;
 import com.itschool.study_pod.global.base.dto.Header;
 import com.itschool.study_pod.global.base.account.IncludeFileUrl;
 import jakarta.persistence.EntityNotFoundException;
@@ -12,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
-public abstract class CrudWithFileService<Req extends FileDto, Res, Entity extends IncludeFileUrl<Req, Res>> extends CrudService<Req, Res, Entity> {
+public abstract class CrudWithFileService<Req, Res, Entity extends IncludeFileUrl<Req, Res>> extends CrudService<Req, Res, Entity> {
 
     @Autowired
     private ObjectMapper objectMapper;  // Jackson ObjectMapper를 사용하여 JSON을 객체로 변환
