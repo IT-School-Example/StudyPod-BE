@@ -268,3 +268,6 @@ $RECYCLE.BIN/
 
 # application-jwt.yml 제외
 /src/main/resources/application-jwt.yml
+
+# application.properties 제외
+/src/main/resources/application.properties
