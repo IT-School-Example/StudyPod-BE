@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -63,9 +65,13 @@ public class TokenApiController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<String> getCurrentUserName(@AuthenticationPrincipal Account userDetails) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(userDetails.getUsername());
+    public ResponseEntity<String> getCurrentUserName(@AuthenticationPrincipal Account userDetails) throws UserPrincipalNotFoundException {
+        if(userDetails != null)
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(userDetails.getUsername());
+
+        else
+            throw new UserPrincipalNotFoundException("인증된 사용자가 아닙니다.");
     }
 
     // 전역 예외 핸들링
