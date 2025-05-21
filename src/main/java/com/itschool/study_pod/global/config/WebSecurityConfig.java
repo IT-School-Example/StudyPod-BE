@@ -29,7 +29,7 @@ public class WebSecurityConfig {
     private final TokenProvider tokenProvider;
 
     // 운영 프로필에서 Security FilterChain 자체를 거치지 않도록 설정하는 메서드
-    /*@Bean
+    @Bean
     @Profile("prod")
     public WebSecurityCustomizer prodConfigure() {
         return web -> web.ignoring()
@@ -40,7 +40,7 @@ public class WebSecurityConfig {
                         new AntPathRequestMatcher("/img/**"),
                         new AntPathRequestMatcher("/js/**")
                 );
-    }*/
+    }
 
     // 운영 외 프로필에서 Security FilterChain 자체를 거치지 않도록 설정하는 메서드
     @Bean
@@ -73,22 +73,19 @@ public class WebSecurityConfig {
 
                         // ✅ 비인증 사용자(비로그인 사용자)도 접근 가능한 경로
                         .requestMatchers(
-                                // new AntPathRequestMatcher("/"),
-                                new AntPathRequestMatcher("/*.html"),
-                                new AntPathRequestMatcher("/css/**"),
-                                new AntPathRequestMatcher("/img/**"),
-                                new AntPathRequestMatcher("/js/**"),
+                                new AntPathRequestMatcher("/login.html"),
+                                new AntPathRequestMatcher("/me"),
                                 new AntPathRequestMatcher("/login"),
                                 new AntPathRequestMatcher("/signup"),
                                 new AntPathRequestMatcher("/api/user"),
-                                new AntPathRequestMatcher("/api/user/check-email"),
-                                new AntPathRequestMatcher("/index.html"),
-                                new AntPathRequestMatcher("/login.html")
+                                new AntPathRequestMatcher("/api/user/check-email")
                         ).permitAll() // 위 경로는 로그인 없이 접근 가능
 
                         // ✅ 관리자 전용 API
                         .requestMatchers(
-                                new AntPathRequestMatcher("/api/admin/**"),
+                                new AntPathRequestMatcher("/"),
+                                new AntPathRequestMatcher("/*.html"),
+                                new AntPathRequestMatcher("/api/**"),
                                 new AntPathRequestMatcher("/api-docs"),
                                 new AntPathRequestMatcher("/api-docs/**"),
                                 new AntPathRequestMatcher("/v3/api-docs/**"),
