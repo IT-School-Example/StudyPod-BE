@@ -58,7 +58,7 @@ public class ImageFileUploadService {
 
         // 기존 디렉토리와 파일 이름 추출
         String directoryName = extractDirectoryNameFromS3Url(fileUrl);
-        String newFileName = extractFileNameFromS3Url(fileUrl);
+        String newFileUrl = extractFileNameFromS3Url(fileUrl);
 
         // 새로운 파일 업로드
         return upload(newFile, directoryName);

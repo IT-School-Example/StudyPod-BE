@@ -71,6 +71,8 @@ public class StudyGroupResponse {
     @Schema(description = "수정 일시", example = "2025-05-08T16:10:00")
     private LocalDateTime updatedAt;
 
+    private String fileUrl;
+
     public static StudyGroupResponse withId(Long id) {
         return StudyGroupResponse.builder()
                 .id(id)

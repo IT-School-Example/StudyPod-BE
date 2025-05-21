@@ -3,6 +3,7 @@ package com.itschool.study_pod.global.base.crud;
 import com.itschool.study_pod.global.base.dto.Header;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -92,16 +93,16 @@ public abstract class CrudController<Req, Res, Entity extends Convertible<Req, R
     // 전역 예외 핸들링용 핸들러 (Controller 내에서 발생하는 예외 처리)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Header> handleException(Exception e) {
-        // 예외 정보 로그
         log.error("Exception Occurred: ", e);
-
-        // 클라이언트에게 반환할 메시지 생성
         String errorMessage = e.getClass().getSimpleName() + " : " + e.getMessage();
 
-        // 에러 응답 본문 생성
-        Header errorResponse = Header.ERROR(errorMessage);
+        if (e instanceof EntityNotFoundException) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Header.ERROR(errorMessage));
+        }
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(errorResponse);
+                .body(Header.ERROR(errorMessage));
     }
+
 }
