@@ -73,8 +73,11 @@ public class WebSecurityConfig {
 
                         // ✅ 비인증 사용자(비로그인 사용자)도 접근 가능한 경로
                         .requestMatchers(
-                                new AntPathRequestMatcher("/"),
+                                // new AntPathRequestMatcher("/"),
                                 new AntPathRequestMatcher("/*.html"),
+                                new AntPathRequestMatcher("/css/**"),
+                                new AntPathRequestMatcher("/img/**"),
+                                new AntPathRequestMatcher("/js/**"),
                                 new AntPathRequestMatcher("/login"),
                                 new AntPathRequestMatcher("/signup"),
                                 new AntPathRequestMatcher("/api/user"),
@@ -106,10 +109,14 @@ public class WebSecurityConfig {
                         .anyRequest().authenticated()
                 )
 
+                // 인증되지 않았을 경우, 로그인 페이지로 리다이렉션
+                .exceptionHandling()
+                .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                .and()
 
                 // ⛔️ [선택 사항] 폼 로그인 설정 (JWT 기반 커스텀 로그인 처리)
                 .formLogin().disable()
-
+                .httpBasic().disable()
 
                 // ⛔️ [선택 사항] 로그아웃 설정 (Spring security에서 제공하는 형태가 아닌 직접 api 구현 완료)
                 .logout().disable()
