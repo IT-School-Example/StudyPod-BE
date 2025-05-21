@@ -1,13 +1,12 @@
-package com.itschool.study_pod.domain.user.controller;
+package com.itschool.study_pod.domain.admin.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itschool.study_pod.MockMvcTest;
+import com.itschool.study_pod.domain.admin.dto.request.AdminRequest;
+import com.itschool.study_pod.domain.admin.entity.Admin;
+import com.itschool.study_pod.domain.admin.repository.AdminRepository;
 import com.itschool.study_pod.global.base.dto.Header;
-import com.itschool.study_pod.domain.user.dto.request.UserRequest;
-import com.itschool.study_pod.domain.user.entity.User;
 import com.itschool.study_pod.global.enumclass.AccountRole;
-import com.itschool.study_pod.domain.studygroup.repository.StudyGroupRepository;
-import com.itschool.study_pod.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,45 +22,42 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
-class UserApiControllerTest extends MockMvcTest {
+class AdminApiControllerTest extends MockMvcTest {
     @Autowired
-    private UserRepository userRepository;
+    private AdminRepository adminRepository;
 
     @Autowired
     private ObjectMapper objectMapper; // 직렬화와 역직렬화를 위한 클래스
 
     @BeforeEach
     public void BeforeSetUp() {
-        /*userRepository.deleteAll(); // 사용자 전부 삭제
+        /*adminRepository.deleteAll(); // 관리자 전부 삭제
 
-        // 사용자 객체 생성
-        User user = User.builder()
+        // 관리자 객체 생성
+        Admin user = Admin.builder()
                 .email(UUID.randomUUID() +"@example.com")
                 .password("1234")
-                .role(AccountRole.ROLE_USER)
                 .name("abc")
-                .nickname(UUID.randomUUID().toString())
                 .build();
 
-        userRepository.save(user);*/
+        adminRepository.save(user);*/
+
     }
 
     @Test
     @DisplayName("저장 테스트")
     void create() throws Exception {
         // given
-        final String url = "/api/users";
+        final String url = "/api/admins";
         final String email = UUID.randomUUID() +"@example.com";
 
-        final UserRequest userRequest = UserRequest.builder()
+        final AdminRequest userRequest = AdminRequest.builder()
                 .email(email)
                 .password("abcd1234!@#$")
-                //.role(AccountRole.ROLE_USER)
                 .name("저장테스트")
-                .nickname("nick" + UUID.randomUUID())
                 .build();
 
-        final Header<UserRequest> requestBody = Header.<UserRequest>builder()
+        final Header<AdminRequest> requestBody = Header.<AdminRequest>builder()
                 .data(userRequest).build();
 
         // 객체를 JSON으로 직렬화
@@ -82,19 +78,18 @@ class UserApiControllerTest extends MockMvcTest {
     @DisplayName("조회 테스트")
     void read() throws Exception {
         // given
-        final StringBuilder url = new StringBuilder().append("/api/users");
+        final StringBuilder url = new StringBuilder().append("/api/admins");
         final String email = UUID.randomUUID() +"@example.com";
 
         // repo 직접 저장
-        final User savedUser = userRepository.save(User.builder()
+        final Admin savedAdmin = adminRepository.save(Admin.builder()
                 .email(email)
                 .password("abcd1234!@#$")
                 .role(AccountRole.ROLE_USER)
                 .name("조회테스트")
-                .nickname("nick" + UUID.randomUUID())
                 .build());
 
-        url.append("/").append(savedUser.getId());
+        url.append("/").append(savedAdmin.getId());
 
         // when : 설정한 내용을 바탕으로 요청 전송
         ResultActions result = mockMvc.perform(MockMvcRequestBuilders.get(url.toString())
@@ -110,31 +105,29 @@ class UserApiControllerTest extends MockMvcTest {
     @DisplayName("수정 테스트")
     void update() throws Exception {
         // given
-        final StringBuilder url = new StringBuilder().append("/api/users");
+        final StringBuilder url = new StringBuilder().append("/api/admins");
         final String newEmail = "newEmail@example.com";
         final String newPassword = "Password1234!@#$";
         final String newName = "새이름";
         final String newNickname = "nick" + UUID.randomUUID();
 
         // repo 직접 저장
-        final User savedUser = userRepository.save(User.builder()
+        final Admin savedAdmin = adminRepository.save(Admin.builder()
                 .email(UUID.randomUUID() +"@example.com")
                 .password("abcd1234!@#$")
                 .role(AccountRole.ROLE_USER)
                 .name("수정테스트")
-                .nickname("수정될 닉네임")
                 .build());
 
-        url.append("/").append(savedUser.getId());
+        url.append("/").append(savedAdmin.getId());
 
-        UserRequest userRequest = UserRequest.builder()
+        AdminRequest userRequest = AdminRequest.builder()
                 .email(newEmail)
                 .password(newPassword)
                 .name(newName)
-                .nickname(newNickname)
                 .build();
 
-        final Header<UserRequest> requestBody = Header.<UserRequest>builder()
+        final Header<AdminRequest> requestBody = Header.<AdminRequest>builder()
                 .data(userRequest).build();
 
         // 객체를 JSON으로 직렬화
@@ -149,8 +142,7 @@ class UserApiControllerTest extends MockMvcTest {
         // then : 검증
         result.andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.email").value(newEmail))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.name").value(newName))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.nickname").value(newNickname));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.name").value(newName));
     }
 
     // 삭제(Delete) 테스트
@@ -158,20 +150,19 @@ class UserApiControllerTest extends MockMvcTest {
     @DisplayName("삭제 테스트")
     void delete() throws Exception {
         // given
-        final StringBuilder url = new StringBuilder().append("/api/users");
+        final StringBuilder url = new StringBuilder().append("/api/admins");
 
         // repo 직접 저장
-        final User savedUser = userRepository.save(User.builder()
+        final Admin savedAdmin = adminRepository.save(Admin.builder()
                 .email(UUID.randomUUID() +"@example.com")
                 .password("abcd1234!@#$")
                 .role(AccountRole.ROLE_USER)
                 .name("조회테스트")
-                .nickname("nick" + UUID.randomUUID())
                 .build());
 
-        final Long beforeCount = userRepository.count();
+        final Long beforeCount = adminRepository.count();
 
-        url.append("/").append(savedUser.getId());
+        url.append("/").append(savedAdmin.getId());
 
         // when : 설정한 내용을 바탕으로 요청 전송
         ResultActions result = mockMvc.perform(MockMvcRequestBuilders.delete(url.toString()));
@@ -179,6 +170,6 @@ class UserApiControllerTest extends MockMvcTest {
         // then : 검증
         result.andExpect(MockMvcResultMatchers.status().isNoContent());
 
-        assertThat(userRepository.count()).isEqualTo(beforeCount - 1);
+        assertThat(adminRepository.count()).isEqualTo(beforeCount - 1);
     }
 }
