@@ -1,5 +1,7 @@
 package com.itschool.study_pod.global.config;
 
+import com.itschool.study_pod.global.config.error.CustomAccessDeniedHandler;
+import com.itschool.study_pod.global.config.error.CustomAuthenticationEntryPoint;
 import com.itschool.study_pod.global.enumclass.AccountRole;
 import com.itschool.study_pod.global.security.jwt.TokenAuthenticationFilter;
 import com.itschool.study_pod.global.security.jwt.TokenProvider;
@@ -53,8 +55,6 @@ public class WebSecurityConfig {
                 // 개발 및 테스트 환경에서만 허용할 경로
                 .requestMatchers(
                         // 해당 요청은 필터링 제외 (local dev에서만)
-                        /*new AntPathRequestMatcher("/"),
-                        new AntPathRequestMatcher("/*.html"),*/
                         new AntPathRequestMatcher("/css/**"),
                         new AntPathRequestMatcher("/img/**"),
                         new AntPathRequestMatcher("/js/**"),
@@ -76,7 +76,7 @@ public class WebSecurityConfig {
 
                         // ✅ 비인증 사용자(비로그인 사용자)도 접근 가능한 경로
                         .requestMatchers(
-                                new AntPathRequestMatcher("/login.html"),
+                                new AntPathRequestMatcher("/login"),
                                 new AntPathRequestMatcher("/me"),
                                 new AntPathRequestMatcher("/api/user/mailSend"),
                                 new AntPathRequestMatcher("/api/user/mailCheck"),
@@ -87,25 +87,28 @@ public class WebSecurityConfig {
                                 new AntPathRequestMatcher("/api/user/check-email")
                         ).permitAll() // 위 경로는 로그인 없이 접근 가능
 
-                        // ✅ 관리자 전용 API
-                        .requestMatchers(
-                                new AntPathRequestMatcher("/"),
-                                new AntPathRequestMatcher("/*.html"),
-                                new AntPathRequestMatcher("/api/**"),
-                                new AntPathRequestMatcher("/api-docs"),
-                                new AntPathRequestMatcher("/api-docs/**"),
-                                new AntPathRequestMatcher("/v3/api-docs/**"),
-                                new AntPathRequestMatcher("/swagger*/**"),
-                                new AntPathRequestMatcher("/swagger-resources/**")
-                        ).hasAnyAuthority(
-                                AccountRole.ROLE_ADMIN.name()
-                        )
-
-                        // ✅ 일반 사용자 전용 API
+                        // ✅ 로그인된 사용자 전용 API
                         .requestMatchers(
                                 new AntPathRequestMatcher("/api/**") // 모든 /api/** 경로 (단, admin 경로 제외)
                         ).hasAnyAuthority(
-                                AccountRole.ROLE_USER.name()
+                                AccountRole.ROLE_USER.name(),
+                                AccountRole.ROLE_ADMIN.name()
+                        )
+
+                        // ✅ 관리자 전용 페이지
+                        .requestMatchers(
+                                new AntPathRequestMatcher("/"),
+                                new AntPathRequestMatcher("/*.html"),
+                                new AntPathRequestMatcher("/admin/**"),
+                                new AntPathRequestMatcher("/notice/**"),
+                                new AntPathRequestMatcher("/faq/**"),
+                                new AntPathRequestMatcher("/subject-area/**"),
+                                new AntPathRequestMatcher("/user/**"),
+                                new AntPathRequestMatcher("/study-group/**"),
+                                new AntPathRequestMatcher("/study-board/**")
+
+                        ).hasAuthority(
+                                AccountRole.ROLE_ADMIN.name()
                         )
 
                         // ✅ 위에 명시되지 않은 나머지 모든 요청은 인증 필요
@@ -113,8 +116,10 @@ public class WebSecurityConfig {
                 )
 
                 // 인증되지 않았을 경우, 로그인 페이지로 리다이렉션
+                .anonymous().disable()
                 .exceptionHandling()
-                .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                .authenticationEntryPoint(new CustomAuthenticationEntryPoint()) // 401 미인증 처리
+                .accessDeniedHandler(new CustomAccessDeniedHandler()) // 403 미인가 처리
                 .and()
 
                 // ⛔️ [선택 사항] 폼 로그인 설정 (JWT 기반 커스텀 로그인 처리)
