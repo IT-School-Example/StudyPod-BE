@@ -64,6 +64,9 @@ springdoc:
     - /api/**
 
 jwt:
+  cookie:
+    secure: false
+    http-only: true
   issuer: studypod@studypod.com
   # jjwt 라이브러리 0.11.0 버전부터 secret_key에 Base64로 인코딩된 문자열을 요구하는 방식으로 변경
   # JJWT 라이브러리는 HMAC-SHA 알고리즘 사용 시 256비트(32바이트) 미만의 키를 강제로 거부
