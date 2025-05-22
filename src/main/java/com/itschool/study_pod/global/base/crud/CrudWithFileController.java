@@ -1,11 +1,14 @@
 package com.itschool.study_pod.global.base.crud;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itschool.study_pod.global.base.dto.Header;
 import com.itschool.study_pod.global.base.account.IncludeFileUrl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.GenericTypeResolver;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -20,16 +23,29 @@ import java.util.List;
 @RequiredArgsConstructor
 public abstract class CrudWithFileController<Req, Res, Entity extends IncludeFileUrl<Req, Res>> implements CrudWithFileInterface<Req, Res> {
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     protected abstract CrudWithFileService<Req, Res, Entity> getBaseService();
 
-    @Override
-    @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "생성", description = "새로운 엔티티를 생성")
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Header<Res> create(@RequestPart("data") String requestString,
                               @RequestPart(value = "file", required = false) MultipartFile file) {
         log.info("create: {}에서 객체 {} 생성 요청", this.getClass().getSimpleName(), requestString);
-        return getBaseService().create(requestString, file);
+        try {
+            Req requestObj = objectMapper.readValue(requestString, getRequestClass());
+            return getBaseService().create(requestObj, file);
+        } catch (Exception e) {
+            e.printStackTrace(); // << 꼭 추가하세요
+            throw new RuntimeException("JSON 파싱 실패: " + e.getMessage(), e);
+        }
+    }
+
+
+    // 리플렉션으로 Req 타입 알아오기
+    @SuppressWarnings("unchecked")
+    private Class<Req> getRequestClass() {
+        return (Class<Req>) GenericTypeResolver.resolveTypeArguments(getClass(), CrudWithFileController.class)[0];
     }
 
     @Override
@@ -43,12 +59,18 @@ public abstract class CrudWithFileController<Req, Res, Entity extends IncludeFil
     @Override
     @Operation(summary = "수정", description = "ID로 엔티티를 업데이트")
     @PutMapping(value = "{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Header<Res> update(Long id,
+    public Header<Res> update(@PathVariable Long id,
                               @RequestPart("data") String requestString,
                               @RequestPart(value = "file", required = false) MultipartFile file) {
-        log.info("readAll: {}에서 전체 조회 요청", this.getClass().getSimpleName());
-        return getBaseService().update(id, requestString, file);
+        log.info("update: {}에서 id={}로 업데이트 요청", this.getClass().getSimpleName(), id);
+        try {
+            Req requestObj = objectMapper.readValue(requestString, getRequestClass());
+            return getBaseService().update(id, requestObj, file);
+        } catch (Exception e) {
+            throw new RuntimeException("JSON 파싱 실패", e);
+        }
     }
+
 
     @Override
     @ResponseStatus(HttpStatus.NO_CONTENT) // 204, NO_CONTENT

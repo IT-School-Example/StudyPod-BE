@@ -1,5 +1,7 @@
 package com.itschool.study_pod.domain.studygroup.controller;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.itschool.study_pod.domain.enrollment.service.EnrollmentService;
 import com.itschool.study_pod.domain.studygroup.dto.request.StudyGroupRequest;
 import com.itschool.study_pod.domain.studygroup.dto.request.StudyGroupSearchRequest;
@@ -18,6 +20,8 @@ import com.itschool.study_pod.global.enumclass.RecruitmentStatus;
 
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,8 +30,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -137,4 +144,27 @@ public class StudyGroupApiController extends CrudWithFileController<StudyGroupRe
             @RequestParam(name = "enrollmentStatus") EnrollmentStatus enrollmentStatus) {
         return studyGroupService.findStudyGroupsByUserIdAndStatus(userId, enrollmentStatus);
     }
+
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "스터디그룹 엔티티 생성", description = "multipart/form-data 형식으로 등록")
+    @Override
+    public Header<StudyGroupResponse> create(
+            @RequestPart("data") String json,
+            @RequestPart(value = "file", required = false) MultipartFile file) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+            StudyGroupRequest data = objectMapper.readValue(json, StudyGroupRequest.class);
+            return studyGroupService.create(data, file);
+
+        } catch (Exception e) {
+            log.error("JSON 파싱 실패: {}", json);
+            log.error("예외 내용", e);
+            return Header.ERROR("요청 데이터가 잘못되었습니다.");
+        }
+    }
+
+
 }

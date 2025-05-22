@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 public abstract class CrudWithFileService<Req, Res, Entity extends IncludeFileUrl<Req, Res>> extends CrudService<Req, Res, Entity> {
 
     @Autowired
-    private ObjectMapper objectMapper;  // Jackson ObjectMapper를 사용하여 JSON을 객체로 변환
+    private ObjectMapper objectMapper;
 
     @Autowired
     private ImageFileUploadService imageFileUploadService;
@@ -24,13 +24,11 @@ public abstract class CrudWithFileService<Req, Res, Entity extends IncludeFileUr
     protected abstract String getDirName();
 
     public Req parseStringToJson(String requestString) {
-        Req request;
         try {
-            request = objectMapper.readValue(requestString, getRequestClass());
+            return objectMapper.readValue(requestString, getRequestClass());
         } catch (Exception e) {
             throw new RuntimeException("잘못된 JSON 형식입니다.", e);
         }
-        return request;
     }
 
     @Override
@@ -46,31 +44,26 @@ public abstract class CrudWithFileService<Req, Res, Entity extends IncludeFileUr
     }
 
     @Transactional
-    public Header<Res> create(String requestString, MultipartFile file) {
-        Req request;
+    public Header<Res> create(Req request, MultipartFile file) {
         String fileUrl = null;
 
         try {
-            // 파일 업로드: 존재할 때만 수행
             if (file != null && !file.isEmpty()) {
                 fileUrl = imageFileUploadService.upload(file, getDirName());
             }
 
-            request = parseStringToJson(requestString);
-
             Entity entity = toEntity(request);
-            entity.updateFileUrl(fileUrl);  // fileUrl이 null이어도 괜찮음
+            entity.updateFileUrl(fileUrl);
 
             getBaseRepository().save(entity);
             return apiResponse(entity);
 
         } catch (Exception e) {
-            // 업로드 실패 시 이미 업로드된 파일이 있다면 삭제
             if (fileUrl != null) {
                 try {
                     imageFileUploadService.deleteFile(fileUrl);
                 } catch (Exception deleteEx) {
-                    // 삭제 실패 로그만 남기고 넘김
+                    // 삭제 실패 로그만 기록하고 계속 진행
                 }
             }
             throw new RuntimeException("파일 업로드 오류 발생", e);
@@ -78,19 +71,15 @@ public abstract class CrudWithFileService<Req, Res, Entity extends IncludeFileUr
     }
 
     @Transactional
-    public Header<Res> update(Long id, String requestString, MultipartFile file) {
-        Req request;
+    public Header<Res> update(Long id, Req request, MultipartFile file) {
         String newFileUrl = null;
 
         try {
-            request = parseStringToJson(requestString);
-
             Entity entity = getBaseRepository().findById(id)
                     .orElseThrow(() -> new EntityNotFoundException("해당 id " + id + "에 해당하는 객체가 없습니다."));
 
             entity.update(request);
 
-            // 새 파일이 존재할 때만 업데이트 수행
             if (file != null && !file.isEmpty()) {
                 newFileUrl = imageFileUploadService.updateFile(entity.getFileUrl(), file);
                 entity.updateFileUrl(newFileUrl);
@@ -112,13 +101,12 @@ public abstract class CrudWithFileService<Req, Res, Entity extends IncludeFileUr
 
             getBaseRepository().delete(entity);
 
-            // 파일이 존재할 경우에만 삭제
             String fileUrl = entity.getFileUrl();
             if (fileUrl != null) {
                 try {
                     imageFileUploadService.deleteFile(fileUrl);
                 } catch (Exception deleteEx) {
-                    // 삭제 실패 로그만 남기고 넘김
+                    // 삭제 실패 로그만 기록
                 }
             }
 
