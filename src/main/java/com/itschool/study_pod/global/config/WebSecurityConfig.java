@@ -115,8 +115,9 @@ public class WebSecurityConfig {
                         .anyRequest().authenticated()
                 )
 
+                // .anonymous().disable()
+
                 // 인증되지 않았을 경우, 로그인 페이지로 리다이렉션
-                .anonymous().disable()
                 .exceptionHandling()
                 .authenticationEntryPoint(new CustomAuthenticationEntryPoint()) // 401 미인증 처리
                 .accessDeniedHandler(new CustomAccessDeniedHandler()) // 403 미인가 처리
