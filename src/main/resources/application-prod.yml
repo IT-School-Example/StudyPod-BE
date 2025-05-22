@@ -54,5 +54,5 @@ jwt:
   # JJWT 라이브러리는 HMAC-SHA 알고리즘 사용 시 256비트(32바이트) 미만의 키를 강제로 거부
   # 256비트 미만 키는 보안상 취약해서 라이브러리가 애초에 안전하지 않은 키 사용을 막으려는 목적
   issuer: studypod@studypod.com
-  access-secret: ${JWT_ACCESS_SECRET}
-  refresh-secret: ${JWT_REFRESH_SECRET}
+  # access-secret: ${JWT_ACCESS_SECRET}
+  # refresh-secret: ${JWT_REFRESH_SECRET}
