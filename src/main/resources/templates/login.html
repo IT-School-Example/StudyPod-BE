@@ -2,6 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/png" sizes="96x96" href="/img/favicon/favicon-96x96.png">
     <title>로그인</title>
     <style>
         body {
@@ -54,7 +55,7 @@
             if (res.ok) {
                 // accessToken이 쿠키에 저장되어 있으니 따로 꺼내지 않고
                 // 로그인 성공 후 홈으로 이동
-                window.location.href = "/";
+                window.location.href = "/admin/management";
             } else {
                 const errorData = await res.json();
                 document.getElementById("error-msg").innerText =
