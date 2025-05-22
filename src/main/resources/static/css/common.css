@@ -25,6 +25,7 @@ header {
   z-index: 1000;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 header .logo {
@@ -48,11 +49,31 @@ header .btn-success {
   font-weight: normal; /* 기본 폰트 두께 설정 */
 }
 
+aside {
+    margin-top : var(--header-height);
+}
+
+.panel-links {
+  list-style: none;
+  // margin-left: -30px;
+  padding: 0;
+}
+
+.panel-links li {
+  margin: 10px 0;
+}
+
 main {
+  margin-top : var(--header-height);
   width: 100%;
   margin-top: var(--header-height);
   font-family: SBAggro; /* main 태그에만 적용 */
   font-weight: 500; /* main 태그에만 적용 */
+}
+
+.center-pagination {
+    display: flex;
+    justify-content: center; /* 가운데 정렬 */
 }
 
 /* 섹션 스타일 */
@@ -70,6 +91,11 @@ section {
   text-align: center;
   font-size: 1.4em; /* 모바일 폰트 크기 */
   line-height: 1.3; /* 줄 간격 조정 */
+}
+
+.right-align {
+    display: flex;
+    justify-content: flex-end;
 }
 
 /* Footer 스타일 */
