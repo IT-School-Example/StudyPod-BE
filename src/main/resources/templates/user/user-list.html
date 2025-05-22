@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/mainLayout}">
+<head>
+    <!-- head는 레이아웃에서 처리됨 -->
+</head>
+<body>
+    <main layout:fragment="Content"
+          class="col-xs-10">
+        <h3>사용자 조회</h3>
+        <!-- 페이지 사이즈 & 정렬 -->
+        <div class="form-inline mb-3">
+            <label>보기:
+                <select id="pageSizeSelect" class="form-control">
+                    <option value="5">5개</option>
+                    <option value="10" selected>10개</option>
+                    <option value="20">20개</option>
+                </select>
+            </label>
+
+            <label>정렬:
+                <select id="sortSelect" class="form-control">
+                    <option value="id,asc">ID 오름차순</option>
+                    <option value="id,desc" selected>ID 내림차순</option>
+                </select>
+            </label>
+        </div>
+
+        <div>
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>계정명</th>
+                    <th>성명</th>
+                    <th>닉네임</th>
+                    <th>생성자</th>
+                    <th>생성일</th>
+                    <th>수정자</th>
+                    <th>수정일</th>
+                    <th>삭제</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+            <nav class="center-pagination" aria-label="Page navigation">
+                <ul class="pagination">
+                    <li>
+                        <a href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li><a href="#">1</a></li>
+                    <li>
+                        <a href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="right-align">
+                <button class="btn btn-default">사용자 추가</button>
+            </div>
+        </div>
+        <script type="module">
+            import Board from '/js/board.js';
+
+            $(document).ready(() => {
+              const board = new Board({
+                url: '/api/user',
+                $tbody: $('tbody'),
+                $pagination: $('.pagination'),
+                $pageSizeSelect: $('#pageSizeSelect'),
+                $sortSelect: $('#sortSelect'),
+                renderRow: (entity) => {
+                  const $tr = $('<tr></tr>');
+                  $tr.append($('<td></td>').text(entity.id));
+                  $tr.append($('<td></td>').text(entity.email));
+                  $tr.append($('<td></td>').text(entity.name));
+                  $tr.append($('<td></td>').text(entity.nickname));
+                  $tr.append($('<td></td>').text(entity.createdBy));
+                  $tr.append($('<td></td>').text(formatDate(entity.createdAt)));
+                  $tr.append($('<td></td>').text(entity.updatedBy));
+                  $tr.append($('<td></td>').text(formatDate(entity.updatedAt)));
+                  const $deleteBtn = $('<button disabled class="btn btn-danger">삭제</button>')
+                    .on('click', () => board.deleteRow(entity.id));
+                  $tr.append($('<td></td>').append($deleteBtn));
+                  return $tr;
+                }
+              });
+            });
+        </script>
+    </main>
+</body>
+</html>
