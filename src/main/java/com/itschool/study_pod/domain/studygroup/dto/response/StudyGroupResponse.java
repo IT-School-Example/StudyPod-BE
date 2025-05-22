@@ -15,7 +15,7 @@ import java.util.Set;
 
 @Schema(description = "스터디 그룹 응답 DTO")
 @Data
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class StudyGroupResponse {
