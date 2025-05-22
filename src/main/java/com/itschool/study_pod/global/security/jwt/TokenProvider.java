@@ -2,6 +2,8 @@ package com.itschool.study_pod.global.security.jwt;
 
 import com.itschool.study_pod.global.base.account.Account;
 import com.itschool.study_pod.global.base.account.AccountRepository;
+import com.itschool.study_pod.global.security.jwt.redis.RefreshToken;
+import com.itschool.study_pod.global.security.jwt.redis.RefreshTokenRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.persistence.EntityNotFoundException;
@@ -37,22 +39,25 @@ public class TokenProvider {
 
     private final AccountRepository accountRepository;  // DB에서 사용자 정보 조회용
 
+    private final RefreshTokenRepository refreshTokenRepository;
+
+
     // 인코딩된 비밀키를 디코딩해 SecretKey 객체를 캐싱 (접근용, 리프레시용)
     private SecretKey accessSecretKey;
     private SecretKey refreshSecretKey;
 
     /**
-     * Account 객체를 기반으로 5분 유효한 Access Token 생성
+     * Account 객체를 기반으로 1시간 유효한 Access Token 생성
      */
     public String generateAccessToken(Account account) {
-        return generateToken(account, Duration.ofMinutes(5), getAccessSecretKey(), "Access");
+        return generateToken(account, Duration.ofHours(1), getAccessSecretKey(), "Access");
     }
 
     /**
-     * Account 객체를 기반으로 2시간 유효한 Refresh Token 생성
+     * Account 객체를 기반으로 5시간 유효한 Refresh Token 생성
      */
     public String generateRefreshToken(Account account) {
-        return generateToken(account, Duration.ofHours(2), getRefreshSecretKey(), "Refresh");
+        return generateToken(account, Duration.ofHours(5), getRefreshSecretKey(), "Refresh");
     }
 
     /**
@@ -168,20 +173,41 @@ public class TokenProvider {
         return getAccessTokenClaims(token).get(CLAIM_ID, Long.class);
     }
 
+
+    public String refreshAccessToken(String refreshToken) {
+        // 1. 리프레시 토큰 유효성 검사
+        if(!validateRefreshToken(refreshToken)) {
+            throw new IllegalArgumentException("Unexpected token");
+        }
+
+        // 2. Redis에서 리프레시 토큰과 매칭되는 사용자 ID 조회
+        Long accountId = findByRefreshToken(refreshToken).getAccountId();
+
+        // 3. 사용자 존재 확인
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 DB에서 삭제된 케이스"));
+
+        // 4. 새로운 액세스 토큰 발급 및 반환
+        return generateAccessToken(account);
+    }
+
+    public RefreshToken findByRefreshToken(String refreshToken) {
+        // 리프레시 토큰으로 Redis 저장소 조회, 없으면 예외 발생
+        return refreshTokenRepository.findByRefreshToken(refreshToken)
+                .orElseThrow(() -> new EntityNotFoundException("해당 Refresh 토큰이 없음"));
+    }
     
     // 쿠키 생성 메서드 (SameSite 속성은 헤더로 직접 추가, 메소드 위치 다른 클래스 이관 고민)
     public static void addCookie(HttpServletResponse response, String name, String value, int maxAgeSeconds) {
         Cookie cookie = new Cookie(name, value);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);   // HTTPS 환경에서만 전송
         cookie.setPath("/");
         cookie.setMaxAge(maxAgeSeconds);
         response.addCookie(cookie);
 
         // SameSite 직접 헤더로 추가 (Java Servlet API 쿠키 객체는 SameSite 미지원)
-        String cookieHeader = String.format("%s=%s; Max-Age=%d; Path=/; Secure; HttpOnly; SameSite=Strict",
+        /*String cookieHeader = String.format("%s=%s; Max-Age=%d; Path=/;", *//* Secure; HttpOnly; SameSite=Strict *//*
                 name, value, maxAgeSeconds);
-        response.addHeader("Set-Cookie", cookieHeader);
+        response.addHeader("Set-Cookie", cookieHeader);*/
     }
 
     /**
