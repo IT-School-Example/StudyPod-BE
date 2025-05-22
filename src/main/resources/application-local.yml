@@ -79,5 +79,5 @@ jwt:
   # jjwt 라이브러리 0.11.0 버전부터 secret_key에 Base64로 인코딩된 문자열을 요구하는 방식으로 변경
   # JJWT 라이브러리는 HMAC-SHA 알고리즘 사용 시 256비트(32바이트) 미만의 키를 강제로 거부
   # 256비트 미만 키는 보안상 취약해서 라이브러리가 애초에 안전하지 않은 키 사용을 막으려는 목적
-  # access-secret: ${JWT_ACCESS_SECRET}
-  # refresh-secret: ${JWT_REFRESH_SECRET}
+  access-secret: c3R1ZHlwb2Qtc3ByaW5nYm9vdC1hY2Nlc3Mtc2VjcmV0LWtleQ==  # studypod-springboot-access-secret-key를 BASE 64로 인코딩한 값
+  refresh-secret: c3R1ZHlwb2Qtc3ByaW5nYm9vdC1yZWZyZXNoLXNlY3JldC1rZXk= # studypod-springboot-refresh-secret-key를 BASE 64로 인코딩한 값
