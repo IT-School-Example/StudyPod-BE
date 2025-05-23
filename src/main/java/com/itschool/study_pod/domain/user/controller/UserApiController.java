@@ -3,7 +3,6 @@ package com.itschool.study_pod.domain.user.controller;
 import com.itschool.study_pod.global.base.account.Account;
 import com.itschool.study_pod.global.base.crud.CrudController;
 import com.itschool.study_pod.global.base.dto.Header;
-import com.itschool.study_pod.domain.studygroup.dto.response.StudyGroupResponse;
 import com.itschool.study_pod.domain.user.dto.request.UserEmailUpdateRequest;
 import com.itschool.study_pod.domain.user.dto.request.UserNicknameUpdateRequest;
 import com.itschool.study_pod.domain.user.dto.request.UserPasswordUpdateRequest;
@@ -11,7 +10,6 @@ import com.itschool.study_pod.domain.user.dto.request.UserRequest;
 import com.itschool.study_pod.domain.user.dto.response.UserResponse;
 import com.itschool.study_pod.domain.user.entity.User;
 import com.itschool.study_pod.domain.user.service.UserService;
-import com.itschool.study_pod.global.enumclass.EnrollmentStatus;
 import com.itschool.study_pod.domain.enrollment.service.EnrollmentService;
 import com.itschool.study_pod.global.base.crud.CrudService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,18 +19,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "사용자", description = "사용자 API")
-@RequestMapping("/api/users")
+@RequestMapping("/api/user")
 public class UserApiController extends CrudController<UserRequest, UserResponse, User> {
 
     private final UserService userService;
@@ -51,6 +47,15 @@ public class UserApiController extends CrudController<UserRequest, UserResponse,
                                                 @RequestBody @Valid Header<UserPasswordUpdateRequest> request) {
         log.info("update password : {}에서 전체 조회 요청", this.getClass().getSimpleName());
         return userService.updatePassword(id, request);
+    }
+
+    @Operation(summary = "사용자 비밀번호 찾기", description = "사용자(User) 비밀번호 재설정")
+    @ResponseStatus(HttpStatus.NO_CONTENT) // 204 No Content
+    @PatchMapping("find-pw/{email}")
+    public Header<Void> findPassword(@PathVariable(name = "email") String email,
+                                     @RequestBody @Valid Header<UserPasswordUpdateRequest> request) {
+        log.info("find password : {} 비밀번호 재설정 요청", email);
+        return userService.findPassword(email, request);
     }
 
     @Operation(summary = "사용자 닉네임 수정", description = "사용자(User) 닉네임 수정하기")

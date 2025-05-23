@@ -17,6 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserService extends CrudService<UserRequest, UserResponse, User> {
@@ -82,5 +84,25 @@ public class UserService extends CrudService<UserRequest, UserResponse, User> {
 
     public Boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Transactional
+    public Header<Void> findPassword(String email, Header<UserPasswordUpdateRequest> request) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User : 해당 email [" + email + "]에 해당하는 유저가 없습니다."));
+
+        // 👉 실제 인증 여부 검사는 별도의 VerificationService에서 확인했는지 전제합니다.
+
+        String newPassword = request.getData().getPassword();
+        String encryptedPassword = bCryptPasswordEncoder.encode(newPassword);
+
+        user.updatePassword(encryptedPassword);
+
+        return Header.OK();
     }
 }
