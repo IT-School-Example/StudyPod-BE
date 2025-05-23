@@ -3,6 +3,7 @@ package com.itschool.study_pod.domain.Message.entity;
 import com.itschool.study_pod.domain.Message.dto.request.MessageRequest;
 import com.itschool.study_pod.domain.Message.dto.response.MessageResponse;
 import com.itschool.study_pod.domain.chatRoom.entity.ChatRoom;
+import com.itschool.study_pod.domain.user.dto.response.UserResponse;
 import com.itschool.study_pod.domain.user.entity.User;
 import com.itschool.study_pod.global.base.BaseEntity;
 import com.itschool.study_pod.global.base.account.Account;
@@ -38,7 +39,7 @@ public class Message extends BaseEntity implements Convertible<MessageRequest, M
 
     // 메시지 읽었는지 여부
     @Column(name = "is_read", nullable = false)
-    private Boolean isRead;
+    private boolean isRead;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "message_type", nullable = false)
@@ -46,16 +47,13 @@ public class Message extends BaseEntity implements Convertible<MessageRequest, M
 
     // 요청 DTO -> Entity로 변환하는 메서드
     public static Message of(MessageRequest request) { //create용
-        if (request != null) {
-            return Message.builder()
-                    .chatRoom(ChatRoom.withId(request.getChatRoom().getId()))
-                    .sender(request.getSender())
-                    .messageText(request.getMessageText())
-                    .isRead(request.isRead())
-                    .messageType(request.getMessageType())
-                    .build();
-        }
-        return null;
+        return Message.builder()
+                .chatRoom(ChatRoom.withId(request.getChatRoom().getId()))
+                .sender(request.getSender())
+                .messageText(request.getMessageText())
+                .isRead(false)
+                .messageType(request.getMessageType())
+                .build();
     }
 
     @Override
@@ -72,7 +70,8 @@ public class Message extends BaseEntity implements Convertible<MessageRequest, M
         return MessageResponse.builder()
                 .id(this.id)
                 .chatRoom(ChatRoom.withId(this.chatRoom.getId()))
-                .sender(this.sender)
+                .sender(this.sender.response())
+                .messageText(this.messageText)
                 .isRead(this.isRead)
                 .messageType(this.messageType)
                 .build();

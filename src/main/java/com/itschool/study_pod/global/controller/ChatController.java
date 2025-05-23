@@ -1,5 +1,6 @@
 package com.itschool.study_pod.global.controller;
 
+import com.itschool.study_pod.domain.Message.dto.response.MessageResponse;
 import com.itschool.study_pod.domain.Message.entity.Message;
 import com.itschool.study_pod.domain.user.entity.User;
 import com.itschool.study_pod.domain.user.repository.UserRepository;
@@ -44,7 +45,7 @@ public class ChatController {
                 return;
             }
 
-            Message sendMessage = message;
+            MessageResponse sendMessage = message.response();
 
             // 입장메시지라면
             if (MessageType.ENTER.equals(message.getMessageType())) {
@@ -56,7 +57,7 @@ public class ChatController {
                         .messageText(message.getSender().getNickname()  + "님이 입장하셨습니다.")
                         .isRead(false) // 입장 메시지는 읽음 처리 안함
                         .messageType(message.getMessageType())
-                        .build();
+                        .build().response();
             }
             // 구독자에게 메시지 전송 → 클라이언트는 /topic/chat/room/{roomId}를 구독해야 함(구독한 모든 클라이언트에게 메시지 전송)
             messageSendingOperations.convertAndSend("/topic/chat/room/" + sendMessage.getChatRoom().getId(), sendMessage);
