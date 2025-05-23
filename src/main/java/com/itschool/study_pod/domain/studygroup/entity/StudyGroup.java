@@ -110,6 +110,12 @@ public class StudyGroup extends IncludeFileUrl<StudyGroupRequest, StudyGroupResp
                 .build();
     }
 
+    public static StudyGroup withId(Long id) {
+        return StudyGroup.builder()
+                .id(id)
+                .build();
+    }
+
     @Override
     public void update(StudyGroupRequest request) {
         this.title = request.getTitle();
@@ -154,10 +160,20 @@ public class StudyGroup extends IncludeFileUrl<StudyGroupRequest, StudyGroupResp
                 .build();
     }
 
-    public static StudyGroup withId(Long id) {
-        return StudyGroup.builder()
-                .id(id)
-                .build();
+    public void updateFromRequest(StudyGroupRequest req, User leader, Sgg address, SubjectArea subjectArea) {
+        this.title = req.getTitle();
+        this.description = req.getDescription();
+        this.maxMembers = req.getMaxMembers();
+        this.meetingMethod = req.getMeetingMethod();
+        this.recruitmentStatus = req.getRecruitmentStatus();
+        this.feeType = req.getFeeType();
+        this.amount = req.getAmount();
+        this.leader = leader;
+        this.address = address;
+        this.subjectArea = subjectArea;
+        this.keywords = req.getKeywords();
+        this.weeklySchedules = req.getWeeklySchedules();
     }
+
 
 }

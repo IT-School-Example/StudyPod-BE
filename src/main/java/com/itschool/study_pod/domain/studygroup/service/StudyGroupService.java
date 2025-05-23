@@ -204,4 +204,40 @@ public class StudyGroupService extends CrudWithFileService<StudyGroupRequest, St
 
         return Header.OK(responses);
     }
+
+    public Header<StudyGroupResponse> update(Long id, StudyGroupRequest data, MultipartFile file) {
+        try {
+            StudyGroup studyGroup = studyGroupRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("해당 스터디 그룹이 존재하지 않습니다."));
+
+            User leader = userRepository.findById(data.getLeader().getId())
+                    .orElseThrow(() -> new EntityNotFoundException("리더 ID가 존재하지 않습니다."));
+
+            Sgg address = sggRepository.findById(data.getAddress().getId())
+                    .orElseThrow(() -> new EntityNotFoundException("주소 ID가 존재하지 않습니다."));
+
+            SubjectArea subjectArea = subjectAreaRepository.findById(data.getSubjectArea().getId())
+                    .orElseThrow(() -> new EntityNotFoundException("주제영역 ID가 존재하지 않습니다."));
+
+            // 기존 값 업데이트
+            studyGroup.updateFromRequest(data, leader, address, subjectArea);
+
+            // 파일이 새로 들어왔으면 업로드
+            if (file != null && !file.isEmpty()) {
+                String uploadDirPath = new File(System.getProperty("user.dir"), "uploads/study-group").getAbsolutePath();
+                String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+
+                String fileUrl = FileStorageUtil.saveFile(file, uploadDirPath, fileName);
+                studyGroup.updateFileUrl("/uploads/study-group/" + fileName);
+            }
+
+            StudyGroup saved = studyGroupRepository.save(studyGroup);
+            return Header.OK(saved.response());
+
+        } catch (Exception e) {
+            log.error("스터디 그룹 수정 중 오류", e);
+            return Header.ERROR("Unhandled exception: 파일 업로드 또는 데이터 처리 중 오류 발생");
+        }
+    }
+
 }

@@ -1,7 +1,6 @@
 package com.itschool.study_pod.domain.studygroup.controller;
 
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itschool.study_pod.domain.enrollment.service.EnrollmentService;
 import com.itschool.study_pod.domain.studygroup.dto.request.StudyGroupRequest;
 import com.itschool.study_pod.domain.studygroup.dto.request.StudyGroupSearchRequest;
@@ -9,8 +8,6 @@ import com.itschool.study_pod.domain.studygroup.dto.response.StudyGroupResponse;
 import com.itschool.study_pod.domain.studygroup.entity.StudyGroup;
 import com.itschool.study_pod.domain.studygroup.service.StudyGroupService;
 import com.itschool.study_pod.domain.user.dto.response.UserResponse;
-import com.itschool.study_pod.global.base.crud.CrudController;
-import com.itschool.study_pod.global.base.crud.CrudService;
 import com.itschool.study_pod.global.base.crud.CrudWithFileController;
 import com.itschool.study_pod.global.base.crud.CrudWithFileService;
 import com.itschool.study_pod.global.base.dto.Header;
@@ -18,10 +15,8 @@ import com.itschool.study_pod.global.enumclass.EnrollmentStatus;
 import com.itschool.study_pod.global.enumclass.MeetingMethod;
 import com.itschool.study_pod.global.enumclass.RecruitmentStatus;
 
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,12 +24,9 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -46,20 +38,12 @@ import java.util.List;
 public class StudyGroupApiController extends CrudWithFileController<StudyGroupRequest, StudyGroupResponse, StudyGroup> {
 
     private final StudyGroupService studyGroupService;
-
     private final EnrollmentService enrollmentService;
 
     @Override
     protected CrudWithFileService<StudyGroupRequest, StudyGroupResponse, StudyGroup> getBaseService() {
         return studyGroupService;
     }
-
-    /*@DeleteMapping("/{id}")
-    @Override
-    public Header<Void> delete(@PathVariable(name = "id") Long id) {
-        log.info("delete: {}에서 id={}인 객체 삭제 요청", this.getClass().getSimpleName(), id);
-        return studyGroupService.deleteById(id);
-    }*/
 
     @PostMapping("/search")
     @Operation(summary = "스터디 그룹 필터링 검색", description = "키워드(title 또는 keywords) + 모집 상태 + 스터디 방식 + 주제 영역을 기준으로 스터디 그룹을 필터링합니다.")
@@ -89,12 +73,10 @@ public class StudyGroupApiController extends CrudWithFileController<StudyGroupRe
         return studyGroupService.findAllByMeetingMethod(meetingMethod, pageable);
     }
 
-    @Operation(summary = "스터디그룹별 등록 회원 목록 조회", description = "스터디그룹 id와 등록 상태로 회원 목록 조회")
     @GetMapping("{id}/users")
+    @Operation(summary = "스터디그룹별 등록 회원 목록 조회", description = "스터디그룹 id와 등록 상태로 회원 목록 조회")
     public Header<List<UserResponse>> findEnrolledUsersByStudyGroupId(@PathVariable(name = "id") Long studyGroupId,
                                                                       @RequestParam(name = "enrollmentStatus") EnrollmentStatus enrollmentStatus) {
-        log.info("스터디그룹별 등록 회원 목록 조회 : {}에서 id={}로 조회 요청", this.getClass().getSimpleName(), studyGroupId);
-
         return enrollmentService.findEnrolledUsersByStudyGroupId(studyGroupId, enrollmentStatus);
     }
 
@@ -145,26 +127,20 @@ public class StudyGroupApiController extends CrudWithFileController<StudyGroupRe
         return studyGroupService.findStudyGroupsByUserIdAndStatus(userId, enrollmentStatus);
     }
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "스터디그룹 엔티티 생성", description = "multipart/form-data 형식으로 등록")
+    // 수정만 오버라이드 — create는 부모에서 처리
     @Override
-    public Header<StudyGroupResponse> create(
-            @RequestPart("data") String json,
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "스터디그룹 엔티티 수정", description = "multipart/form-data 형식으로 수정")
+    public Header<StudyGroupResponse> update(
+            @PathVariable Long id,
+            @RequestPart("data") String requestString,
             @RequestPart(value = "file", required = false) MultipartFile file) {
+        log.info("update: {}에서 id={}로 업데이트 요청", this.getClass().getSimpleName(), id);
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.registerModule(new JavaTimeModule());
-            objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-            StudyGroupRequest data = objectMapper.readValue(json, StudyGroupRequest.class);
-            return studyGroupService.create(data, file);
-
+            StudyGroupRequest data = new ObjectMapper().readValue(requestString, StudyGroupRequest.class);
+            return studyGroupService.update(id, data, file);
         } catch (Exception e) {
-            log.error("JSON 파싱 실패: {}", json);
-            log.error("예외 내용", e);
-            return Header.ERROR("요청 데이터가 잘못되었습니다.");
+            throw new RuntimeException("JSON 파싱 실패", e);
         }
     }
-
-
 }

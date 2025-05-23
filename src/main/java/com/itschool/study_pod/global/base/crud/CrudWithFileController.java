@@ -28,15 +28,17 @@ public abstract class CrudWithFileController<Req, Res, Entity extends IncludeFil
 
     protected abstract CrudWithFileService<Req, Res, Entity> getBaseService();
 
+    @Operation(summary = "스터디그룹 엔티티 생성", description = "multipart/form-data 형식으로 등록")
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Header<Res> create(@RequestPart("data") String requestString,
-                              @RequestPart(value = "file", required = false) MultipartFile file) {
+    public Header<Res> create(
+            @RequestPart("data") String requestString,
+            @RequestPart(value = "file", required = false) MultipartFile file) {
         log.info("create: {}에서 객체 {} 생성 요청", this.getClass().getSimpleName(), requestString);
         try {
             Req requestObj = objectMapper.readValue(requestString, getRequestClass());
             return getBaseService().create(requestObj, file);
         } catch (Exception e) {
-            e.printStackTrace(); // << 꼭 추가하세요
+            e.printStackTrace();
             throw new RuntimeException("JSON 파싱 실패: " + e.getMessage(), e);
         }
     }
