@@ -43,7 +43,7 @@
 
                 // 데이터 불러오기
                 $.ajax({
-                    url: `/api/admins/${adminId}`,
+                    url: `/api/admin/${adminId}`,
                     method: 'GET',
                     success: function(response) {
                         originalData = { ...response.data }; // 복제해두기
@@ -77,7 +77,7 @@
                     };
 
                     $.ajax({
-                        url: `/api/admins/${adminId}`,
+                        url: `/api/admin/${adminId}`,
                         method: 'PUT',
                         contentType: 'application/json',
                         data: JSON.stringify({ data: request }),
@@ -126,7 +126,7 @@
                     };
 
                     $.ajax({
-                        url: '/api/admins',
+                        url: '/api/admin',
                         method: 'POST',
                         contentType: 'application/json',
                         data: JSON.stringify({ data: request }),
