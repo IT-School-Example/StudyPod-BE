@@ -2,6 +2,7 @@ package com.itschool.study_pod.domain.studygroup.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itschool.study_pod.domain.enrollment.service.EnrollmentService;
+import com.itschool.study_pod.domain.introduce.service.IntroduceService;
 import com.itschool.study_pod.domain.studygroup.dto.request.StudyGroupSearchRequest;
 import com.itschool.study_pod.domain.studygroup.dto.response.StudyGroupResponse;
 import com.itschool.study_pod.domain.studygroup.service.StudyGroupService;
@@ -43,6 +44,9 @@ class StudyGroupApiControllerTest {
 
     @MockBean
     private EnrollmentService enrollmentService;
+
+    @MockBean
+    private IntroduceService introduceService;
 
     @Test
     @DisplayName("스터디 그룹 필터 검색")

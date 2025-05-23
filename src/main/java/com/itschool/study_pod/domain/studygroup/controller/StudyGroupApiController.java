@@ -94,10 +94,10 @@ public class StudyGroupApiController extends CrudWithFileController<StudyGroupRe
         return studyGroupService.findStudyGroupByUserId(userId);
     }
 
-    @GetMapping("/user/{userId}/enrolled-groups")
+    @GetMapping("/user/{accountId}/enrolled-groups")
     @Operation(summary = "사용자의 등록된 스터디 그룹 목록 조회", description = "회원 ID와 등록 상태로 스터디 그룹 리스트를 반환합니다.")
     public Header<List<StudyGroupResponse>> getStudyGroupsByUserId(
-            @PathVariable Long accountId,
+            @PathVariable(name = "accountId") Long accountId,
             @RequestParam(name = "enrollmentStatus", required = false, defaultValue = "APPROVED") EnrollmentStatus enrollmentStatus
     ) {
         /*Long currentAccountId = getCurrentAccountId();
