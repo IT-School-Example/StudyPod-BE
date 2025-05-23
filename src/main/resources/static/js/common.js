@@ -51,6 +51,7 @@ function logout() {
         window.location.href = "/login";
     }).catch(error => {
         console.error("로그아웃 오류:", error);
+        location.reload();
     });
 }
 
