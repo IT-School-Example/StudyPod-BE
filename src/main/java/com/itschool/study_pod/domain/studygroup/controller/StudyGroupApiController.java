@@ -38,6 +38,7 @@ import java.util.List;
 public class StudyGroupApiController extends CrudWithFileController<StudyGroupRequest, StudyGroupResponse, StudyGroup> {
 
     private final StudyGroupService studyGroupService;
+
     private final EnrollmentService enrollmentService;
 
     @Override
@@ -73,10 +74,12 @@ public class StudyGroupApiController extends CrudWithFileController<StudyGroupRe
         return studyGroupService.findAllByMeetingMethod(meetingMethod, pageable);
     }
 
+    @Operation(summary = "스터디 그룹에 지원 신청한 회원 목록 조회", description = "study_group_id와 등록 상태에 따른 회원 목록을 조회")
     @GetMapping("{id}/users")
-    @Operation(summary = "스터디그룹별 등록 회원 목록 조회", description = "스터디그룹 id와 등록 상태로 회원 목록 조회")
-    public Header<List<UserResponse>> findEnrolledUsersByStudyGroupId(@PathVariable(name = "id") Long studyGroupId,
+    public Header<List<UserResponse>> findEnrolledUsersByStudyGroupId(@PathVariable(name = "studyGroupId") Long studyGroupId,
                                                                       @RequestParam(name = "enrollmentStatus") EnrollmentStatus enrollmentStatus) {
+        log.info("스터디그룹별 등록 회원 목록 조회 : {}에서 id={}로 조회 요청", this.getClass().getSimpleName(), studyGroupId);
+
         return enrollmentService.findEnrolledUsersByStudyGroupId(studyGroupId, enrollmentStatus);
     }
 
@@ -92,6 +95,12 @@ public class StudyGroupApiController extends CrudWithFileController<StudyGroupRe
             @PathVariable(name = "userId") Long userId,
             @RequestParam(name = "enrollmentStatus", required = false, defaultValue = "APPROVED") EnrollmentStatus enrollmentStatus
     ) {
+        /*Long currentAccountId = getCurrentAccountId();
+
+        if(!accountId.equals(currentAccountId)) {
+            return Header.ERROR("가입한 회원만 조회가 가능합니다");
+        }*/
+
         return enrollmentService.findEnrolledStudyGroupsByUserId(userId, enrollmentStatus);
     }
 
