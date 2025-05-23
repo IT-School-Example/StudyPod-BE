@@ -76,11 +76,11 @@ public class StudyGroupApiController extends CrudWithFileController<StudyGroupRe
 
     @Operation(summary = "스터디 그룹에 지원 신청한 회원 목록 조회", description = "study_group_id와 등록 상태에 따른 회원 목록을 조회")
     @GetMapping("{id}/users")
-    public Header<List<UserResponse>> findEnrolledUsersByStudyGroupId(@PathVariable(name = "studyGroupId") Long studyGroupId,
+    public Header<List<UserResponse>> findEnrolledUsersByStudyGroupId(@PathVariable(name = "id") Long id,
                                                                       @RequestParam(name = "enrollmentStatus") EnrollmentStatus enrollmentStatus) {
-        log.info("스터디그룹별 등록 회원 목록 조회 : {}에서 id={}로 조회 요청", this.getClass().getSimpleName(), studyGroupId);
+        log.info("스터디그룹별 등록 회원 목록 조회 : {}에서 id={}로 조회 요청", this.getClass().getSimpleName(), id);
 
-        return enrollmentService.findEnrolledUsersByStudyGroupId(studyGroupId, enrollmentStatus);
+        return enrollmentService.findEnrolledUsersByStudyGroupId(id, enrollmentStatus);
     }
 
     @GetMapping("/my")
