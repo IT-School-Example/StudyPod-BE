@@ -82,7 +82,6 @@ public class WebSecurityConfig {
                                 new AntPathRequestMatcher("/api/user/mailCheck"),
                                 new AntPathRequestMatcher("/api/user/find-pw"),
                                 new AntPathRequestMatcher("/login"),
-                                new AntPathRequestMatcher("/logout"),
                                 new AntPathRequestMatcher("/signup"),
                                 new AntPathRequestMatcher("/api/user"),
                                 new AntPathRequestMatcher("/api/user/check-email")
@@ -90,7 +89,8 @@ public class WebSecurityConfig {
 
                         // ✅ 로그인된 사용자 전용 API
                         .requestMatchers(
-                                new AntPathRequestMatcher("/api/**") // 모든 /api/** 경로 (단, admin 경로 제외)
+                                new AntPathRequestMatcher("/api/**"), // 모든 /api/** 경로 (단, admin 경로 제외)
+                                new AntPathRequestMatcher("/logout")
                         ).hasAnyAuthority(
                                 AccountRole.ROLE_USER.name(),
                                 AccountRole.ROLE_ADMIN.name()
