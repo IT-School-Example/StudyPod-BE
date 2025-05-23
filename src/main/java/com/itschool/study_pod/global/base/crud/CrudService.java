@@ -37,7 +37,7 @@ public abstract class CrudService<Req, Res, Entity extends Convertible<Req, Res>
     }
 
     @Override
-    public final Header<Res> read(Long id) {
+    public Header<Res> read(Long id) {
         return apiResponse(getBaseRepository().findById(id)
                 .orElseThrow(()-> new EntityNotFoundException("해당 id " + id + "에 해당하는 객체가 없습니다.")));
     }
@@ -71,18 +71,18 @@ public abstract class CrudService<Req, Res, Entity extends Convertible<Req, Res>
         return responseList(entities);
     }
 
+    public final Header<List<Res>> getPaginatedList(Pageable pageable) {
+        Page<Entity> entities = getBaseRepository().findAll(pageable);
+
+        return convertPageToList(entities);
+    }
+
     protected final Header<List<Res>> responseList(List<? extends Convertible<?, Res>> entities) {
         List<Res> responseList = entities.stream()
                 .map(Convertible::response)
                 .collect(Collectors.toList());
 
         return Header.OK(responseList);
-    }
-
-    public Header<List<Res>> getPaginatedList(Pageable pageable) {
-        Page<Entity> entities = getBaseRepository().findAll(pageable);
-
-        return convertPageToList(entities);
     }
 
     protected final Header<List<Res>> convertPageToList(Page<Entity> entityPage) {

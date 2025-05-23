@@ -1,5 +1,6 @@
 package com.itschool.study_pod.domain.studygroup.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.itschool.study_pod.global.base.dto.ReferenceDto;
 import com.itschool.study_pod.global.embedable.WeeklySchedule;
 import com.itschool.study_pod.global.enumclass.FeeType;
@@ -10,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalTime;
 import java.util.Set;
 
 @Getter
@@ -51,4 +53,7 @@ public class StudyGroupRequest {
 
     @NotEmpty(message = "주간 일정은 최소 1개 이상 필요합니다.")
     private Set<WeeklySchedule> weeklySchedules;
+
+    @JsonFormat(pattern = "HH:mm")
+    private LocalTime startTime;
 }

@@ -15,7 +15,7 @@ import java.util.Set;
 
 @Schema(description = "스터디 그룹 응답 DTO")
 @Data
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class StudyGroupResponse {
@@ -70,6 +70,8 @@ public class StudyGroupResponse {
 
     @Schema(description = "수정 일시", example = "2025-05-08T16:10:00")
     private LocalDateTime updatedAt;
+
+    private String fileUrl;
 
     public static StudyGroupResponse withId(Long id) {
         return StudyGroupResponse.builder()

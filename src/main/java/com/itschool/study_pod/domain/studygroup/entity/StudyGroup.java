@@ -7,15 +7,15 @@ import com.itschool.study_pod.domain.user.entity.User;
 import com.itschool.study_pod.domain.subjectarea.dto.response.SubjectAreaResponse;
 import com.itschool.study_pod.domain.user.dto.response.UserResponse;
 import com.itschool.study_pod.global.address.dto.response.SggResponse;
+import com.itschool.study_pod.global.base.account.IncludeFileUrl;
 import com.itschool.study_pod.global.embedable.WeeklySchedule;
 import com.itschool.study_pod.global.address.entity.Sgg;
-import com.itschool.study_pod.global.base.BaseEntity;
 import com.itschool.study_pod.global.enumclass.FeeType;
 import com.itschool.study_pod.global.enumclass.MeetingMethod;
 import com.itschool.study_pod.global.enumclass.RecruitmentStatus;
-import com.itschool.study_pod.global.base.crud.Convertible;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -25,12 +25,11 @@ import java.util.Set;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
+@SuperBuilder
 @Table(name = "study_groups")
 @SQLDelete(sql = "UPDATE study_groups SET is_deleted = true WHERE study_group_id = ?")
 @Where(clause = "is_deleted = false")
-public class StudyGroup extends BaseEntity implements Convertible<StudyGroupRequest, StudyGroupResponse> {
+public class StudyGroup extends IncludeFileUrl<StudyGroupRequest, StudyGroupResponse> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "study_group_id")
@@ -94,24 +93,27 @@ public class StudyGroup extends BaseEntity implements Convertible<StudyGroupRequ
     private Set<WeeklySchedule> weeklySchedules = new HashSet<>();
 
     public static StudyGroup of(StudyGroupRequest request) { // create용
-        if (request != null) {
-            return StudyGroup.builder()
-                    .title(request.getTitle())
-                    .description(request.getDescription())
-                    .maxMembers(request.getMaxMembers())
-                    .meetingMethod(request.getMeetingMethod())
-                    .recruitmentStatus(request.getRecruitmentStatus())
-                    .feeType(request.getFeeType())
-                    .amount(request.getAmount())
-                    .leader(User.withId(request.getLeader().getId()))
-                    .address(Sgg.withId(request.getAddress().getId()))
-                    .subjectArea(SubjectArea.withId(request.getSubjectArea().getId()))
-                    .keywords(request.getKeywords())
-                    .weeklySchedules(request.getWeeklySchedules())
-                    //.imageUrl(request.getImageUrl() //이미지 업로드 기능
-                    .build();
-        }
-        return null;
+        return StudyGroup.builder()
+                .title(request.getTitle())
+                .description(request.getDescription())
+                .maxMembers(request.getMaxMembers())
+                .meetingMethod(request.getMeetingMethod())
+                .recruitmentStatus(request.getRecruitmentStatus())
+                .feeType(request.getFeeType())
+                .amount(request.getAmount())
+                .leader(User.withId(request.getLeader().getId()))
+                .address(Sgg.withId(request.getAddress().getId()))
+                .subjectArea(SubjectArea.withId(request.getSubjectArea().getId()))
+                .keywords(request.getKeywords())
+                .weeklySchedules(request.getWeeklySchedules())
+                // .fileUrl(request.getFileUrl())
+                .build();
+    }
+
+    public static StudyGroup withId(Long id) {
+        return StudyGroup.builder()
+                .id(id)
+                .build();
     }
 
     @Override
@@ -150,6 +152,7 @@ public class StudyGroup extends BaseEntity implements Convertible<StudyGroupRequ
                 .subjectArea(SubjectAreaResponse.withId(this.subjectArea.getId()))
                 .keywords(this.keywords)
                 .weeklySchedules(this.weeklySchedules)
+                .fileUrl(this.fileUrl)
                 .createdAt(this.createdAt)
                 .createdBy(this.createdBy)
                 .updatedAt(this.updatedAt)
@@ -157,10 +160,20 @@ public class StudyGroup extends BaseEntity implements Convertible<StudyGroupRequ
                 .build();
     }
 
-    public static StudyGroup withId(Long id) {
-        return StudyGroup.builder()
-                .id(id)
-                .build();
+    public void updateFromRequest(StudyGroupRequest req, User leader, Sgg address, SubjectArea subjectArea) {
+        this.title = req.getTitle();
+        this.description = req.getDescription();
+        this.maxMembers = req.getMaxMembers();
+        this.meetingMethod = req.getMeetingMethod();
+        this.recruitmentStatus = req.getRecruitmentStatus();
+        this.feeType = req.getFeeType();
+        this.amount = req.getAmount();
+        this.leader = leader;
+        this.address = address;
+        this.subjectArea = subjectArea;
+        this.keywords = req.getKeywords();
+        this.weeklySchedules = req.getWeeklySchedules();
     }
+
 
 }

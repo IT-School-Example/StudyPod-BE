@@ -23,30 +23,31 @@ public class ImageFileUploadService {
 
     @Value("${spring.cloud.aws.s3.bucket}")
     private String bucketName;
-    
+
     // 파일 업로드
-    public String upload(MultipartFile file, String dirName) throws IOException, S3Exception {
+    public String upload(MultipartFile file, String dirName) {
+        try {
+            FileUtil.validateImageFile(file);
 
-        // 이미지 파일 검증
-        FileUtil.validateImageFile(file);
+            String originalFilename = file.getOriginalFilename();
+            String ext = FileUtil.getFileExtension(file);
+            String key = generateS3Key(dirName, ext);
 
-        String originalFilename = file.getOriginalFilename();
-        String ext = FileUtil.getFileExtension(file);
-        String key = generateS3Key(dirName, ext);
+            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(key)
+                    .contentType(file.getContentType())
+                    .build();
 
-        // PutObjectRequest 객체를 통해 파일 업로드 설정
-        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                .bucket(bucketName)
-                .key(key)
-                .contentType(file.getContentType())
-                .build();
+            s3Client.putObject(putObjectRequest, RequestBody.fromBytes(file.getBytes()));
 
-        // 파일을 S3에 업로드
-        s3Client.putObject(putObjectRequest, RequestBody.fromBytes(file.getBytes()));
-
-        // 업로드된 파일의 URL 반환
-        return generateS3Url(key);
+            return generateS3Url(key);
+        } catch (Exception e) {
+            e.printStackTrace(); // 여기 추가!!
+            throw new RuntimeException("파일 업로드 오류 발생: " + e.getMessage(), e); // 여기에도 예외 메시지 추가
+        }
     }
+
 
     // 파일 수정 (기존 파일을 삭제하고 새 파일을 업로드)
     public String updateFile(String fileUrl, MultipartFile newFile) throws IOException, S3Exception {
@@ -58,7 +59,7 @@ public class ImageFileUploadService {
 
         // 기존 디렉토리와 파일 이름 추출
         String directoryName = extractDirectoryNameFromS3Url(fileUrl);
-        String newFileName = extractFileNameFromS3Url(fileUrl);
+        String newFileUrl = extractFileNameFromS3Url(fileUrl);
 
         // 새로운 파일 업로드
         return upload(newFile, directoryName);
