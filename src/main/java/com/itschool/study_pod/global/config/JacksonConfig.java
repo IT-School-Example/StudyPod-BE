@@ -1,3 +1,4 @@
+/*
 package com.itschool.study_pod.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,3 +22,4 @@ public class JacksonConfig {
 
     }
 }
+*/
