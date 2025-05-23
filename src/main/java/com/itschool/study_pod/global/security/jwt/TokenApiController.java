@@ -27,10 +27,10 @@ public class TokenApiController {
         TokenResponse tokenResponse = tokenService.login(request);
 
         // accessToken 쿠키 (예: 1시간 유효)
-        TokenProvider.addCookie(response, "accessToken", tokenResponse.getAccessToken(), 60 * 5);
+        TokenProvider.addCookie(response, "accessToken", tokenResponse.getAccessToken(), 60 * 60);
 
-        // refreshToken 쿠키 (예: 2시간 유효)
-        TokenProvider.addCookie(response, "refreshToken", tokenResponse.getRefreshToken(), 60 * 60 * 2);
+        // refreshToken 쿠키 (예: 5시간 유효)
+        TokenProvider.addCookie(response, "refreshToken", tokenResponse.getRefreshToken(), 60 * 60 * 5);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(null);
@@ -50,20 +50,6 @@ public class TokenApiController {
         return ResponseEntity.status(HttpServletResponse.SC_FOUND).build();
     }
 
-    @PostMapping("/refresh-token")
-    public ResponseEntity<TokenResponse> refreshAccessToken(@CookieValue("refreshToken") String refreshToken,
-                                                            HttpServletResponse response) {
-        String newAccessToken = tokenService.refreshAccessToken(refreshToken);
-
-        // 새로운 accessToken 쿠키 발행
-        TokenProvider.addCookie(response, "accessToken", newAccessToken, 60 * 60);
-
-        // refreshToken은 그대로 유지하거나 재발행 필요시 추가 코드 작성
-
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(null);
-    }
-
     @GetMapping("/me")
     public ResponseEntity<String> getCurrentUserName(@AuthenticationPrincipal Account userDetails) throws UserPrincipalNotFoundException {
         if(userDetails != null)
@@ -73,6 +59,20 @@ public class TokenApiController {
         else
             throw new UserPrincipalNotFoundException("인증된 사용자가 아닙니다.");
     }
+
+    /*@PostMapping("/refresh-token")
+    public ResponseEntity<TokenResponse> refreshAccessToken(@CookieValue("refreshToken") String refreshToken,
+                                                            HttpServletResponse response) {
+        String newAccessToken = tokenProvider.refreshAccessToken(refreshToken);
+
+        // 새로운 accessToken 쿠키 발행
+        TokenProvider.addCookie(response, "accessToken", newAccessToken, 60 * 60);
+
+        // refreshToken은 그대로 유지하거나 재발행 필요시 추가 코드 작성
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(null);
+    }*/
 
     // 전역 예외 핸들링
     @ExceptionHandler(Exception.class)

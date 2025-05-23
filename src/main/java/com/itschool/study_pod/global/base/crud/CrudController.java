@@ -69,11 +69,11 @@ public abstract class CrudController<Req, Res, Entity extends Convertible<Req, R
         return getBaseService().delete(id);
     }
 
-    @GetMapping("all")
+    /*@GetMapping("all")
     @Operation(summary = "전체 조회(임시)", description = "임시로 전체 조회 가능하도록 열어둠")
     public Header<List<Res>> findAll() {
         return getBaseService().findAll();
-    }
+    }*/
 
     // 요청 DTO 클래스 타입 반환용 (리플렉션 등에서 활용 가능)
     // protected abstract Class<CreateReq> getRequestClass();

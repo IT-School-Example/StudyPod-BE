@@ -63,34 +63,9 @@ public class TokenService {
         }
 
         // 2. Redis에서 해당 리프레시 토큰 엔티티 조회 (없으면 예외 발생)
-        RefreshToken tokenEntity = findByRefreshToken(refreshToken);
+        RefreshToken tokenEntity = tokenProvider.findByRefreshToken(refreshToken);
 
         // 3. 리프레시 토큰 삭제 (무효화 처리)
         refreshTokenRepository.delete(tokenEntity);
-    }
-
-
-    public String refreshAccessToken(String refreshToken) {
-        // 1. 리프레시 토큰 유효성 검사
-        if(!tokenProvider.validateRefreshToken(refreshToken)) {
-            throw new IllegalArgumentException("Unexpected token");
-        }
-
-        // 2. Redis에서 리프레시 토큰과 매칭되는 사용자 ID 조회
-        Long accountId = findByRefreshToken(refreshToken).getAccountId();
-
-        // 3. 사용자 존재 확인
-        Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 DB에서 삭제된 케이스"));
-
-        // 4. 새로운 액세스 토큰 발급 및 반환
-        return tokenProvider.generateAccessToken(account);
-    }
-
-
-    private RefreshToken findByRefreshToken(String refreshToken) {
-        // 리프레시 토큰으로 Redis 저장소 조회, 없으면 예외 발생
-        return refreshTokenRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new EntityNotFoundException("해당 Refresh 토큰이 없음"));
     }
 }

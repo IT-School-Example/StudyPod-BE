@@ -1,13 +1,18 @@
 package com.itschool.study_pod.global.security.jwt;
 
+import com.itschool.study_pod.global.security.jwt.dto.response.TokenResponse;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -32,25 +37,13 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         // String token = getAccessToken(authorizationHeader);
 
         // 헤더 대신 쿠키에서 토큰을 가져옴
-        String token = getAccessTokenFromCookie(request);
+        String accessToken = getAccessTokenFromCookie(request);
+        String refreshToken = getRefreshTokenFromCookie(request);
 
         // 가져온 토큰이 유효한지 확인하고, 유효한 때는 인증 정보 설정
-        if (token != null) {
-            if (tokenProvider.validateAccessToken(token)) {
-                Authentication authentication;
-                try {
-                    authentication = tokenProvider.getAuthentication(token);
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                } catch (Exception e) {
-                    // 인증 객체 생성 실패 시 쿠키 삭제 : DB에 해당 유저가 존재하지 않거나 삭제된 경우
-                    TokenProvider.addCookie(response, "accessToken", null, 0);
-                    TokenProvider.addCookie(response, "refreshToken", null, 0);
-
-                    response.setContentType("application/json;charset=UTF-8");
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    response.getWriter().write("{\"error\":\"Unauthorized\",\"message\":\"인증 실패: 토큰이 잘못되었거나 사용자 정보 없음.\"}");
-                    return;
-                }
+        if (accessToken != null) {
+            if (tokenProvider.validateAccessToken(accessToken)) {
+                if (!authenticateUser(accessToken, response)) return;
             } else {
                 // 토큰은 있으나 유효하지 않은 경우 → 401 에러 응답
                 response.setContentType("application/json;charset=UTF-8");
@@ -58,6 +51,17 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 response.getWriter().write("{\"error\":\"Unauthorized\",\"message\":\"토큰이 만료되었거나 유효하지 않습니다.\"}");
                 return;
             }
+        } else if(refreshToken != null) {
+
+            // 새로운 accessToken 쿠키 발행
+            String newAccessToken = tokenProvider.refreshAccessToken(refreshToken);
+
+            if (newAccessToken != null) {
+                TokenProvider.addCookie(response, "accessToken", newAccessToken, 60 * 60);
+
+                if (!authenticateUser(newAccessToken, response)) return;
+            }
+
         }
         // 토큰이 없는 경우는 인증 없이 그냥 다음 필터로 넘김
         filterChain.doFilter(request, response);
@@ -69,6 +73,34 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         }
         for (Cookie cookie : request.getCookies()) {
             if ("accessToken".equals(cookie.getName())) {
+                return cookie.getValue();
+            }
+        }
+        return null;
+    }
+
+    private boolean authenticateUser(String token, HttpServletResponse response) throws IOException {
+        try {
+            Authentication authentication = tokenProvider.getAuthentication(token);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            return true;
+        } catch (Exception e) {
+            TokenProvider.addCookie(response, "accessToken", null, 0);
+            TokenProvider.addCookie(response, "refreshToken", null, 0);
+
+            response.setContentType("application/json;charset=UTF-8");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("{\"error\":\"Unauthorized\",\"message\":\"인증 실패: 사용자 정보가 없거나 토큰이 잘못되었습니다.\"}");
+            return false;
+        }
+    }
+
+    private String getRefreshTokenFromCookie(HttpServletRequest request) {
+        if (request.getCookies() == null) {
+            return null;
+        }
+        for (Cookie cookie : request.getCookies()) {
+            if ("refreshToken".equals(cookie.getName())) {
                 return cookie.getValue();
             }
         }

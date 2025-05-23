@@ -1,0 +1,10 @@
+<header th:fragment="HeaderFragment" class="toolbar-top">
+    <div class="logo">
+        <a href="/"></a>
+    </div>
+    <!-- 로그인 버튼 -->
+    <button id="loginBtn" class="btn btn-success" onclick="location.href='/login'" aria-label="로그인">로그인</button>
+
+    <!-- 로그아웃 버튼 (form 대신 JS로 처리 예정) -->
+    <button id="logoutBtn" class="btn btn-danger" onclick="logout()" aria-label="로그아웃">로그아웃</button>
+</header>
