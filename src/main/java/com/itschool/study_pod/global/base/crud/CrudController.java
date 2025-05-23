@@ -1,5 +1,6 @@
 package com.itschool.study_pod.global.base.crud;
 
+import com.itschool.study_pod.global.base.account.Account;
 import com.itschool.study_pod.global.base.dto.Header;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -10,6 +11,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -73,6 +76,20 @@ public abstract class CrudController<Req, Res, Entity extends Convertible<Req, R
     public Header<List<Res>> findAll() {
         return getBaseService().findAll();
     }
+
+    /*protected Long getCurrentUserId() {
+
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof Account) {
+            Account account = (Account) principal;
+            return account.getId();
+        }
+
+        throw new IllegalArgumentException("인증된 사용자 정보를 확인할 수 없습니다.");
+    }*/
+
 
     // 요청 DTO 클래스 타입 반환용 (리플렉션 등에서 활용 가능)
     // protected abstract Class<CreateReq> getRequestClass();
