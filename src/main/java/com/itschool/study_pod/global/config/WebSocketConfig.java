@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.*;
+import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -28,6 +29,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/ws")
                 // 허용할 도메인 설정
                 .setAllowedOrigins("http://localhost:8080")
+                .setHandshakeHandler(new DefaultHandshakeHandler())
                 // 웹소켓이 지원되지 않는 환경을 위해 SockJS 폴백 기능 활성화
                 .withSockJS();
     }

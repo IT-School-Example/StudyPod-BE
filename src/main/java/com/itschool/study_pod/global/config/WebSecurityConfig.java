@@ -55,6 +55,7 @@ public class WebSecurityConfig {
                 // 개발 및 테스트 환경에서만 허용할 경로
                 .requestMatchers(
                         // 해당 요청은 필터링 제외 (local dev에서만)
+                        // new AntPathRequestMatcher("/*.html"),
                         new AntPathRequestMatcher("/css/**"),
                         new AntPathRequestMatcher("/img/**"),
                         new AntPathRequestMatcher("/js/**"),
@@ -72,6 +73,8 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
+                /*.authorizeRequests()
+                .antMatchers("/ws/**", "/app/**", "/topic/**").permitAll()*/
                 .authorizeHttpRequests(auth -> auth // 🔐 인가(Authorization) 설정 시작
 
                         // ✅ 비인증 사용자(비로그인 사용자)도 접근 가능한 경로
@@ -94,6 +97,16 @@ public class WebSecurityConfig {
                         ).hasAnyAuthority(
                                 AccountRole.ROLE_USER.name(),
                                 AccountRole.ROLE_ADMIN.name()
+                        )
+
+                        // ✅ 사용자 전용 페이지
+                        .requestMatchers(
+                                new AntPathRequestMatcher("/chat.html"),
+                                new AntPathRequestMatcher("/ws/**"), // 채팅
+                                new AntPathRequestMatcher("/app/**"), // 채팅
+                                new AntPathRequestMatcher("/topic/**") // 채팅
+                        ).hasAuthority(
+                                AccountRole.ROLE_USER.name()
                         )
 
                         // ✅ 관리자 전용 페이지

@@ -5,6 +5,7 @@ import com.itschool.study_pod.domain.Message.dto.response.MessageResponse;
 import com.itschool.study_pod.domain.chatRoom.entity.ChatRoom;
 import com.itschool.study_pod.domain.user.entity.User;
 import com.itschool.study_pod.global.base.BaseEntity;
+import com.itschool.study_pod.global.base.account.Account;
 import com.itschool.study_pod.global.base.crud.Convertible;
 import com.itschool.study_pod.global.enumclass.MessageType;
 import jakarta.persistence.*;
@@ -81,6 +82,10 @@ public class Message extends BaseEntity implements Convertible<MessageRequest, M
         return Message.builder()
                 .id(id)
                 .build();
+    }
+
+    public void setSender(User sender) {
+        this.sender = sender;
     }
 }
 
