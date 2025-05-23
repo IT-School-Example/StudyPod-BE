@@ -1,6 +1,7 @@
 package com.itschool.study_pod.domain.Message.dto.request;
 
 import com.itschool.study_pod.domain.chatRoom.entity.ChatRoom;
+import com.itschool.study_pod.domain.user.dto.request.UserRequest;
 import com.itschool.study_pod.domain.user.entity.User;
 import com.itschool.study_pod.global.enumclass.MessageType;
 import jakarta.persistence.Column;
@@ -21,7 +22,7 @@ public class MessageRequest {
 
     // 메시지를 보낸 사용자
     @NotNull
-    private User sender;
+    private UserRequest sender;
 
     // 메시지 내용
     @NotNull

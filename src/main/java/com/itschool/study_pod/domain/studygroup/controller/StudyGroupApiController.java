@@ -10,6 +10,7 @@ import com.itschool.study_pod.domain.studygroup.dto.response.StudyGroupResponse;
 import com.itschool.study_pod.domain.studygroup.entity.StudyGroup;
 import com.itschool.study_pod.domain.studygroup.service.StudyGroupService;
 import com.itschool.study_pod.domain.user.dto.response.UserResponse;
+import com.itschool.study_pod.global.base.account.Account;
 import com.itschool.study_pod.global.base.crud.CrudWithFileController;
 import com.itschool.study_pod.global.base.crud.CrudWithFileService;
 import com.itschool.study_pod.global.base.dto.Header;
@@ -28,6 +29,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -164,5 +166,11 @@ public class StudyGroupApiController extends CrudWithFileController<StudyGroupRe
             @PathVariable(name = "studyGroupId") Long studyGroupId
     ) {
         return introduceService.findByStudyGroupId(studyGroupId);
+    }
+
+    @GetMapping("/detail/{studyGroupId}")
+    @Operation(summary = "스터디 그룹 상세정보 보기", description = "스터디 그룹의 멤버만 상세정보 조회 가능합니다.")
+    public Header<StudyGroupResponse> viewStudyGroupDetail(@PathVariable(name = "studyGroupId") Long studyGroupId) {
+        return studyGroupService.read(studyGroupId);
     }
 }

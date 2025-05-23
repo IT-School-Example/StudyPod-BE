@@ -71,8 +71,8 @@ public class ChatRoom extends BaseEntity implements Convertible<ChatRoomRequest,
         return ChatRoomResponse.builder()
                 .id(this.id)
                 .type(this.type)
-                .user1(this.user1)
-                .user2(this.user2)
+                .user1(this.user1.response())
+                .user2(this.user2.response())
                 .studyGroup(StudyGroup.withId(this.studyGroup.getId()))
                 .name(this.name)
                 .build();

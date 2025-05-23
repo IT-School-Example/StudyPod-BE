@@ -37,7 +37,7 @@ public class Message extends BaseEntity implements Convertible<MessageRequest, M
 
     // 메시지 읽었는지 여부
     @Column(name = "is_read", nullable = false)
-    private Boolean isRead;
+    private boolean isRead;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "message_type", nullable = false)
@@ -45,22 +45,19 @@ public class Message extends BaseEntity implements Convertible<MessageRequest, M
 
     // 요청 DTO -> Entity로 변환하는 메서드
     public static Message of(MessageRequest request) { //create용
-        if (request != null) {
-            return Message.builder()
-                    .chatRoom(ChatRoom.withId(request.getChatRoom().getId()))
-                    .sender(request.getSender())
-                    .messageText(request.getMessageText())
-                    .isRead(request.isRead())
-                    .messageType(request.getMessageType())
-                    .build();
-        }
-        return null;
+        return Message.builder()
+                .chatRoom(ChatRoom.withId(request.getChatRoom().getId()))
+                // .sender(User.of(request.getSender()))
+                .messageText(request.getMessageText())
+                .isRead(false)
+                .messageType(request.getMessageType())
+                .build();
     }
 
     @Override
     public void update(MessageRequest request) {
         this.chatRoom = ChatRoom.withId(request.getChatRoom().getId());
-        this.sender = request.getSender();
+        this.sender = User.of(request.getSender());
         this.messageText = request.getMessageText();
         this.isRead = request.isRead();
         this.messageType = request.getMessageType();
@@ -71,7 +68,8 @@ public class Message extends BaseEntity implements Convertible<MessageRequest, M
         return MessageResponse.builder()
                 .id(this.id)
                 .chatRoom(ChatRoom.withId(this.chatRoom.getId()))
-                .sender(this.sender)
+//                .sender(this.sender.response())
+                .messageText(this.messageText)
                 .isRead(this.isRead)
                 .messageType(this.messageType)
                 .build();
@@ -81,6 +79,10 @@ public class Message extends BaseEntity implements Convertible<MessageRequest, M
         return Message.builder()
                 .id(id)
                 .build();
+    }
+
+    public void setSender(User sender) {
+        this.sender = sender;
     }
 }
 
