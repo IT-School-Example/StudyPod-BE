@@ -1,5 +1,7 @@
 # 스프링 프로필 : prod (AWS EC2 서버로 톰캣 실행, 운영 Postgresql DB)
 spring:
+  server:
+    use-forward-headers: true
   servlet:
     multipart:
       max-file-size: 10MB
