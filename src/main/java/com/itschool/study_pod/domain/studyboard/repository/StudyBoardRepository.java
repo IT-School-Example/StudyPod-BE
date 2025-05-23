@@ -6,11 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface StudyBoardRepository extends JpaRepository<StudyBoard, Long> {
 
     List<StudyBoard> findByStudyGroupIdAndStudyBoardCategory(Long studyGroupId, StudyBoardCategory studyBoardCategory);
 
-    List<StudyBoard> findByIdAndStudyGroupId(Long id, Long studyGroupId);
+    Optional<StudyBoard> findByIdAndStudyGroupIdAndStudyBoardCategory(Long id, Long studyGroupId, StudyBoardCategory category);
 }
