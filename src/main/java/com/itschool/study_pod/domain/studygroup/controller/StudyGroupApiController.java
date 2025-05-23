@@ -1,6 +1,8 @@
 package com.itschool.study_pod.domain.studygroup.controller;
 
 import com.itschool.study_pod.domain.enrollment.service.EnrollmentService;
+import com.itschool.study_pod.domain.introduce.dto.response.IntroduceResponse;
+import com.itschool.study_pod.domain.introduce.service.IntroduceService;
 import com.itschool.study_pod.domain.studygroup.dto.request.StudyGroupRequest;
 import com.itschool.study_pod.domain.studygroup.dto.request.StudyGroupSearchRequest;
 import com.itschool.study_pod.domain.studygroup.dto.response.StudyGroupResponse;
@@ -37,6 +39,8 @@ public class StudyGroupApiController extends CrudController<StudyGroupRequest, S
     private final StudyGroupService studyGroupService;
 
     private final EnrollmentService enrollmentService;
+
+    private final IntroduceService introduceService;
 
     @Override
     protected CrudService<StudyGroupRequest, StudyGroupResponse, StudyGroup> getBaseService() {
@@ -133,4 +137,11 @@ public class StudyGroupApiController extends CrudController<StudyGroupRequest, S
         return studyGroupService.findStudyGroupsByUserIdAndStatus(userId, enrollmentStatus);
     }
 
+    @GetMapping("/introduce/{studyGroupId}")
+    @Operation(summary = "스터디 그룹 소개글 조회", description = "스터디 그룹 ID로 등록된 소개글을 조회합니다.")
+    public Header<IntroduceResponse> getIntroduceByStudyGroupId(
+            @PathVariable(name = "studyGroupId") Long studyGroupId
+    ) {
+        return introduceService.findByStudyGroupId(studyGroupId);
+    }
 }
