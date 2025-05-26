@@ -239,5 +239,4 @@ public class StudyGroupService extends CrudWithFileService<StudyGroupRequest, St
             return Header.ERROR("Unhandled exception: 파일 업로드 또는 데이터 처리 중 오류 발생");
         }
     }
-
 }
