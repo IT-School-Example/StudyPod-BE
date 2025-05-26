@@ -1,5 +1,6 @@
 package com.itschool.study_pod.domain.Message.dto.response;
 
+import com.itschool.study_pod.domain.Message.entity.Message;
 import com.itschool.study_pod.domain.chatRoom.entity.ChatRoom;
 import com.itschool.study_pod.domain.user.dto.response.UserResponse;
 import com.itschool.study_pod.domain.user.entity.User;
@@ -44,4 +45,6 @@ public class MessageResponse {
                 .id(id)
                 .build();
     }
+
+
 }

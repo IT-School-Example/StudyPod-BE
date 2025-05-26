@@ -49,7 +49,7 @@ public class Message extends BaseEntity implements Convertible<MessageRequest, M
     public static Message of(MessageRequest request) { //create용
         return Message.builder()
                 .chatRoom(ChatRoom.withId(request.getChatRoom().getId()))
-                .sender(request.getSender())
+                .sender(User.of(request.getSender()))
                 .messageText(request.getMessageText())
                 .isRead(false)
                 .messageType(request.getMessageType())
@@ -69,13 +69,19 @@ public class Message extends BaseEntity implements Convertible<MessageRequest, M
     public MessageResponse response() {
         return MessageResponse.builder()
                 .id(this.id)
-                .chatRoom(ChatRoom.withId(this.chatRoom.getId()))
+                .chatRoom(this.chatRoom)
                 .sender(this.sender.response())
                 .messageText(this.messageText)
                 .isRead(this.isRead)
                 .messageType(this.messageType)
+                .createdBy(this.createdBy)
+                .createdAt(this.createdAt)
+                .updatedBy(this.updatedBy)
+                .updatedAt(this.updatedAt)
+                .isDeleted(this.isDeleted)
                 .build();
     }
+    
 
     public static Message withId(Long id) {
         return Message.builder()

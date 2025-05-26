@@ -102,6 +102,8 @@ public class WebSecurityConfig {
                         // ✅ 사용자 전용 페이지
                         .requestMatchers(
                                 new AntPathRequestMatcher("/chat.html"),
+                                new AntPathRequestMatcher("/websocket/chatting.html"),
+                                new AntPathRequestMatcher("/ws-stomp/**"),
                                 new AntPathRequestMatcher("/ws/**"), // 채팅
                                 new AntPathRequestMatcher("/app/**"), // 채팅
                                 new AntPathRequestMatcher("/topic/**") // 채팅

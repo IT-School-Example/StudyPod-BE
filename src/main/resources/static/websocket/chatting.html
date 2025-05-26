@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Message</title>
+    <!-- SockJS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+    <!-- @stomp/stompjs CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</head>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
+
+<style>
+    body {
+      font-family: 'Nanum Gothic';
+      background-color: #deb887;
+      margin: 0;
+      padding: 20px;
+
+    }
+
+    input {
+      background-color: #fff;
+      opacity: 0.7;
+    }
+
+    #roomId {
+      width: calc(100% - 155px);
+      padding: 11px;
+      margin-bottom: 10px;
+      border: none;
+      border-radius: 8px;
+    }
+    #messageInput {
+      width: calc(100% - 90px);
+      padding: 11px;
+      margin-bottom: 10px;
+      border: none;
+      border-radius: 8px;
+      opacity: 0.7;
+    }
+
+    button {
+      padding: 8px 16px;
+      margin-left: 4px;
+      border: none;
+      border-radius: 8px;
+      background-color: #cd853f;
+      color: white;
+      cursor: pointer;
+    }
+
+    #message {
+      height: 80vh;
+      max-height: 780px;
+      background-color: #fff;
+      opacity: 0.7;
+      border-radius: 10px;
+      padding: 10px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+
+    }
+
+
+
+
+</style>
+<body>
+<!-- 방 번호 입력창 -->
+<input type="text" id="roomId" placeholder="방 번호 입력해 주세요." />
+
+<!-- 연결 버튼 -->
+<button id="connect">연결</button>
+
+<!-- 퇴장버튼 -->
+<button id="leaveBtn">퇴장</button>
+
+<!--메시지 보여줄 공간 -->
+<div id = "message"></div>
+
+<!-- 메시지 입력창 -->
+<input type="text" id="messageInput" placeholder="메시지를 입력해 주세요." />
+
+<!-- 전송 버튼 -->
+<button id="sendBtn">전송</button>
+
+
+<script>
+    let stompClient = null;
+    let roomId = null;
+    let subscription = null;
+
+    const connectBtn = document.getElementById("connect"); // 연결 버튼
+    const messageBox = document.getElementById("message"); // 메시지 보여주는 공간
+    const input = document.getElementById("messageInput"); // 입력창
+    const sendBtn = document.getElementById("sendBtn"); // 전송 버튼
+    const leaveBtn = document.getElementById("leaveBtn"); // 퇴장버튼
+
+    // 서버와 연결
+    connectBtn.addEventListener("click", function() {
+      if (stompClient && stompClient.connected) {
+        alert("이미 연결되어 있습니다.");
+        return; // 중복 연결 막음
+      }
+
+
+      roomId = document.getElementById("roomId").value.trim();
+      if (!roomId) {
+        alert("방 번호를 입력하세요.");
+        return;
+      }
+
+      connectBtn.disabled = true; // 연결 시도 후 버튼 비활성화
+
+      // SockJS 객체 생성
+      const socket = new SockJS('/ws');
+
+      // SockJs 위에 STOMP 클라이언트 생성
+      stompClient = Stomp.over(socket);
+
+      stompClient.connect({}, function(frame) {
+        console.log('웹소켓 서버 연결 성공!', frame);
+
+      // 채팅방 구독
+      subscription = stompClient.subscribe("/topic/chat/room/" + roomId, function(message) {
+        const body = JSON.parse(message.body);
+        const nickname = body.sender?.nickname || "알 수 없음";
+        const time = new Date(body.timestamp).toLocaleTimeString();
+
+        let displayText = '';
+
+        if (body.messageType === "ENTER") {
+          displayText = `<p class="enter-message"> ${nickname}님이 입장하셨습니다.</p>`;
+        } else if (body.messageType === "LEAVE") {
+          displayText = `<p class="leave-message">${nickname}님이 퇴장하셨습니다.</p>`;
+        } else {
+          displayText = `<p class="talk-message"><strong>${nickname}</strong>: ${body.messageText} <span class="timestamp"> ${time}</span></p>`;
+
+        }
+
+        messageBox.innerHTML += displayText +'<br>';
+        messageBox.scrollTop = messageBox.scrollHeight; // 스크롤 자동 아래로
+      });
+
+
+      // 입장 메시지 자동 전송
+        stompClient.send('/app/chat/message', {}, JSON.stringify({
+          messageType: "ENTER",
+          chatRoom: { id: roomId }
+        }));
+
+
+      input.disabled = false;
+      sendBtn.disabled = false;
+      leaveBtn.disabled = false;
+
+    }, function(error) {
+      console.error("STOMP 연결 실패:", error);
+      alert("서버 연결 실패!");
+    });
+  });
+
+    // 메시지 보내기
+    function sendMessage() {
+      const text = input.value.trim();// 입력한 문자열의 앞뒤 공백제거
+      if(!text) return;
+
+      if(!stompClient || !stompClient.connected) {
+        alert("서버에 연결되어 있지 않습니다.");
+        return;
+      }
+
+      // 서버로 메시지 보내기
+      stompClient.send('/app/chat/message', {}, JSON.stringify({
+        messageText: text,
+        messageType: "TALK", // 일반 대화 메시지
+        chatRoom: { id: roomId }
+      }));
+
+      input.value = ""; //메시지 보낸 뒤 입력창 비우기
+    }
+
+    sendBtn.addEventListener("click", sendMessage);
+
+    input.addEventListener("keydown",function(event) {
+       if (event.key === "Enter") {
+        event.preventDefault();
+        sendMessage();
+      }
+    });
+
+
+    leaveBtn.addEventListener("click", function() {
+      if(!stompClient || !stompClient.connected) {
+        alert("서버에 연결되어 있지 않습니다.");
+        return;
+      }
+
+      stompClient.send('/app/chat/message', {}, JSON.stringify({
+      messageType: "LEAVE",
+      chatRoom: { id: roomId }
+    }));
+
+    // 구독 해제 & 서버 연결 끊기
+    if(subscription) {
+      subscription.unsubscribe();
+      subscription = null;
+    }
+    stompClient.disconnect();
+
+    // 퇴장 리스트로 이동
+    messageBox.innerHTML = "";
+    input.disabled = true;
+    sendBtn.disabled = true;
+    leaveBtn.disabled = true;
+
+     // 연결 버튼 다시 활성화
+    connectBtn.disabled = false;
+    });
+</script>
+</body>
+</html>

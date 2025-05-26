@@ -45,23 +45,21 @@ public class ChatRoom extends BaseEntity implements Convertible<ChatRoomRequest,
 
     // 요청 DTO -> Entity로 변환하는 메서드
     public static ChatRoom of(ChatRoomRequest request) { // create용
-        if (request != null) {
+
         return ChatRoom.builder()
                 .type(request.getType())
-                .user1(request.getUser1())
-                .user2(request.getUser2())
+                .user1(User.withId(request.getUser1().getId()))
+                .user2(User.withId(request.getUser2().getId()))
                 .studyGroup(StudyGroup.withId(request.getStudyGroup().getId()))
                 .name(request.getName())
                 .build();
-        }
-        return null;
     }
 
     @Override
     public void update(ChatRoomRequest request) {
         this.type = request.getType();
-        this.user1 = request.getUser1();
-        this.user2 = request.getUser2();
+        this.user1 = User.withId(request.getUser1().getId());
+        this.user2 = User.withId(request.getUser2().getId());
         this.studyGroup = StudyGroup.withId(request.getStudyGroup().getId());
         this.name = request.getName();
     }

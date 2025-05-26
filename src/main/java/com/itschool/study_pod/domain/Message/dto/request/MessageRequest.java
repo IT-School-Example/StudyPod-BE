@@ -1,5 +1,7 @@
 package com.itschool.study_pod.domain.Message.dto.request;
 
+import com.itschool.study_pod.domain.Message.dto.response.MessageResponse;
+import com.itschool.study_pod.domain.Message.entity.Message;
 import com.itschool.study_pod.domain.chatRoom.entity.ChatRoom;
 import com.itschool.study_pod.domain.user.dto.request.UserRequest;
 import com.itschool.study_pod.domain.user.entity.User;
@@ -34,4 +36,5 @@ public class MessageRequest {
 
     @NotNull
     private MessageType messageType;
+
 }

@@ -26,4 +26,5 @@ public class ChatRoomService extends CrudService<ChatRoomRequest, ChatRoomRespon
     @Override
     protected ChatRoom toEntity(ChatRoomRequest request) {return ChatRoom.of(request);}
 
+
 }
