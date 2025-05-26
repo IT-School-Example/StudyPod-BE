@@ -3,8 +3,10 @@ package com.itschool.study_pod.domain.Message.entity;
 import com.itschool.study_pod.domain.Message.dto.request.MessageRequest;
 import com.itschool.study_pod.domain.Message.dto.response.MessageResponse;
 import com.itschool.study_pod.domain.chatRoom.entity.ChatRoom;
+import com.itschool.study_pod.domain.user.dto.response.UserResponse;
 import com.itschool.study_pod.domain.user.entity.User;
 import com.itschool.study_pod.global.base.BaseEntity;
+import com.itschool.study_pod.global.base.account.Account;
 import com.itschool.study_pod.global.base.crud.Convertible;
 import com.itschool.study_pod.global.enumclass.MessageType;
 import jakarta.persistence.*;
@@ -47,7 +49,7 @@ public class Message extends BaseEntity implements Convertible<MessageRequest, M
     public static Message of(MessageRequest request) { //create용
         return Message.builder()
                 .chatRoom(ChatRoom.withId(request.getChatRoom().getId()))
-                // .sender(User.of(request.getSender()))
+                .sender(request.getSender())
                 .messageText(request.getMessageText())
                 .isRead(false)
                 .messageType(request.getMessageType())
@@ -68,7 +70,7 @@ public class Message extends BaseEntity implements Convertible<MessageRequest, M
         return MessageResponse.builder()
                 .id(this.id)
                 .chatRoom(ChatRoom.withId(this.chatRoom.getId()))
-//                .sender(this.sender.response())
+                .sender(this.sender.response())
                 .messageText(this.messageText)
                 .isRead(this.isRead)
                 .messageType(this.messageType)
