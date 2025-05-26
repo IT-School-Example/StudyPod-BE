@@ -63,6 +63,9 @@ public class ChatController {
             if (MessageType.ENTER.equals(messageType)) {
                 // 입장 메시지일때,
                 messageText = user.getNickname() + "님이 입장하셨습니다.";
+            } else if (MessageType.LEAVE.equals(messageType)) {
+                // 퇴장 메시지일때
+                messageText = user.getNickname() + "님이 퇴장하셨습니다.";
             } else {
                 // 일반 메시지 일때,
                 messageText = messageRequest.getMessageText();

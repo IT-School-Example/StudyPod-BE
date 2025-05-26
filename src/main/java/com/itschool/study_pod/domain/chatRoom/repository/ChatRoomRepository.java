@@ -8,9 +8,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
-
-    @Query("SELECT c FROM ChatRoom c JOIN FETCH c.user1 JOIN FETCH c.user2 WHERE c.id = :id")
-    Optional<ChatRoom> findByIdWithUsers(@Param("id") Long id);
 //    Optional<InterestedStudy> findById(Long interestedStudyList);
 //
 //    List<InterestedStudy> findByName(String name);
