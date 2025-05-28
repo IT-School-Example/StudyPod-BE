@@ -197,10 +197,12 @@
         return;
       }
 
-      stompClient.send('/app/chat/message', {}, JSON.stringify({
-      messageType: "LEAVE",
-      chatRoom: { id: roomId }
-    }));
+      stompClient.send('/app/chat/message', {},
+        JSON.stringify({
+            messageType: "LEAVE",
+            chatRoom: { id: roomId }
+        })
+      );
 
       // 구독 해제 & 서버 연결 끊기
       if(subscription) {
@@ -220,7 +222,8 @@
 
       // 연결 버튼 다시 활성화
       connectBtn.disabled = false;
-    });
+    }, 1000);
+  });
 </script>
 </body>
 </html>
