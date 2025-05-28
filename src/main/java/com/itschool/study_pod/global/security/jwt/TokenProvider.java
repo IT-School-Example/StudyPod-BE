@@ -1,6 +1,7 @@
 package com.itschool.study_pod.global.security.jwt;
 
 import com.itschool.study_pod.global.base.account.Account;
+import com.itschool.study_pod.global.base.account.AccountDetails;
 import com.itschool.study_pod.global.base.account.AccountRepository;
 import com.itschool.study_pod.global.security.jwt.redis.RefreshToken;
 import com.itschool.study_pod.global.security.jwt.redis.RefreshTokenRepository;
@@ -161,7 +162,7 @@ public class TokenProvider {
         // 비밀번호가 변경된 이후에 모든 연결을 끊기 위한 로직도 추후 필요.
         // DB 에 있는 refresh token에 상태 값을 통해 유효하지 않으면 클라이언트의 access 토큰과 refresh 토큰 없애기
         
-        return new UsernamePasswordAuthenticationToken(account, token, account.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(account, token, new AccountDetails(account).getAuthorities());
     }
 
     /**

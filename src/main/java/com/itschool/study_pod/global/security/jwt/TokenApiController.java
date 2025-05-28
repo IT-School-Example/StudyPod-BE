@@ -1,5 +1,6 @@
 package com.itschool.study_pod.global.security.jwt;
 
+import com.itschool.study_pod.global.base.account.AccountDetails;
 import com.itschool.study_pod.global.base.dto.Header;
 import com.itschool.study_pod.global.security.jwt.dto.request.LoginRequest;
 import com.itschool.study_pod.global.security.jwt.dto.response.TokenResponse;
@@ -51,10 +52,10 @@ public class TokenApiController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<String> getCurrentUserName(@AuthenticationPrincipal Account userDetails) throws UserPrincipalNotFoundException {
-        if(userDetails != null)
+    public ResponseEntity<String> getCurrentUserName(@AuthenticationPrincipal AccountDetails accountDetails) throws UserPrincipalNotFoundException {
+        if(accountDetails != null)
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(userDetails.getUsername());
+                    .body(accountDetails.getUsername());
 
         else
             throw new UserPrincipalNotFoundException("인증된 사용자가 아닙니다.");
