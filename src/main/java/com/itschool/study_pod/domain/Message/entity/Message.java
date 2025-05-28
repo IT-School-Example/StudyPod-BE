@@ -2,6 +2,7 @@ package com.itschool.study_pod.domain.Message.entity;
 
 import com.itschool.study_pod.domain.Message.dto.request.MessageRequest;
 import com.itschool.study_pod.domain.Message.dto.response.MessageResponse;
+import com.itschool.study_pod.domain.chatRoom.dto.response.ChatRoomResponse;
 import com.itschool.study_pod.domain.chatRoom.entity.ChatRoom;
 import com.itschool.study_pod.domain.user.dto.response.UserResponse;
 import com.itschool.study_pod.domain.user.entity.User;
@@ -69,7 +70,7 @@ public class Message extends BaseEntity implements Convertible<MessageRequest, M
     public MessageResponse response() {
         return MessageResponse.builder()
                 .id(this.id)
-                .chatRoom(this.chatRoom)
+                .chatRoom(ChatRoomResponse.withId(this.chatRoom.getId()))
                 .sender(this.sender.response())
                 .messageText(this.messageText)
                 .isRead(this.isRead)
