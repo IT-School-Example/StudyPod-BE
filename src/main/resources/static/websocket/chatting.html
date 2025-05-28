@@ -202,23 +202,25 @@
       chatRoom: { id: roomId }
     }));
 
-    // 구독 해제 & 서버 연결 끊기
-    setTimeout(() => {
-      if (subscription) {
-        subscription.unsubscribe();
-        subscription = null;
+      // 구독 해제 & 서버 연결 끊기
+      if(subscription) {
+        setTimeout(function() {
+            subscription.unsubscribe();
+            subscription = null;
+        }, 30000);
+
       }
-        stompClient.disconnect();
+      stompClient.disconnect();
 
-        // 퇴장 리스트로 이동
-        messageBox.innerHTML = "";
-        input.disabled = true;
-        sendBtn.disabled = true;
-        leaveBtn.disabled = true;
+      // 퇴장 리스트로 이동
+      messageBox.innerHTML = "";
+      input.disabled = true;
+      sendBtn.disabled = true;
+      leaveBtn.disabled = true;
 
-        // 연결 버튼 다시 활성화
-        connectBtn.disabled = false;
-      }, 1000);
+      // 연결 버튼 다시 활성화
+      connectBtn.disabled = false;
+    });
 </script>
 </body>
 </html>
