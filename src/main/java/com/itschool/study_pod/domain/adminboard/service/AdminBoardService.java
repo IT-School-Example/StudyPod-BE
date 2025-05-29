@@ -31,7 +31,34 @@ public class AdminBoardService extends CrudService<AdminBoardRequest, AdminBoard
     }
 
     // 관리자 공지사항, FAQ 게시글 목록 조회
-    public Header<List<AdminBoardResponse>> findByAdminIdAndCategory(Long adminId, AdminBoardCategory category) {
+    public Header<List<AdminBoardResponse>> findByCategory(AdminBoardCategory adminBoardCategory) {
+        List<AdminBoard> boards = adminBoardRepository.findByAdminBoardCategory(adminBoardCategory);
+
+        List<AdminBoardResponse> responses = boards.stream()
+                .map(AdminBoard::response)
+                .toList();
+
+        return Header.OK(responses);
+    }
+
+
+    // 관리자 공지사항, FAQ 게시글 상세 보기
+    public Header<AdminBoardResponse> findByAdminBoardIdAndCategory(Long adminBoardId, AdminBoardCategory adminBoardCategory) {
+        Optional<AdminBoard> optionalBoard = adminBoardRepository.findByIdAndAdminBoardCategory(adminBoardId, adminBoardCategory);
+
+        if (optionalBoard.isEmpty()) {
+            return Header.ERROR("해당 게시글을 찾을 수 없습니다.");
+        }
+
+        AdminBoardResponse response = optionalBoard.get().response();
+
+        return Header.OK(response);
+    }
+
+
+    // region 보류
+    // 관리자 ID로 공지사항, FAQ 게시글 목록 조회
+    /*public Header<List<AdminBoardResponse>> findByAdminIdAndCategory(Long adminId, AdminBoardCategory category) {
         List<AdminBoard> adminBoards = adminBoardRepository.findByAdminIdAndAdminBoardCategory(adminId, category);
         List<AdminBoardResponse> responseList = adminBoards.stream()
                 .map(AdminBoard::response)
@@ -39,7 +66,7 @@ public class AdminBoardService extends CrudService<AdminBoardRequest, AdminBoard
         return Header.OK(responseList);
     }
 
-    // 관리자 공지사항, FAQ 게시글 상세 보기
+    // 관리자 ID로 공지사항, FAQ 게시글 상세 보기
     public Header<AdminBoardResponse> findAdminBoardDetail(Long adminId, Long adminBoardId, AdminBoardCategory adminBoardCategory) {
         Optional<AdminBoard> optionalBoard = adminBoardRepository.findByIdAndAdminIdAndAdminBoardCategory(adminBoardId, adminId, adminBoardCategory);
 
@@ -50,5 +77,6 @@ public class AdminBoardService extends CrudService<AdminBoardRequest, AdminBoard
         AdminBoardResponse response = optionalBoard.get().response();
 
         return Header.OK(response);
-    }
+    }*/
+    // endregion
 }
