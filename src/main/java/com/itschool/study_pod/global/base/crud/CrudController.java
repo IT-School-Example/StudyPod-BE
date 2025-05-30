@@ -78,18 +78,8 @@ public abstract class CrudController<Req, Res, Entity extends Convertible<Req, R
         return getBaseService().findAll();
     }*/
 
-    /*protected Long getCurrentUserId() {
 
 
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (principal instanceof Account) {
-            Account account = (Account) principal;
-            return account.getId();
-        }
-
-        throw new IllegalArgumentException("인증된 사용자 정보를 확인할 수 없습니다.");
-    }*/
 
 
     // 요청 DTO 클래스 타입 반환용 (리플렉션 등에서 활용 가능)

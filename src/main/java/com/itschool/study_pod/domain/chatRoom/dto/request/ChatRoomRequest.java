@@ -2,6 +2,7 @@ package com.itschool.study_pod.domain.chatRoom.dto.request;
 
 import com.itschool.study_pod.domain.studygroup.entity.StudyGroup;
 import com.itschool.study_pod.domain.user.entity.User;
+import com.itschool.study_pod.global.base.dto.ReferenceDto;
 import com.itschool.study_pod.global.enumclass.ChatRoomType;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -15,11 +16,11 @@ public class ChatRoomRequest {
     @NotNull
     private ChatRoomType type;
 
-    private User user1;
+    private ReferenceDto user1;
 
-    private User user2;
+    private ReferenceDto user2;
 
-    private StudyGroup studyGroup;
+    private ReferenceDto studyGroup;
 
     @NotNull
     private String name;

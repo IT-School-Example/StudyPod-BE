@@ -1,6 +1,7 @@
 package com.itschool.study_pod.global.base.crud;
 
 
+import com.itschool.study_pod.global.base.account.Account;
 import com.itschool.study_pod.global.base.dto.Header;
 import com.itschool.study_pod.global.base.dto.Pagination;
 import jakarta.persistence.EntityNotFoundException;
@@ -8,8 +9,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Security;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -108,4 +113,5 @@ public abstract class CrudService<Req, Res, Entity extends Convertible<Req, Res>
 
         return responseList(baseRepository.saveAll(entities));
     }*/
+
 }
