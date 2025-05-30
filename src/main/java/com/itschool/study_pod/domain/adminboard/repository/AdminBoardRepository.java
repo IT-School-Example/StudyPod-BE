@@ -11,9 +11,13 @@ import java.util.Optional;
 @Repository
 public interface AdminBoardRepository extends JpaRepository<AdminBoard, Long> {
 
-    List<AdminBoard> findByAdminIdAndAdminBoardCategory(Long adminId, AdminBoardCategory adminBoardCategory);
+    List<AdminBoard> findByAdminBoardCategory(AdminBoardCategory adminBoardCategory);
 
-    //List<AdminBoard> findByIdAndAdminId(Long id, Long adminId);
+    Optional<AdminBoard> findByIdAndAdminBoardCategory(Long id, AdminBoardCategory adminBoardCategory);
 
-    Optional<AdminBoard> findByIdAndAdminIdAndAdminBoardCategory(Long id, Long adminId, AdminBoardCategory adminBoardCategory);
+    // 보류
+    // List<AdminBoard> findByAdminIdAndAdminBoardCategory(Long adminId, AdminBoardCategory adminBoardCategory);
+
+    // 보류
+    // Optional<AdminBoard> findByIdAndAdminIdAndAdminBoardCategory(Long id, Long adminId, AdminBoardCategory adminBoardCategory);
 }

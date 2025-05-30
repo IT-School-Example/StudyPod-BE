@@ -1,6 +1,8 @@
 package com.itschool.study_pod.domain.studygroup.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itschool.study_pod.domain.enrollment.dto.request.EnrollmentRequest;
+import com.itschool.study_pod.domain.enrollment.dto.response.EnrollmentResponse;
 import com.itschool.study_pod.domain.enrollment.service.EnrollmentService;
 import com.itschool.study_pod.domain.introduce.dto.response.IntroduceResponse;
 import com.itschool.study_pod.domain.introduce.service.IntroduceService;
@@ -13,6 +15,7 @@ import com.itschool.study_pod.domain.user.dto.response.UserResponse;
 import com.itschool.study_pod.global.base.crud.CrudWithFileController;
 import com.itschool.study_pod.global.base.crud.CrudWithFileService;
 import com.itschool.study_pod.global.base.dto.Header;
+import com.itschool.study_pod.global.base.dto.ReferenceDto;
 import com.itschool.study_pod.global.enumclass.EnrollmentStatus;
 import com.itschool.study_pod.global.enumclass.MeetingMethod;
 import com.itschool.study_pod.global.enumclass.RecruitmentStatus;
@@ -21,6 +24,7 @@ import com.itschool.study_pod.global.enumclass.RecruitmentStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
@@ -165,4 +169,14 @@ public class StudyGroupApiController extends CrudWithFileController<StudyGroupRe
     ) {
         return introduceService.findByStudyGroupId(studyGroupId);
     }
+
+    @PostMapping("/enrollments/{studyGroupId}")
+    @Operation(summary = "스터디 그룹 신청", description = "스터디 그룹 ID로 스터디 그룹을 신청합니다.")
+    public Header<EnrollmentResponse> applyToStudyGroup(
+            @PathVariable(name = "studyGroupId") Long studyGroupId,
+            @RequestBody @Valid EnrollmentRequest request
+    ) {
+        return enrollmentService.enroll(studyGroupId, request);
+    }
+
 }
