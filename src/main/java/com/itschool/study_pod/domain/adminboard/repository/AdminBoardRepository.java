@@ -6,13 +6,18 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AdminBoardRepository extends JpaRepository<AdminBoard, Long> {
 
-    List<AdminBoard> findByAdminIdAndAdminBoardCategory(Long adminId, AdminBoardCategory adminBoardCategory);
+    List<AdminBoard> findByAdminBoardCategory(AdminBoardCategory adminBoardCategory);
 
-    //List<AdminBoard> findByAdminIdAndAdminBoardCategory(Long studyBoardId, AdminBoardCategory adminBoardCategory);
+    Optional<AdminBoard> findByIdAndAdminBoardCategory(Long id, AdminBoardCategory adminBoardCategory);
 
-    List<AdminBoard> findByIdAndAdminId(Long id, Long adminId);
+    // 보류
+    // List<AdminBoard> findByAdminIdAndAdminBoardCategory(Long adminId, AdminBoardCategory adminBoardCategory);
+
+    // 보류
+    // Optional<AdminBoard> findByIdAndAdminIdAndAdminBoardCategory(Long id, Long adminId, AdminBoardCategory adminBoardCategory);
 }

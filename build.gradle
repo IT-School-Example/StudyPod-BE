@@ -74,6 +74,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
 	// implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	// web socket
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 }
 
 // 개발 환경에서만 필요한 라이브러리를 지정하는 사용자 정의 구성(Configuration)

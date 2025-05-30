@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>StudyPod 채팅 테스트</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</head>
+<body>
+<h2>StudyPod 채팅 테스트</h2>
+<p>채팅방 ID: <input type="text" id="roomId" value="1"></p>
+<button onclick="connect()">연결</button>
+<br><br>
+<input type="text" id="messageInput" placeholder="메시지 입력">
+<button onclick="sendMessage()">보내기</button>
+<ul id="messageArea"></ul>
+
+<script>
+    let stompClient = null;
+    let roomId = null;
+
+    function connect() {
+      roomId = document.getElementById("roomId").value;
+
+      const socket = new SockJS("/ws");
+      stompClient = Stomp.over(socket);
+
+      stompClient.connect({}, function (frame) {
+        console.log("Connected: " + frame);
+
+        // 채팅방 구독
+        stompClient.subscribe("/topic/chat/room/" + roomId, function (messageOutput) {
+          const message = JSON.parse(messageOutput.body);
+          showMessage(message.sender.nickname + ": " + message.messageText);
+        });
+
+        // 입장 메시지 전송
+        // const nickname = document.getElementById("nickname").value;
+        stompClient.send("/app/chat/message", {}, JSON.stringify({
+          chatRoom: { id: roomId },
+          // sender: { nickname: nickname },
+          messageType: "ENTER"
+        }));
+      });
+    }
+
+    function sendMessage() {
+      const content = document.getElementById("messageInput").value;
+      // const nickname = document.getElementById("nickname").value;
+
+      stompClient.send("/app/chat/message", {}, JSON.stringify({
+        chatRoom: { id: roomId },
+        // sender: { nickname: nickname },
+        messageText: content,
+        messageType: "TALK"
+      }));
+      document.getElementById("messageInput").value = '';
+    }
+
+    function showMessage(message) {
+      const li = document.createElement("li");
+      li.textContent = message;
+      document.getElementById("messageArea").appendChild(li);
+    }
+</script>
+</body>
+</html>

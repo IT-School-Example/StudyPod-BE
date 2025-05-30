@@ -11,6 +11,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Repository
 public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long> {
 
@@ -70,4 +73,17 @@ public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long> {
             """)
     Page<StudyGroup> findByAddressId(@Param("addressId") Long addressId, Pageable pageable);
 
+    // 통계용
+    long count();
+    long countByCreatedAtAfter(LocalDateTime dateTime);
+    long countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+
+    @Query("""
+                SELECT k, COUNT(k) as cnt
+                FROM StudyGroup sg
+                JOIN sg.keywords k
+                GROUP BY k
+                ORDER BY cnt DESC
+            """)
+    List<Object[]> findTopKeywords();
 }
