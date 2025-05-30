@@ -1,5 +1,6 @@
 package com.itschool.study_pod.global.security.jwt;
 
+import com.itschool.study_pod.StudyPodApplicationTests;
 import com.itschool.study_pod.domain.user.entity.User;
 import com.itschool.study_pod.global.base.account.Account;
 import com.itschool.study_pod.global.base.account.AccountDetails;
@@ -19,12 +20,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.util.Date;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
 @Transactional
-class TokenProviderTest {
+class TokenProviderTest extends StudyPodApplicationTests {
 
     @Autowired
     private TokenProvider tokenProvider;
@@ -38,7 +39,7 @@ class TokenProviderTest {
     public void beforeSetUp() {
         // given
         testUser = userRepository.save(User.builder()
-                .email("user@gmail.com")
+                .email(UUID.randomUUID() + "@gmail.com")
                 .password("test")
                 .name("테스터")
                 .role(AccountRole.ROLE_USER)
@@ -112,7 +113,7 @@ class TokenProviderTest {
         // then
         assertThat(result).isTrue();
         AccountDetails accountDetails = new AccountDetails((Account) authentication.getPrincipal());
-        assertThat(accountDetails.getUsername()).isEqualTo("user@gmail.com");
+        assertThat(accountDetails.getUsername()).isEqualTo(testUser.getEmail());
     }
 
     @DisplayName("토큰으로 유저 ID를 가져올 수 있다.")
