@@ -1,6 +1,8 @@
 package com.itschool.study_pod.global.security.jwt;
 
 import com.itschool.study_pod.domain.user.entity.User;
+import com.itschool.study_pod.global.base.account.Account;
+import com.itschool.study_pod.global.base.account.AccountDetails;
 import com.itschool.study_pod.global.enumclass.AccountRole;
 import com.itschool.study_pod.domain.user.repository.UserRepository;
 import io.jsonwebtoken.Header;
@@ -109,7 +111,8 @@ class TokenProviderTest {
 
         // then
         assertThat(result).isTrue();
-        assertThat(((UserDetails) authentication.getPrincipal()).getUsername()).isEqualTo("user@gmail.com");
+        AccountDetails accountDetails = new AccountDetails((Account) authentication.getPrincipal());
+        assertThat(accountDetails.getUsername()).isEqualTo("user@gmail.com");
     }
 
     @DisplayName("토큰으로 유저 ID를 가져올 수 있다.")
