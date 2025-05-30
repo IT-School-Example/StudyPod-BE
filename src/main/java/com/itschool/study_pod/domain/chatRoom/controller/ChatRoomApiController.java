@@ -11,10 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -28,10 +25,16 @@ public class ChatRoomApiController extends CrudController<ChatRoomRequest, ChatR
     @Override
     protected CrudService<ChatRoomRequest, ChatRoomResponse, ChatRoom> getBaseService() {return chatRoomService; }
 
+
+    @PostMapping("/api/chatrooms")
+    @Operation(summary = "채팅방 생성", description = "채팅방 생성 api")
+    public ChatRoom createChatRoom(@PathVariable(name = "chatRoomId") ChatRoomRequest request) {
+        return chatRoomService.create(request);
+    }
+
     @GetMapping("{chatRoomId}/access-check")
     @Operation(summary = "그룹 채팅방 입장 전 권한 확인 api", description = "해당 그룹에 멤버로 승인된 회원 입장 권한 식별합니다.")
-    public Header<ChatRoomResponse> ChatRoomAccessService (@PathVariable(name = "chatRoomId") Long chatRoomId) {
+    public Header<ChatRoomResponse> chatRoomAccessService (@PathVariable(name = "chatRoomId") Long chatRoomId) {
         return chatRoomService.read(chatRoomId);
     }
 }
-

@@ -8,6 +8,7 @@ import com.itschool.study_pod.domain.imageFileUpload.service.ImageFileUploadServ
 import com.itschool.study_pod.domain.studygroup.dto.request.StudyGroupRequest;
 import com.itschool.study_pod.domain.studygroup.dto.request.StudyGroupSearchRequest;
 import com.itschool.study_pod.domain.studygroup.dto.response.StudyGroupResponse;
+import com.itschool.study_pod.domain.studygroup.dto.response.StudyGroupSummaryResponse;
 import com.itschool.study_pod.domain.studygroup.entity.StudyGroup;
 import com.itschool.study_pod.domain.studygroup.repository.StudyGroupRepository;
 import com.itschool.study_pod.domain.subjectarea.entity.SubjectArea;
@@ -279,6 +280,20 @@ public class StudyGroupService extends CrudWithFileService<StudyGroupRequest, St
             log.error("스터디 그룹 수정 중 오류", e);
             return Header.ERROR("Unhandled exception: 파일 업로드 또는 데이터 처리 중 오류 발생");
         }
+    }
+
+    public StudyGroupSummaryResponse getSummary(Long studyGroupId) {
+        StudyGroup studyGroup = studyGroupRepository.findById(studyGroupId)
+                .orElseThrow(() -> new RuntimeException("해당 스터디 그룹이 존재하지 않습니다."));
+
+        return toSummaryResponse(studyGroup);
+    }
+
+    private StudyGroupSummaryResponse toSummaryResponse(StudyGroup studyGroup) {
+        return StudyGroupSummaryResponse.builder()
+                .id(studyGroup.getId())
+                .title(studyGroup.getTitle())
+                .build();
     }
 
 }
