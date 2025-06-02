@@ -22,6 +22,8 @@ public class ChatParticipantResponse {
 
     private UserResponse user;
 
+    private String message;
+
     private LocalDateTime joinedAt;
 
     protected String createdBy;

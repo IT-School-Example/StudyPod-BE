@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "채팅방", description = "채팅방 API")
-@RequestMapping("/api/chatrooms")
+@RequestMapping("/api/chat-rooms")
 public class ChatRoomApiController extends CrudController<ChatRoomRequest, ChatRoomResponse, ChatRoom> {
 
     private final ChatRoomService chatRoomService;
@@ -26,7 +26,7 @@ public class ChatRoomApiController extends CrudController<ChatRoomRequest, ChatR
     protected CrudService<ChatRoomRequest, ChatRoomResponse, ChatRoom> getBaseService() {return chatRoomService; }
 
 
-    @PostMapping("/api/chatrooms")
+    @PostMapping("/api/chat-rooms")
     @Operation(summary = "채팅방 생성", description = "채팅방 생성 api")
     public ChatRoom createChatRoom(@PathVariable(name = "chatRoomId") ChatRoomRequest request) {
         return chatRoomService.create(request);

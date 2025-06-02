@@ -1,5 +1,7 @@
 package com.itschool.study_pod.global.controller;
 
+import com.itschool.study_pod.domain.ChatParticipant.repostory.ChatParticipantRepository;
+import com.itschool.study_pod.domain.ChatParticipant.service.ChatParticipantService;
 import com.itschool.study_pod.domain.Message.dto.request.MessageRequest;
 import com.itschool.study_pod.domain.Message.dto.response.MessageResponse;
 import com.itschool.study_pod.domain.Message.entity.Message;
@@ -28,6 +30,7 @@ public class ChatController {
     private final ChatRoomRepository chatRoomRepository;
     private final MessageRepository messageRepository;
     private final SimpMessagingTemplate messagingTemplate;
+    private final ChatParticipantService chatParticipantService;
 
     @MessageMapping("/chat/message") // 클라이언트가 /app/chat/message로 보낼 경우 매핑
     public void message(MessageRequest messageRequest, Principal principal) {
@@ -61,7 +64,11 @@ public class ChatController {
 
             String messageText;
             if (MessageType.ENTER.equals(messageType)) {
+
                 // 입장 메시지일때,
+                chatParticipantService.checkUserInChatRoom(user.getId(), chatRoom.getId());
+                chatParticipantService.recordEntranceTime(user, chatRoom);
+
                 messageText = user.getNickname() + "님이 입장하셨습니다.";
             } else if (MessageType.LEAVE.equals(messageType)) {
                 // 퇴장 메시지일때

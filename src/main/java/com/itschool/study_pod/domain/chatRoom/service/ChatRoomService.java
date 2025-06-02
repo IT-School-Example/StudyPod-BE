@@ -20,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class ChatRoomService extends CrudService<ChatRoomRequest, ChatRoomResponse, ChatRoom> {
@@ -142,6 +144,10 @@ public class ChatRoomService extends CrudService<ChatRoomRequest, ChatRoomRespon
         // 입장메시지 발송
 
         return super.read(chatRoomId);
+    }
+
+    public Optional<ChatRoom> findById(Long id) {
+        return chatRoomRepository.findById(id);
     }
 
 }
