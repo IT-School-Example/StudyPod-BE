@@ -34,6 +34,7 @@ public class ChatParticipant extends BaseEntity implements Convertible<ChatParti
     private User user;
 
     // 참가한 시간
+    @JoinColumn(name = "joined_at")
     private LocalDateTime joinedAt;
 
     public static ChatParticipant of(ChatParticipantRequest request) {

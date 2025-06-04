@@ -150,4 +150,22 @@ public class ChatRoomService extends CrudService<ChatRoomRequest, ChatRoomRespon
         return chatRoomRepository.findById(id);
     }
 
+    // 1:1 채팅방
+    public Header<ChatRoomResponse> userChatRoom(Long chatRoomId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 채팅방입니다."));
+
+        Long userId = AuthUtil.getCurrentAccountId();
+
+        // 1:1 채팅방 참여자 권한 검사
+        boolean isParticipant = chatRoom.getMembers().stream()
+                .anyMatch(member -> member.getUser() != null && member.getUser().getId().equals(userId));
+
+        if (!isParticipant) {
+            throw  new RuntimeException("해당 채팅방에 대한 접근 권한이 없습니다.");
+        }
+
+        return super.read(chatRoomId);
+    }
+
 }

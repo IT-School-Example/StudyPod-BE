@@ -8,8 +8,11 @@ import com.itschool.study_pod.domain.Message.entity.Message;
 import com.itschool.study_pod.domain.Message.repository.MessageRepository;
 import com.itschool.study_pod.domain.chatRoom.entity.ChatRoom;
 import com.itschool.study_pod.domain.chatRoom.repository.ChatRoomRepository;
+import com.itschool.study_pod.domain.enrollment.repository.EnrollmentRepository;
 import com.itschool.study_pod.domain.user.entity.User;
 import com.itschool.study_pod.domain.user.repository.UserRepository;
+import com.itschool.study_pod.global.enumclass.ChatRoomType;
+import com.itschool.study_pod.global.enumclass.EnrollmentStatus;
 import com.itschool.study_pod.global.enumclass.MessageType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +34,7 @@ public class ChatController {
     private final MessageRepository messageRepository;
     private final SimpMessagingTemplate messagingTemplate;
     private final ChatParticipantService chatParticipantService;
+    private final EnrollmentRepository enrollmentRepository;
 
     @MessageMapping("/chat/message") // 클라이언트가 /app/chat/message로 보낼 경우 매핑
     public void message(MessageRequest messageRequest, Principal principal) {
@@ -58,6 +62,30 @@ public class ChatController {
             // 채팅방 조회
             ChatRoom chatRoom = chatRoomRepository.findById(messageRequest.getChatRoom().getId())
                     .orElseThrow(() -> new RuntimeException("채팅방을 찾을 수 없습니다."));
+
+            // 권한 검사 - 1:1채팅인지 그룹 채팅인지 구분
+            if (chatRoom.getType() == ChatRoomType.GROUP) {
+                // 그룹채팅방 권한 검사
+                Long studyGroupId = chatRoom.getStudyGroup().getId();
+                boolean isMember = enrollmentRepository.existsByStudyGroupIdAndUserIdAndStatus(studyGroupId, user.getId(), EnrollmentStatus.APPROVED);
+                if (!isMember) {
+                    log.warn("미승인 사용자 그룹채팅 메시지 접근 : userId={}, chatRoomId={}", user.getId(), chatRoom.getId());
+                    return;
+                }
+            } else if (chatRoom.getType() == ChatRoomType.DIRECT) {
+                //1:1채팅방 권한 검사
+                boolean isParticipant = chatRoom.getMembers().stream()
+                        .anyMatch(member -> member.getUser().getId().equals(user.getId()));
+
+                if ((!isParticipant)) {
+                    log.warn("미승인 사용자 개인채팅 메시지 접근 : userId={}, chatRoomId={}", user.getId(), chatRoom.getId());
+                    return;
+                } else {
+                    log.warn("알 수 없는 채팅방입니다: chatRoomId={}", chatRoom.getId(), chatRoom.getType());
+                    return;
+                }
+
+            }
 
             // 메시지 타입 변환
             MessageType messageType = messageRequest.getMessageType();
