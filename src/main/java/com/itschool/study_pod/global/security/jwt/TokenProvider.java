@@ -50,14 +50,14 @@ public class TokenProvider {
     /**
      * Account 객체를 기반으로 1시간 유효한 Access Token 생성
      */
-    public String generateAccessToken(Account account) {
+    public String generateAccessToken(AccountDetails account) {
         return generateToken(account, Duration.ofHours(1), getAccessSecretKey(), "Access");
     }
 
     /**
      * Account 객체를 기반으로 5시간 유효한 Refresh Token 생성
      */
-    public String generateRefreshToken(Account account) {
+    public String generateRefreshToken(AccountDetails account) {
         return generateToken(account, Duration.ofHours(5), getRefreshSecretKey(), "Refresh");
     }
 
@@ -68,7 +68,7 @@ public class TokenProvider {
      * @param secretKey 서명용 SecretKey
      * @return 생성된 JWT 토큰 문자열
      */
-    private String generateToken(Account account, Duration expiry, SecretKey secretKey, String tokenType) {
+    private String generateToken(AccountDetails account, Duration expiry, SecretKey secretKey, String tokenType) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiry.toMillis());
 
@@ -77,7 +77,7 @@ public class TokenProvider {
                 .setIssuer(jwtProperties.getIssuer())          // 발급자 정보
                 .setIssuedAt(now)                              // 발급 시간
                 .setExpiration(expiryDate)                         // 만료 시간
-                .setSubject(account.getEmail())                // 토큰 주체 (이메일)
+                .setSubject(account.getUsername())                // 토큰 주체 (이메일)
                 .claim(CLAIM_ID, account.getId())              // 사용자 ID 클레임 추가
                 .claim(TOKEN_TYPE, tokenType)                   // 토큰 타입 클레임 추가
                 .signWith(secretKey, SignatureAlgorithm.HS256) // 서명 알고리즘 및 키 설정
@@ -189,7 +189,7 @@ public class TokenProvider {
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저가 DB에서 삭제된 케이스"));
 
         // 4. 새로운 액세스 토큰 발급 및 반환
-        return generateAccessToken(account);
+        return generateAccessToken(new AccountDetails(account));
     }
 
     public RefreshToken findByRefreshToken(String refreshToken) {
