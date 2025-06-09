@@ -2,13 +2,18 @@ package com.itschool.study_pod.domain.chatRoom.service;
 
 import com.itschool.study_pod.common.AuthUtil;
 import com.itschool.study_pod.domain.ChatParticipant.entity.ChatParticipant;
+import com.itschool.study_pod.domain.Message.dto.response.MessageResponse;
+import com.itschool.study_pod.domain.Message.entity.Message;
+import com.itschool.study_pod.domain.Message.repository.MessageRepository;
 import com.itschool.study_pod.domain.chatRoom.dto.request.ChatRoomRequest;
+import com.itschool.study_pod.domain.chatRoom.dto.response.ChatRoomListItemResponse;
 import com.itschool.study_pod.domain.chatRoom.dto.response.ChatRoomResponse;
 import com.itschool.study_pod.domain.chatRoom.entity.ChatRoom;
 import com.itschool.study_pod.domain.chatRoom.repository.ChatRoomRepository;
 import com.itschool.study_pod.domain.enrollment.repository.EnrollmentRepository;
 import com.itschool.study_pod.domain.studygroup.entity.StudyGroup;
 import com.itschool.study_pod.domain.studygroup.repository.StudyGroupRepository;
+import com.itschool.study_pod.domain.user.dto.response.UserResponse;
 import com.itschool.study_pod.domain.user.entity.User;
 import com.itschool.study_pod.domain.user.repository.UserRepository;
 import com.itschool.study_pod.global.base.crud.CrudService;
@@ -20,7 +25,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +39,8 @@ public class ChatRoomService extends CrudService<ChatRoomRequest, ChatRoomRespon
     private final UserRepository userRepository;
 
     private final EnrollmentRepository enrollmentRepository;
+
+    private final MessageRepository messageRepository;
 
     @Override
     protected JpaRepository<ChatRoom, Long> getBaseRepository() {return chatRoomRepository; }
@@ -166,6 +175,38 @@ public class ChatRoomService extends CrudService<ChatRoomRequest, ChatRoomRespon
         }
 
         return super.read(chatRoomId);
+    }
+
+    // 사용자가 참여 중인 채팅방 리스트 조회
+    public Header<List<ChatRoomListItemResponse>> getChatRoomsForUser(Long userId) {
+        List<ChatRoom> chatRooms = chatRoomRepository.findDistinctByMembersUserId(userId);
+
+        return Header.OK(chatRooms.stream().map(chatRoom -> {
+            // 마지막 메시지 조회
+            Message lastMessage = messageRepository.findTopByChatRoomIdOrderByCreatedAtDesc(chatRoom.getId());
+
+            // 안 읽은 메시지 수 조회
+            Long unreadCount = messageRepository.countByChatRoomIdAndReceiverIdAndIsReadFalse(chatRoom.getId(), userId);
+
+            // 상대방 닉네임 찾기
+            String opponentUsername = chatRoom.getMembers().stream()
+                    .map(ChatParticipant::getUser)
+                    .filter(user -> !user.getId().equals(userId))
+                    .map(User::getNickname)
+                    .findFirst()
+                    .orElse("알 수 없음");
+
+            return ChatRoomListItemResponse.builder()
+                    .chatRoomId(chatRoom.getId())
+                    .name(chatRoom.getName())
+                    .lastMessage(lastMessage != null ? lastMessage.getMessageText() : "")
+                    .lastMessageTime(lastMessage != null ? lastMessage.getCreatedAt() : null)
+                    .unreadMessageCount(unreadCount)
+                    .opponentUsername(opponentUsername)
+                    .build();
+
+        }).collect(Collectors.toList()));
+
     }
 
 }
