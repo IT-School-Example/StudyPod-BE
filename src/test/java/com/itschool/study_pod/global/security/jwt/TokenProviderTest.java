@@ -51,7 +51,7 @@ class TokenProviderTest extends StudyPodApplicationTests {
     @Test
     void generateAccessToken() {
         // when
-        String token = tokenProvider.generateAccessToken(testUser);
+        String token = tokenProvider.generateAccessToken(new AccountDetails(testUser));
 
         // System.out.println("Generated Token: " + token);
 
@@ -90,7 +90,7 @@ class TokenProviderTest extends StudyPodApplicationTests {
     @Test
     void validToken() {
         // when
-        String token = tokenProvider.generateAccessToken(testUser);
+        String token = tokenProvider.generateAccessToken(new AccountDetails(testUser));
 
         boolean result = tokenProvider.validateAccessToken(token);
 
@@ -103,7 +103,7 @@ class TokenProviderTest extends StudyPodApplicationTests {
     @Test
     void getAuthentication() {
         // given
-        String token = tokenProvider.generateAccessToken(testUser);
+        String token = tokenProvider.generateAccessToken(new AccountDetails(testUser));
 
         boolean result = tokenProvider.validateAccessToken(token);
 
@@ -120,7 +120,7 @@ class TokenProviderTest extends StudyPodApplicationTests {
     @Test
     void getUserId() {
         // given
-        String token = tokenProvider.generateAccessToken(testUser);
+        String token = tokenProvider.generateAccessToken(new AccountDetails(testUser));
 
         // when
         Long userIdByToken = tokenProvider.getUserId(token);
