@@ -153,13 +153,12 @@ public class StudyGroupApiController extends CrudWithFileController<StudyGroupRe
         return introduceService.findByStudyGroupId(studyGroupId);
     }
 
-    @PostMapping("/enrollments/{studyGroupId}")
-    @Operation(summary = "스터디 그룹 신청", description = "스터디 그룹 ID로 스터디 그룹을 신청합니다.")
+    @PostMapping("/enrollments")
+    @Operation(summary = "스터디 그룹 신청", description = "스터디 그룹을 신청합니다.")
     public Header<EnrollmentResponse> applyToStudyGroup(
-            @PathVariable(name = "studyGroupId") Long studyGroupId,
             @RequestBody @Valid EnrollmentRequest request
     ) {
-        return enrollmentService.enroll(studyGroupId, request);
+        return enrollmentService.enroll(request);
     }
 
 }
