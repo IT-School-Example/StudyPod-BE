@@ -17,6 +17,6 @@ public class AccountService implements UserDetailsService {
         Account account = accountRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 이메일입니다."));
 
-        return account;
+        return new AccountDetails(account);
     }
 }

@@ -1,6 +1,8 @@
 package com.itschool.study_pod.domain.studygroup.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itschool.study_pod.domain.enrollment.dto.request.EnrollmentRequest;
+import com.itschool.study_pod.domain.enrollment.dto.response.EnrollmentResponse;
 import com.itschool.study_pod.domain.enrollment.service.EnrollmentService;
 import com.itschool.study_pod.domain.introduce.dto.response.IntroduceResponse;
 import com.itschool.study_pod.domain.introduce.service.IntroduceService;
@@ -15,6 +17,7 @@ import com.itschool.study_pod.global.base.account.Account;
 import com.itschool.study_pod.global.base.crud.CrudWithFileController;
 import com.itschool.study_pod.global.base.crud.CrudWithFileService;
 import com.itschool.study_pod.global.base.dto.Header;
+import com.itschool.study_pod.global.base.dto.ReferenceDto;
 import com.itschool.study_pod.global.enumclass.EnrollmentStatus;
 import com.itschool.study_pod.global.enumclass.MeetingMethod;
 import com.itschool.study_pod.global.enumclass.RecruitmentStatus;
@@ -23,6 +26,7 @@ import com.itschool.study_pod.global.enumclass.RecruitmentStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
@@ -145,23 +149,6 @@ public class StudyGroupApiController extends CrudWithFileController<StudyGroupRe
         return studyGroupService.findStudyGroupsByUserIdAndStatus(userId, enrollmentStatus);
     }
 
-    // 수정만 오버라이드 — create는 부모에서 처리
-    @Override
-    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "스터디그룹 엔티티 수정", description = "multipart/form-data 형식으로 수정")
-    public Header<StudyGroupResponse> update(
-            @PathVariable Long id,
-            @RequestPart("data") String requestString,
-            @RequestPart(value = "file", required = false) MultipartFile file) {
-        log.info("update: {}에서 id={}로 업데이트 요청", this.getClass().getSimpleName(), id);
-        try {
-            StudyGroupRequest data = new ObjectMapper().readValue(requestString, StudyGroupRequest.class);
-            return studyGroupService.update(id, data, file);
-        } catch (Exception e) {
-            throw new RuntimeException("JSON 파싱 실패", e);
-        }
-    }
-
     @GetMapping("/introduce/{studyGroupId}")
     @Operation(summary = "스터디 그룹 소개글 조회", description = "스터디 그룹 ID로 등록된 소개글을 조회합니다.")
     public Header<IntroduceResponse> getIntroduceByStudyGroupId(
@@ -169,6 +156,16 @@ public class StudyGroupApiController extends CrudWithFileController<StudyGroupRe
     ) {
         return introduceService.findByStudyGroupId(studyGroupId);
     }
+
+    @PostMapping("/enrollments/{studyGroupId}")
+    @Operation(summary = "스터디 그룹 신청", description = "스터디 그룹 ID로 스터디 그룹을 신청합니다.")
+    public Header<EnrollmentResponse> applyToStudyGroup(
+            @PathVariable(name = "studyGroupId") Long studyGroupId,
+            @RequestBody @Valid EnrollmentRequest request
+    ) {
+        return enrollmentService.enroll(studyGroupId, request);
+    }
+
 
     @GetMapping("/detail/{studyGroupId}")
     @Operation(summary = "스터디 그룹 상세정보 보기", description = "스터디 그룹의 멤버만 상세정보 조회 가능합니다.")

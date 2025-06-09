@@ -36,7 +36,36 @@ public class StudyBoardApiController extends CrudController<StudyBoardRequest, S
         return studyBoardService;
     }
 
-    @GetMapping("/study-groups/{studyGroupId}/notices")
+    @GetMapping("/notices")
+    @Operation(summary = "스터디 공지사항 목록 조회", description = "공지사항 카테고리에 해당하는 게시글 목록 조회")
+    public Header<List<StudyBoardResponse>> getStudyNotices() {
+        return studyBoardService.findByCategory(StudyBoardCategory.NOTICE);
+    }
+
+    @GetMapping("/frees")
+    @Operation(summary = "스터디 자유 게시글 목록 조회", description = "자유 카테고리에 해당하는 게시글 목록 조회")
+    public Header<List<StudyBoardResponse>> getStudyFrees() {
+        return studyBoardService.findByCategory(StudyBoardCategory.FREE);
+    }
+
+    @GetMapping("/notices/{studyBoardId}")
+    @Operation(summary = "스터디 공지사항 상세 조회", description = "스터디 게시판 ID로 상세 조회")
+    public Header<StudyBoardResponse> getStudyNoticeDetail(
+            @PathVariable(name = "studyBoardId") Long studyBoardId
+    ) {
+        return studyBoardService.findByStudyBoardIdAndCategory(studyBoardId, StudyBoardCategory.NOTICE);
+    }
+
+    @GetMapping("/frees/{studyBoardId}")
+    @Operation(summary = "스터디 자유 게시글 상세 조회", description = "스터디 게시판 ID로 상세 조회")
+    public Header<StudyBoardResponse> getStudyFreeDetail(
+            @PathVariable(name = "studyBoardId") Long studyBoardId
+    ) {
+        return studyBoardService.findByStudyBoardIdAndCategory(studyBoardId, StudyBoardCategory.FREE);
+    }
+
+    // region 보류
+    /*@GetMapping("/study-groups/{studyGroupId}/notices")
     @Operation(summary = "스터디 공지사항 목록 조회", description = "스터디 그룹 ID로 공지사항 목록을 조회")
     public Header<List<StudyBoardResponse>> getStudyNotices(
             @PathVariable(name = "studyGroupId") Long studyGroupId
@@ -68,8 +97,8 @@ public class StudyBoardApiController extends CrudController<StudyBoardRequest, S
             @PathVariable(name = "studyBoardId") Long studyBoardId
     ) {
         return studyBoardService.findStudyBoardDetail(studyGroupId, studyBoardId, StudyBoardCategory.FREE);
-    }
-
+    }*/
+    // endregion
 
     // 자유게시판 댓글 생성
     @PostMapping("/{studyBoardId}/comments")

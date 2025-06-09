@@ -18,7 +18,6 @@ import com.itschool.study_pod.global.enumclass.MeetingMethod;
 import com.itschool.study_pod.global.enumclass.RecruitmentStatus;
 import com.itschool.study_pod.global.enumclass.Subject;
 import com.itschool.study_pod.global.enumclass.AccountRole;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -58,7 +56,7 @@ class StudyGroupServiceTest extends StudyPodApplicationTests {
                 .email(UUID.randomUUID() + "@example.com")
                 .password("testpass")
                 .name("Test User")
-                .nickname(UUID.randomUUID() + "")
+                .nickname(UUID.randomUUID().toString())
                 .role(AccountRole.ROLE_USER)
                 .build());
 
@@ -83,25 +81,27 @@ class StudyGroupServiceTest extends StudyPodApplicationTests {
         assertThat(studyGroupRepository.findAll()).hasSize(1);
     }
 
-    /*@Test
-    void createStudyGroup_withInvalidLeader_shouldThrowException() {
+    @Test
+    void createStudyGroup_withInvalidLeader_shouldReturnErrorHeader() {
         StudyGroupRequest request = buildValidRequest();
         request.setLeader(ReferenceDto.builder().id(9999L).build());
 
-        assertThatThrownBy(() -> studyGroupService.create(request, null))
-                .isInstanceOf(EntityNotFoundException.class)
-                .hasMessageContaining("리더 ID가 존재하지 않습니다.");
-    }*/
+        Header<StudyGroupResponse> result = studyGroupService.create(request, null);
 
-    /*@Test
-    void createStudyGroup_withInvalidSubjectArea_shouldThrowException() {
+        assertThat(result.getResultCode()).isEqualTo("ERROR");
+        assertThat(result.getDescription()).contains("파일 업로드 오류 발생");
+    }
+
+    @Test
+    void createStudyGroup_withInvalidSubjectArea_shouldReturnErrorHeader() {
         StudyGroupRequest request = buildValidRequest();
         request.setSubjectArea(ReferenceDto.builder().id(9999L).build());
 
-        assertThatThrownBy(() -> studyGroupService.create(request, null))
-                .isInstanceOf(EntityNotFoundException.class)
-                .hasMessageContaining("주제영역 ID가 존재하지 않습니다.");
-    }*/
+        Header<StudyGroupResponse> result = studyGroupService.create(request, null);
+
+        assertThat(result.getResultCode()).isEqualTo("ERROR");
+        assertThat(result.getDescription()).contains("파일 업로드 오류 발생");
+    }
 
     @Test
     void findAllByMeetingMethod_shouldReturnFilteredResults() {

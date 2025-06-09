@@ -1,6 +1,7 @@
 package com.itschool.study_pod.global.security.jwt;
 
 import com.itschool.study_pod.global.base.account.Account;
+import com.itschool.study_pod.global.base.account.AccountDetails;
 import com.itschool.study_pod.global.security.jwt.dto.request.LoginRequest;
 import com.itschool.study_pod.global.security.jwt.redis.RefreshTokenRepository;
 import com.itschool.study_pod.global.security.jwt.dto.response.TokenResponse;
@@ -36,7 +37,7 @@ public class TokenService {
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
 
-        Account account = (Account) authentication.getPrincipal();
+        AccountDetails account = (AccountDetails) authentication.getPrincipal();
 
         // 3. 액세스 토큰과 리프레시 토큰 생성
         String accessToken = tokenProvider.generateAccessToken(account);

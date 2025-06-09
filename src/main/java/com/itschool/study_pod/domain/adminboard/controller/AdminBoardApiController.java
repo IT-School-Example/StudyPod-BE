@@ -30,7 +30,36 @@ public class AdminBoardApiController extends CrudController<AdminBoardRequest, A
         return adminBoardService;
     }
 
-    @GetMapping("/admins/{adminId}/notices")
+    @GetMapping("/notices")
+    @Operation(summary = "공지사항 게시글 목록 조회", description = "공지사항 카테고리에 해당하는 게시글 목록 조회")
+    public Header<List<AdminBoardResponse>> getNotices() {
+        return adminBoardService.findByCategory(AdminBoardCategory.NOTICE);
+    }
+
+    @GetMapping("/faqs")
+    @Operation(summary = "공지사항 FAQ 목록 조회", description = "FAQ 카테고리에 해당하는 게시글 목록 조회")
+    public Header<List<AdminBoardResponse>> getFaqs() {
+        return adminBoardService.findByCategory(AdminBoardCategory.FAQ);
+    }
+
+    @GetMapping("/notices/{adminBoardId}")
+    @Operation(summary = "공지사항 게시글 상세 보기", description = "관리자 게시판 ID로 공지사항 게시글 상세 보기")
+    public Header<AdminBoardResponse> getNoticeDetailByAdminBoardId(
+            @PathVariable(name = "adminBoardId") Long adminBoardId
+    ) {
+        return adminBoardService.findByAdminBoardIdAndCategory(adminBoardId, AdminBoardCategory.NOTICE);
+    }
+
+    @GetMapping("/faqs/{adminBoardId}")
+    @Operation(summary = "FAQ 게시글 상세 보기", description = "관리자 게시판 ID로 FAQ 게시글 상세 보기")
+    public Header<AdminBoardResponse> getFaqDetailByAdminBoardId(
+            @PathVariable(name = "adminBoardId") Long adminBoardId
+    ) {
+        return adminBoardService.findByAdminBoardIdAndCategory(adminBoardId, AdminBoardCategory.FAQ);
+    }
+
+    // region 보류
+    /*@GetMapping("/admins/{adminId}/notices")
     @Operation(summary = "관리자 공지사항 게시글 목록 조회", description = "관리자 ID로 공지사항 게시글 목록을 조회")
     public Header<List<AdminBoardResponse>> getNoticesByAdminId(
             @PathVariable(name = "adminId") Long adminId
@@ -62,5 +91,7 @@ public class AdminBoardApiController extends CrudController<AdminBoardRequest, A
             @PathVariable(name = "adminBoardId") Long adminBoardId
     ) {
         return adminBoardService.findAdminBoardDetail(adminId, adminBoardId, AdminBoardCategory.FAQ);
-    }
+    }*/
+
+    // endregion
 }
