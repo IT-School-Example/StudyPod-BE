@@ -1,6 +1,7 @@
 package com.itschool.study_pod.domain.user.controller;
 
 import com.itschool.study_pod.global.base.account.Account;
+import com.itschool.study_pod.global.base.account.AccountDetails;
 import com.itschool.study_pod.global.base.crud.CrudController;
 import com.itschool.study_pod.global.base.dto.Header;
 import com.itschool.study_pod.domain.user.dto.request.UserEmailUpdateRequest;
@@ -63,9 +64,9 @@ public class UserApiController extends CrudController<UserRequest, UserResponse,
     @PatchMapping("update-nickname/{id}")
     public Header<Void> updateNickname(@PathVariable(name = "id") Long id,
                                        @RequestBody @Valid Header<UserNicknameUpdateRequest> request,
-                                       @AuthenticationPrincipal Account account) {
+                                       @AuthenticationPrincipal AccountDetails accountDetails) {
         log.info("update nickname : {}에서 전체 조회 요청", this.getClass().getSimpleName());
-        if (id.equals(account.getId())) {
+        if (id.equals(accountDetails.getId())) {
             return userService.updateNickname(id, request);
         } else {
             throw new IllegalArgumentException("사용자 정보는 사용자 본인만 수정할 수 있습니다.");
