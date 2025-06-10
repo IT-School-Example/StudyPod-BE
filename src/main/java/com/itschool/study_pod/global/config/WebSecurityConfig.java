@@ -194,6 +194,7 @@ public class WebSecurityConfig {
         return source;
     }
 
+    @Bean
     @Profile("prod")
     public CorsConfigurationSource corsConfigurationSourceOnProductEnvironment() {
         CorsConfiguration config = new CorsConfiguration();
