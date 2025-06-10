@@ -197,7 +197,7 @@ public class WebSecurityConfig {
     @Profile("prod")
     public CorsConfigurationSource corsConfigurationSourceOnProductEnvironment() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("https://studypod.click", "https://www.studypod.click"));
+        config.setAllowedOrigins(List.of("https://studypod.click", "https://www.studypod.click", "http://localhost:3000"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true); // 쿠키 전송 허용
