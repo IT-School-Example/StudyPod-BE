@@ -23,9 +23,9 @@ public class TokenApiController {
     private final TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody LoginRequest request,
+    public ResponseEntity<Void> login(@RequestBody Header<LoginRequest> request,
                                                HttpServletResponse response) {
-        TokenResponse tokenResponse = tokenService.login(request);
+        TokenResponse tokenResponse = tokenService.login(request.getData());
 
         // accessToken 쿠키 (예: 1시간 유효)
         TokenProvider.addCookie(response, "accessToken", tokenResponse.getAccessToken(), 60 * 60);
