@@ -161,8 +161,10 @@ public class TokenProvider {
 
         // 비밀번호가 변경된 이후에 모든 연결을 끊기 위한 로직도 추후 필요.
         // DB 에 있는 refresh token에 상태 값을 통해 유효하지 않으면 클라이언트의 access 토큰과 refresh 토큰 없애기
-        
-        return new UsernamePasswordAuthenticationToken(account, token, new AccountDetails(account).getAuthorities());
+
+        AccountDetails accountDetails = new AccountDetails(account);
+
+        return new UsernamePasswordAuthenticationToken(accountDetails, token, new AccountDetails(account).getAuthorities());
     }
 
     /**

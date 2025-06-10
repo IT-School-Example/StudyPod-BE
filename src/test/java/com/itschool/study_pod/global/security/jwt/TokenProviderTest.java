@@ -112,7 +112,7 @@ class TokenProviderTest extends StudyPodApplicationTests {
 
         // then
         assertThat(result).isTrue();
-        AccountDetails accountDetails = new AccountDetails((Account) authentication.getPrincipal());
+        AccountDetails accountDetails = (AccountDetails) authentication.getPrincipal();
         assertThat(accountDetails.getUsername()).isEqualTo(testUser.getEmail());
     }
 
