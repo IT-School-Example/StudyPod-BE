@@ -36,6 +36,11 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         // 가져온 값에서 접두사 제거
         // String token = getAccessToken(authorizationHeader);
 
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         // 헤더 대신 쿠키에서 토큰을 가져옴
         String accessToken = getAccessTokenFromCookie(request);
         String refreshToken = getRefreshTokenFromCookie(request);
