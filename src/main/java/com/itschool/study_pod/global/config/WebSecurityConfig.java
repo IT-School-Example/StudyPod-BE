@@ -6,9 +6,11 @@ import com.itschool.study_pod.global.enumclass.AccountRole;
 import com.itschool.study_pod.global.security.jwt.TokenAuthenticationFilter;
 import com.itschool.study_pod.global.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,6 +25,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import java.util.List;
 
@@ -76,6 +79,7 @@ public class WebSecurityConfig {
                 /*.authorizeRequests()
                 .antMatchers("/ws/**", "/app/**", "/topic/**").permitAll()*/
                 .authorizeHttpRequests(auth -> auth // 🔐 인가(Authorization) 설정 시작
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                         // ✅ 비인증 사용자(비로그인 사용자)도 접근 가능한 경로
                         .requestMatchers(
