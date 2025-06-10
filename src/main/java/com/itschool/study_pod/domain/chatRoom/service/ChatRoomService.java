@@ -177,7 +177,7 @@ public class ChatRoomService extends CrudService<ChatRoomRequest, ChatRoomRespon
         return super.read(chatRoomId);
     }
 
-    // 사용자가 참여 중인 채팅방 리스트 조회
+    /*// 사용자가 참여 중인 채팅방 리스트 조회
     public Header<List<ChatRoomListItemResponse>> getChatRoomsForUser(Long userId) {
         List<ChatRoom> chatRooms = chatRoomRepository.findDistinctByMembersUserId(userId);
 
@@ -207,6 +207,6 @@ public class ChatRoomService extends CrudService<ChatRoomRequest, ChatRoomRespon
 
         }).collect(Collectors.toList()));
 
-    }
+    }*/
 
 }
