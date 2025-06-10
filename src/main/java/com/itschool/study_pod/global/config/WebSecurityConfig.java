@@ -6,7 +6,6 @@ import com.itschool.study_pod.global.enumclass.AccountRole;
 import com.itschool.study_pod.global.security.jwt.TokenAuthenticationFilter;
 import com.itschool.study_pod.global.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -26,7 +25,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import java.util.List;
@@ -83,7 +81,7 @@ public class WebSecurityConfig {
                 /*.authorizeRequests()
                 .antMatchers("/ws/**", "/app/**", "/topic/**").permitAll()*/
                 .authorizeHttpRequests(auth -> auth // 🔐 인가(Authorization) 설정 시작
-                        .requestMatchers(mvc.pattern(HttpMethod.OPTIONS, "/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/**", HttpMethod.OPTIONS.name())).permitAll()
 
                         // ✅ 비인증 사용자(비로그인 사용자)도 접근 가능한 경로
                         .requestMatchers(
@@ -165,8 +163,7 @@ public class WebSecurityConfig {
                 )*/
 
                 // CORS 설정을 활성화
-                .cors()
-                .and()
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -189,35 +186,7 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    @Profile({"local", "dev"})
-    public CorsConfigurationSource corsConfigurationSourceOnDevelopmentEnvironment() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000")); // 프론트 주소
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(true); // 쿠키 전송 허용
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        return source;
-    }
-
-    /*@Bean
-    @Profile("prod")
-    public CorsConfigurationSource corsConfigurationSourceOnProductEnvironment() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("https://studypod.click", "https://www.studypod.click", "http://localhost:3000"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(true); // 쿠키 전송 허용
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        return source;
-    }*/
-    @Bean
-    @Profile("prod")
-    public FilterRegistrationBean<CorsFilter> corsFilterRegistration() {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("https://studypod.click", "https://www.studypod.click", "http://localhost:3000"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
@@ -226,10 +195,7 @@ public class WebSecurityConfig {
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
-
-        FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(source));
-        bean.setOrder(0); // 가장 먼저 실행
-        return bean;
+        return source;
     }
 }
 
