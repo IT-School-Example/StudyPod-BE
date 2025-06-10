@@ -19,6 +19,10 @@ public class AccountDetails implements UserDetails {
         return List.of(new SimpleGrantedAuthority(account.getRole().name()));
     }
 
+    public Long getId() {
+        return account.getId();
+    }
+
     @Override
     public String getUsername() {
         return account.getEmail();
