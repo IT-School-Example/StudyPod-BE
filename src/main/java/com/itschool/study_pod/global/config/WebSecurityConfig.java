@@ -85,13 +85,14 @@ public class WebSecurityConfig {
 
                         // ✅ 비인증 사용자(비로그인 사용자)도 접근 가능한 경로
                         .requestMatchers(
-                                new AntPathRequestMatcher("/login"),
-                                new AntPathRequestMatcher("/me"),
+                                new AntPathRequestMatcher("/api/login"),
+                                new AntPathRequestMatcher("/api/me"),
                                 new AntPathRequestMatcher("/api/user/mailSend"),
                                 new AntPathRequestMatcher("/api/user/mailCheck"),
                                 new AntPathRequestMatcher("/api/user/find-pw"),
-                                new AntPathRequestMatcher("/login"),
+                                new AntPathRequestMatcher("/api/login"),
                                 new AntPathRequestMatcher("/signup"),
+                                new AntPathRequestMatcher("/api/study-groups"),
                                 new AntPathRequestMatcher("/api/user"),
                                 new AntPathRequestMatcher("/api/study-groups"),
                                 new AntPathRequestMatcher("/api/user/check-email")

@@ -22,7 +22,7 @@ public class TokenApiController {
 
     private final TokenService tokenService;
 
-    @PostMapping("/login")
+    @PostMapping("/api/login")
     public ResponseEntity<Void> login(@RequestBody Header<LoginRequest> request,
                                                HttpServletResponse response) {
         TokenResponse tokenResponse = tokenService.login(request.getData());
@@ -38,7 +38,7 @@ public class TokenApiController {
     }
     
     // Security /logout 기본 method인 post 차용, 변경 시 클라이언트도 반영 필요
-    @PostMapping("/logout")
+    @PostMapping("/api/logout")
     public ResponseEntity<Void> logout(HttpServletResponse response) {
         // 쿠키 삭제 (만료시간 0으로 설정)
         TokenProvider.addCookie(response, "accessToken", null, 0);
@@ -51,7 +51,7 @@ public class TokenApiController {
         return ResponseEntity.status(HttpServletResponse.SC_FOUND).build();
     }
 
-    @GetMapping("/me")
+    @GetMapping("/api/me")
     public ResponseEntity<String> getCurrentUserName(@AuthenticationPrincipal AccountDetails accountDetails) throws UserPrincipalNotFoundException {
         if(accountDetails != null)
             return ResponseEntity.status(HttpStatus.OK)
