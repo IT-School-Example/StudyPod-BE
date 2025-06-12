@@ -29,7 +29,7 @@ public class Sido implements Convertible<SidoRequest, SidoResponse> {
 
     @Deprecated
     public static Sido of(SidoRequest request) { // create용
-        if(request != null) {
+        if (request != null) {
             return Sido.builder()
                     .sidoCd(request.getSidoCd())
                     .sidoNm(request.getSidoNm())

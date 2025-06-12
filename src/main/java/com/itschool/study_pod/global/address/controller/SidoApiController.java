@@ -12,6 +12,9 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -24,9 +27,25 @@ public class SidoApiController {
 
     @GetMapping("{id}")
     @PreAuthorize("isAuthenticated()")
+    @Operation(
+            summary = "단일 시도 조회",
+            description = "sidoCd (예: 11)를 기준으로 해당 시도(Sido)의 상세 정보를 조회합니다. 인증된 사용자만 호출할 수 있습니다."
+    )
     public Header<SidoResponse> read(@PathVariable(name = "id") String id) {
         log.info("read: {}에서 id={}로 조회 요청", this.getClass().getSimpleName(), id);
         return sidoService.read(id);
+    }
+
+
+    @GetMapping("")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(
+            summary = "전체 시도 목록 조회",
+            description = "등록된 전체 시도(Sido) 목록을 조회합니다. 인증된 사용자만 호출할 수 있습니다."
+    )
+    public Header<List<SidoResponse>> readAll() {
+        log.info("readAll: 전체 시도 목록 조회 요청");
+        return sidoService.readAll();
     }
 
     @PostMapping("")
@@ -52,16 +71,9 @@ public class SidoApiController {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Header> handleException(Exception e) {
-        // 예외 정보 로그
         log.error("Exception Occurred: ", e);
-
-        // 클라이언트에게 반환할 메시지 생성
         String errorMessage = e.getClass().getSimpleName() + " : " + e.getMessage();
-
-        // 에러 응답 본문 생성
         Header errorResponse = Header.ERROR(errorMessage);
-
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(errorResponse);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 }

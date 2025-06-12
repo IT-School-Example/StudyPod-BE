@@ -28,6 +28,10 @@ public class WeeklySchedule {
     @Column(nullable = false)
     private LocalTime endTime;
 
+    public static WeeklySchedule of(DayOfWeek dayOfWeek, int sHour, int sMinute, int eHour, int eMinute) {
+        return new WeeklySchedule(dayOfWeek, LocalTime.of(sHour, sMinute), LocalTime.of(eHour, eMinute));
+    }
+
     @Schema(hidden = true)
     @Transient
     public long getPeriodMinutes() {
@@ -47,9 +51,5 @@ public class WeeklySchedule {
             return Duration.ZERO;
         }
         return Duration.between(startTime, endTime);
-    }
-
-    public static WeeklySchedule of(DayOfWeek dayOfWeek, int sHour, int sMinute, int eHour, int eMinute) {
-        return new WeeklySchedule(dayOfWeek, LocalTime.of(sHour, sMinute), LocalTime.of(eHour, eMinute));
     }
 }

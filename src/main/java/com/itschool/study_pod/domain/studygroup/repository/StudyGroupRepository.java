@@ -11,12 +11,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Repository
 public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long> {
 
     Page<StudyGroup> findAllByLeaderId(Long leaderId, Pageable pageable);
 
-    // POST /search 필터링용
     @Query("""
                 SELECT DISTINCT sg FROM StudyGroup sg
                 WHERE (
@@ -49,12 +51,9 @@ public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long> {
             """)
     Page<StudyGroup> searchByKeyword(@Param("kw") String keyword, Pageable pageable);
 
-    // 모집 상태로 조회
     Page<StudyGroup> findAllByRecruitmentStatus(RecruitmentStatus recruitmentStatus, Pageable pageable);
 
-    // 스터디 방식으로 조회
     Page<StudyGroup> findAllByMeetingMethod(MeetingMethod meetingMethod, Pageable pageable);
-
 
     @Query("""
                 SELECT sg FROM StudyGroup sg
@@ -63,11 +62,31 @@ public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long> {
             """)
     Page<StudyGroup> findBySubjectAreaAndRecruiting(@Param("subjectEnum") Subject subjectEnum, Pageable pageable);
 
-
     @Query("""
                 SELECT sg FROM StudyGroup sg
                 WHERE sg.address.id = :addressId
             """)
     Page<StudyGroup> findByAddressId(@Param("addressId") Long addressId, Pageable pageable);
 
+    // ✅ 추가된 시도 코드 기반 검색
+    @Query("""
+                SELECT sg FROM StudyGroup sg
+                WHERE sg.address.sido.sidoCd = :sidoCd
+            """)
+    Page<StudyGroup> findBySidoCd(@Param("sidoCd") String sidoCd, Pageable pageable);
+
+    long count();
+
+    long countByCreatedAtAfter(LocalDateTime dateTime);
+
+    long countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+
+    @Query("""
+                SELECT k, COUNT(k) as cnt
+                FROM StudyGroup sg
+                JOIN sg.keywords k
+                GROUP BY k
+                ORDER BY cnt DESC
+            """)
+    List<Object[]> findTopKeywords();
 }

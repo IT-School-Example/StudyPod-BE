@@ -148,7 +148,7 @@ public class StudyGroup extends IncludeFileUrl<StudyGroupRequest, StudyGroupResp
                 .feeType(this.feeType)
                 .amount(this.amount)
                 .leader(UserResponse.withId(this.leader.getId()))
-                .address(SggResponse.withId(this.address.getId()))
+                .address(SggResponse.toDto(this.address))
                 .subjectArea(SubjectAreaResponse.withId(this.subjectArea.getId()))
                 .keywords(this.keywords)
                 .weeklySchedules(this.weeklySchedules)
@@ -159,6 +159,7 @@ public class StudyGroup extends IncludeFileUrl<StudyGroupRequest, StudyGroupResp
                 .updatedBy(this.updatedBy)
                 .build();
     }
+
 
     public void updateFromRequest(StudyGroupRequest req, User leader, Sgg address, SubjectArea subjectArea) {
         this.title = req.getTitle();
@@ -174,6 +175,5 @@ public class StudyGroup extends IncludeFileUrl<StudyGroupRequest, StudyGroupResp
         this.keywords = req.getKeywords();
         this.weeklySchedules = req.getWeeklySchedules();
     }
-
 
 }
