@@ -1,18 +1,16 @@
 package com.itschool.study_pod.domain.user.controller;
 
+import com.itschool.study_pod.domain.user.dto.request.*;
 import com.itschool.study_pod.global.base.account.Account;
 import com.itschool.study_pod.global.base.account.AccountDetails;
 import com.itschool.study_pod.global.base.crud.CrudController;
 import com.itschool.study_pod.global.base.dto.Header;
-import com.itschool.study_pod.domain.user.dto.request.UserEmailUpdateRequest;
-import com.itschool.study_pod.domain.user.dto.request.UserNicknameUpdateRequest;
-import com.itschool.study_pod.domain.user.dto.request.UserPasswordUpdateRequest;
-import com.itschool.study_pod.domain.user.dto.request.UserRequest;
 import com.itschool.study_pod.domain.user.dto.response.UserResponse;
 import com.itschool.study_pod.domain.user.entity.User;
 import com.itschool.study_pod.domain.user.service.UserService;
 import com.itschool.study_pod.domain.enrollment.service.EnrollmentService;
 import com.itschool.study_pod.global.base.crud.CrudService;
+import com.itschool.study_pod.global.security.jwt.TokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -34,11 +32,32 @@ public class UserApiController extends CrudController<UserRequest, UserResponse,
 
     private final UserService userService;
 
+    private final TokenProvider tokenProvider;
+
     private final EnrollmentService enrollmentService;
 
     @Override
     protected CrudService<UserRequest, UserResponse, User> getBaseService() {
         return userService;
+    }
+
+    @Operation(summary = "현재 로그인된 사용자 정보 조회", description = "accessToken 기반 사용자 정보 반환")
+    @GetMapping("/me")
+    public UserResponse getCurrentUserInfo(@CookieValue("accessToken") String accessToken) {
+        Long userId = tokenProvider.getUserId(accessToken); // 토큰에서 ID 추출
+
+        User user = userService.findById(userId); // 또는 userRepository.findById(userId).orElseThrow(...)
+
+        return UserResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .name(user.getName())
+                .nickname(user.getNickname())
+                .createdAt(user.getCreatedAt())
+                .createdBy(user.getCreatedBy())
+                .updatedAt(user.getUpdatedAt())
+                .updatedBy(user.getUpdatedBy())
+                .build();
     }
 
     @Operation(summary = "사용자 비밀번호 수정", description = "사용자(User) 비밀번호 수정하기")

@@ -10,7 +10,7 @@ window.addEventListener("DOMContentLoaded", function () {
     userNameSpan.style.marginRight = "10px";
     logoutBtn.parentNode.insertBefore(userNameSpan, logoutBtn);
 
-    fetch("/me", {
+    fetch("/api/me", {
         method: "GET",
         credentials: "include"
     }).then(response => {

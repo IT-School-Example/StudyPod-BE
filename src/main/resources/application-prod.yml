@@ -6,6 +6,11 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+    session:
+      cookie:
+        domain: .studypod.click
+        same-site: None
+        secure: true
   datasource:
     jackson:
       default-property-inclusion: non_null;
