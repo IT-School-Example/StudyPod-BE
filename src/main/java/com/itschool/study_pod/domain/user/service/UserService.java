@@ -62,7 +62,7 @@ public class UserService extends CrudService<UserRequest, UserResponse, User> {
         User entity = getBaseRepository().findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(this.getClass().getSimpleName() + " : 해당 id " + id + "에 해당하는 객체가 없습니다."));
 
-        entity.updatePassword(request.getData().getNickname());
+        entity.updateNickname(request.getData().getNickname());
 
         return Header.OK();
     }
@@ -73,7 +73,7 @@ public class UserService extends CrudService<UserRequest, UserResponse, User> {
         User entity = getBaseRepository().findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(this.getClass().getSimpleName() + " : 해당 id " + id + "에 해당하는 객체가 없습니다."));
 
-        entity.updatePassword(request.getData().getEmail());
+        entity.updateEmail(request.getData().getEmail());
 
         return Header.OK();
     }
@@ -107,4 +107,14 @@ public class UserService extends CrudService<UserRequest, UserResponse, User> {
 
         return Header.OK();
     }
+
+    @Transactional
+    public void deleteUserById(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new IllegalArgumentException("해당 사용자가 존재하지 않습니다.");
+        }
+
+        userRepository.deleteById(userId);
+    }
+
 }

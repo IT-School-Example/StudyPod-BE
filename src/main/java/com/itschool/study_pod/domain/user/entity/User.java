@@ -59,6 +59,14 @@ public class User extends Account implements Convertible<UserRequest, UserRespon
         this.password = password != null? password : this.password;
     }
 
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updateEmail(String email) {
+        this.email = email;
+    }
+
     @Override
     public UserResponse response() {
         return UserResponse.builder()
