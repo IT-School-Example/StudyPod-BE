@@ -62,7 +62,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             String newAccessToken = tokenProvider.refreshAccessToken(refreshToken);
 
             if (newAccessToken != null) {
-                TokenProvider.addCookie(response, "accessToken", newAccessToken, 60 * 60);
+                tokenProvider.addCookie(response, "accessToken", newAccessToken, 60 * 60);
 
                 if (!authenticateUser(newAccessToken, response)) return;
             }
@@ -90,8 +90,8 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             return true;
         } catch (Exception e) {
-            TokenProvider.addCookie(response, "accessToken", null, 0);
-            TokenProvider.addCookie(response, "refreshToken", null, 0);
+            tokenProvider.addCookie(response, "accessToken", null, 0);
+            tokenProvider.addCookie(response, "refreshToken", null, 0);
 
             response.setContentType("application/json;charset=UTF-8");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
