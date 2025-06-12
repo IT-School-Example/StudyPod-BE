@@ -202,10 +202,10 @@ public class TokenProvider {
     
     // 쿠키 생성 메서드 (SameSite 속성은 헤더로 직접 추가, 메소드 위치 다른 클래스 이관 고민)
     public static void addCookie(HttpServletResponse response, String name, String value, int maxAgeSeconds) {
-        Cookie cookie = new Cookie(name, value);
+        /*Cookie cookie = new Cookie(name, value);
         cookie.setPath("/");
         cookie.setMaxAge(maxAgeSeconds);
-        response.addCookie(cookie);
+        response.addCookie(cookie);*/
 
         // SameSite 직접 헤더로 추가 (Java Servlet API 쿠키 객체는 SameSite 미지원)
         String cookieHeader = String.format("%s=%s; Max-Age=%d; Domain=.studypod.click; Path=/; Secure; HttpOnly; SameSite=None",
