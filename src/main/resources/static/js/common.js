@@ -44,7 +44,7 @@ function getQueryParam(name) {
 
 // 로그아웃 처리
 function logout() {
-    fetch("/logout", {
+    fetch("/api/logout", {
         method: "POST",
         credentials: "include"
     }).then(response => {
