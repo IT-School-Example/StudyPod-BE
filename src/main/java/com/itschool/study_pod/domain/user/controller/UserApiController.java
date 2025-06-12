@@ -41,6 +41,14 @@ public class UserApiController extends CrudController<UserRequest, UserResponse,
         return userService;
     }
 
+    @Operation(summary = "현재 로그인된 사용자 탈퇴", description = "accessToken 기반 사용자 탈퇴")
+    @DeleteMapping("/signout")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCurrentUser(@CookieValue("accessToken") String accessToken) {
+        Long userId = tokenProvider.getUserId(accessToken); // 토큰에서 ID 추출
+        userService.deleteUserById(userId); // 실질적 삭제
+    }
+
     @Operation(summary = "현재 로그인된 사용자 정보 조회", description = "accessToken 기반 사용자 정보 반환")
     @GetMapping("/me")
     public UserResponse getCurrentUserInfo(@CookieValue("accessToken") String accessToken) {
