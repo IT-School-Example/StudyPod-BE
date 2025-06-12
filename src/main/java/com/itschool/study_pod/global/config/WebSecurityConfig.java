@@ -193,7 +193,7 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("https://studypod.click", "https://www.studypod.click", "http://localhost:3000"));
+        config.setAllowedOrigins(List.of("https://studypod.click", "https://www.studypod.click", "http://localhost:3000", "https://admin.studypod.click"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of(
                 "Authorization",
