@@ -208,9 +208,9 @@ public class TokenProvider {
         response.addCookie(cookie);
 
         // SameSite 직접 헤더로 추가 (Java Servlet API 쿠키 객체는 SameSite 미지원)
-        /*String cookieHeader = String.format("%s=%s; Max-Age=%d; Path=/;", *//* Secure; HttpOnly; SameSite=Strict *//*
+        String cookieHeader = String.format("%s=%s; Max-Age=%d; Path=/; Secure; HttpOnly; SameSite=None",
                 name, value, maxAgeSeconds);
-        response.addHeader("Set-Cookie", cookieHeader);*/
+        response.addHeader("Set-Cookie", cookieHeader);
     }
 
     /**
