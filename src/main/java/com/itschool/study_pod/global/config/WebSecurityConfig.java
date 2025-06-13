@@ -63,7 +63,7 @@ public class WebSecurityConfig {
                         new AntPathRequestMatcher("/img/**"),
                         new AntPathRequestMatcher("/js/**"),
 
-//                        new AntPathRequestMatcher("/api/**"),
+                        new AntPathRequestMatcher("/api/**"),
                         new AntPathRequestMatcher("/api-docs"),
                         new AntPathRequestMatcher("/api-docs/**"),
                         new AntPathRequestMatcher("/v3/api-docs/**"),
