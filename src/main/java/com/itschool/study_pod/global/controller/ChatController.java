@@ -64,8 +64,18 @@ public class ChatController {
                     .orElseThrow(() -> new RuntimeException("채팅방을 찾을 수 없습니다."));
 
             // 권한 검사 - 1:1채팅인지 그룹 채팅인지 구분
-            if (chatRoom.getType() == ChatRoomType.DIRECT) {
+            if (chatRoom.getType() == ChatRoomType.GROUP) {
+                // 그룹채팅방 권한 검사
+                Long studyGroupId = chatRoom.getStudyGroup().getId();
+                boolean isMember = enrollmentRepository.existsByStudyGroupIdAndUserIdAndStatus(studyGroupId, user.getId(), EnrollmentStatus.APPROVED);
 
+                if (!isMember) {
+                    log.warn("미승인 사용자 그룹채팅 메시지 접근 : userId={}, chatRoomId={}", user.getId(), chatRoom.getId());
+                    return;
+                }
+
+            } else if (chatRoom.getType() == ChatRoomType.DIRECT) {
+                //1:1채팅방 권한 검사
                 boolean isParticipant = chatRoom.getMembers().stream()
                         .anyMatch(member -> member.getUser().getId().equals(user.getId()));
 
@@ -73,6 +83,10 @@ public class ChatController {
                     log.warn("미승인 사용자 개인채팅 메시지 접근 : userId={}, chatRoomId={}", user.getId(), chatRoom.getId());
                     return;
                 }
+            } else {
+                // 정의되지 않는 채팅방 타입 처리
+                log.warn("알 수 없는 채팅방입니다: chatRoomId={}", chatRoom.getId(), chatRoom.getType());
+                return;
             }
 
             // 메시지 타입 변환

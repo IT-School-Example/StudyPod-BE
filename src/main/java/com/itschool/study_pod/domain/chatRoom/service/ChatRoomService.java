@@ -99,6 +99,7 @@ public class ChatRoomService extends CrudService<ChatRoomRequest, ChatRoomRespon
                 throw new RuntimeException("스터디그룹의 리더만 생성이 가능합니다.");
             }
 
+            // 멤버 승인 여부 확인
             for (Long userId : request.getMemberIds()) {
                 boolean isApproved = enrollmentRepository.existsByStudyGroupIdAndUserIdAndStatus(
                         studyGroup.getId(),

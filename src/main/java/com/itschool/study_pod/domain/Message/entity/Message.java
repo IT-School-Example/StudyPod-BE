@@ -34,6 +34,7 @@ public class Message extends BaseEntity implements Convertible<MessageRequest, M
     @JoinColumn(name = "sender_id", nullable = false)
     private User sender;
 
+    // 메시지를 받는 사용자
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id", nullable = false)
     private User receiver;

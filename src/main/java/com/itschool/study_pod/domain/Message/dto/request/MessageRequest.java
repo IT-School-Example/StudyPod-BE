@@ -26,6 +26,7 @@ public class MessageRequest {
     @NotNull
     private UserRequest sender;
 
+    // 메시지를 받는 사용자
     @NotNull
     private UserRequest receiver;
 
