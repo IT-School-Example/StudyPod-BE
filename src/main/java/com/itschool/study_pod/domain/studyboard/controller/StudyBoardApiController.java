@@ -16,6 +16,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,14 +42,18 @@ public class StudyBoardApiController extends CrudController<StudyBoardRequest, S
 
     @GetMapping("/notices")
     @Operation(summary = "스터디 공지사항 목록 조회", description = "공지사항 카테고리에 해당하는 게시글 목록 조회")
-    public Header<List<StudyBoardResponse>> getStudyNotices() {
-        return studyBoardService.findByCategory(StudyBoardCategory.NOTICE);
+    public Header<List<StudyBoardResponse>> getStudyNotices(
+            @ParameterObject @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return studyBoardService.findByCategory(StudyBoardCategory.NOTICE, pageable);
     }
 
     @GetMapping("/frees")
     @Operation(summary = "스터디 자유 게시글 목록 조회", description = "자유 카테고리에 해당하는 게시글 목록 조회")
-    public Header<List<StudyBoardResponse>> getStudyFrees() {
-        return studyBoardService.findByCategory(StudyBoardCategory.FREE);
+    public Header<List<StudyBoardResponse>> getStudyFrees(
+            @ParameterObject @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return studyBoardService.findByCategory(StudyBoardCategory.FREE, pageable);
     }
 
     @GetMapping("/notices/{studyBoardId}")

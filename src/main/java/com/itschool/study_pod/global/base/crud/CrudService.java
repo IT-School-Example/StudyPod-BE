@@ -76,7 +76,7 @@ public abstract class CrudService<Req, Res, Entity extends Convertible<Req, Res>
         return responseList(entities);
     }
 
-    public final Header<List<Res>> getPaginatedList(Pageable pageable) {
+    public Header<List<Res>> getPaginatedList(Pageable pageable) {
         Page<Entity> entities = getBaseRepository().findAll(pageable);
 
         return convertPageToList(entities);

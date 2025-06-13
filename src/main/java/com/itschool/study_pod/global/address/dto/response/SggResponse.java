@@ -1,5 +1,6 @@
 package com.itschool.study_pod.global.address.dto.response;
 
+import com.itschool.study_pod.global.address.entity.Sgg;
 import lombok.*;
 
 @Data
@@ -21,4 +22,18 @@ public class SggResponse {
                 .id(id)
                 .build();
     }
+
+    public static SggResponse toDto(Sgg sgg) {
+        return SggResponse.builder()
+                .id(sgg.getId())
+                .sggCd(sgg.getSggCd())
+                .sggNm(sgg.getSggNm())
+                .sido(SidoResponse.builder()
+                        .sidoCd(sgg.getSido().getSidoCd())
+                        .sidoNm(sgg.getSido().getSidoNm())
+                        .build())
+                .build();
+    }
+
+
 }

@@ -24,12 +24,18 @@ public class SubjectArea implements Convertible<SubjectAreaRequest, SubjectAreaR
     private Subject subject;
 
     public static SubjectArea of(SubjectAreaRequest request) { // create용
-        if(request != null) {
+        if (request != null) {
             return SubjectArea.builder()
                     .subject(request.getSubject())
                     .build();
         }
         return null;
+    }
+
+    public static SubjectArea withId(Long id) {
+        return SubjectArea.builder()
+                .id(id)
+                .build();
     }
 
     @Override
@@ -42,12 +48,6 @@ public class SubjectArea implements Convertible<SubjectAreaRequest, SubjectAreaR
         return SubjectAreaResponse.builder()
                 .id(this.id)
                 .subject(this.subject)
-                .build();
-    }
-
-    public static SubjectArea withId(Long id) {
-        return SubjectArea.builder()
-                .id(id)
                 .build();
     }
 }

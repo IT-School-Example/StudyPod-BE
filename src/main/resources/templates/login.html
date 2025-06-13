@@ -42,10 +42,15 @@
         const email = e.target.email.value;
         const password = e.target.password.value;
 
-        const payload = { email, password };
+        const payload = {
+            data : {
+                email,
+                password
+            }
+        };
 
         try {
-            const res = await fetch("/login", {
+            const res = await fetch("/api/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),

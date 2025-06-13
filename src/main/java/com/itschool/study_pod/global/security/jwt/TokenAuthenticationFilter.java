@@ -36,6 +36,11 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         // 가져온 값에서 접두사 제거
         // String token = getAccessToken(authorizationHeader);
 
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         // 헤더 대신 쿠키에서 토큰을 가져옴
         String accessToken = getAccessTokenFromCookie(request);
         String refreshToken = getRefreshTokenFromCookie(request);
@@ -57,7 +62,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             String newAccessToken = tokenProvider.refreshAccessToken(refreshToken);
 
             if (newAccessToken != null) {
-                TokenProvider.addCookie(response, "accessToken", newAccessToken, 60 * 60);
+                tokenProvider.addCookie(response, "accessToken", newAccessToken, 60 * 60);
 
                 if (!authenticateUser(newAccessToken, response)) return;
             }
@@ -85,8 +90,8 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             return true;
         } catch (Exception e) {
-            TokenProvider.addCookie(response, "accessToken", null, 0);
-            TokenProvider.addCookie(response, "refreshToken", null, 0);
+            tokenProvider.addCookie(response, "accessToken", null, 0);
+            tokenProvider.addCookie(response, "refreshToken", null, 0);
 
             response.setContentType("application/json;charset=UTF-8");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
