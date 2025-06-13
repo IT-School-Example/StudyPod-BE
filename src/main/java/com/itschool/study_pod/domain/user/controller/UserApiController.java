@@ -13,6 +13,7 @@ import com.itschool.study_pod.global.base.crud.CrudService;
 import com.itschool.study_pod.global.security.jwt.TokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +55,8 @@ public class UserApiController extends CrudController<UserRequest, UserResponse,
     public UserResponse getCurrentUserInfo(@CookieValue("accessToken") String accessToken) {
         Long userId = tokenProvider.getUserId(accessToken); // 토큰에서 ID 추출
 
-        User user = userService.findById(userId); // 또는 userRepository.findById(userId).orElseThrow(...)
+        User user = userService.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException()); // 또는 userRepository.findById(userId).orElseThrow(...)
 
         return UserResponse.builder()
                 .id(user.getId())
