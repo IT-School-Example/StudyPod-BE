@@ -15,25 +15,26 @@ import org.hibernate.type.SqlTypes;
 @Builder
 @Table(schema = "address")
 public class Sgg implements Convertible<SggRequest, SggResponse> {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "sgg_id", insertable = false, updatable = false)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sido_cd", insertable = false, updatable = false)
-    private Sido sido;  // `Sido` 엔티티와의 외래 키 관계
+    @JoinColumn(name = "sido_cd") // ✅ 수정: insertable/updatable 제거
+    private Sido sido;
 
     @JdbcTypeCode(SqlTypes.CHAR)
-    @Column(length = 3, insertable = false, updatable = false)
+    @Column(length = 3) // ✅ 수정: insertable/updatable 제거
     private String sggCd;
 
     @Column(columnDefinition = "character varying(100)")
     private String sggNm;
 
     @Deprecated
-    public static Sgg of(SggRequest request) { // create용
-        if(request != null) {
+    public static Sgg of(SggRequest request) {
+        if (request != null) {
             return Sgg.builder()
                     .id(request.getId())
                     .sido(Sido.of(request.getSido()))
@@ -48,7 +49,6 @@ public class Sgg implements Convertible<SggRequest, SggResponse> {
         return Sgg.builder()
                 .id(id)
                 .build();
-
     }
 
     @Deprecated
@@ -57,7 +57,6 @@ public class Sgg implements Convertible<SggRequest, SggResponse> {
         throw new RuntimeException("사용하지 않음");
     }
 
-    // 조회만 허용
     @Override
     public SggResponse response() {
         return SggResponse.builder()

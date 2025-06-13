@@ -19,8 +19,6 @@ import com.itschool.study_pod.global.base.dto.ReferenceDto;
 import com.itschool.study_pod.global.enumclass.EnrollmentStatus;
 import com.itschool.study_pod.global.enumclass.MeetingMethod;
 import com.itschool.study_pod.global.enumclass.RecruitmentStatus;
-
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -129,12 +127,14 @@ public class StudyGroupApiController extends CrudWithFileController<StudyGroupRe
         return studyGroupService.findBySubjectAreaAndRecruiting(subjectAreaValue, pageable);
     }
 
-    @GetMapping("/filter/location")
-    @Operation(summary = "주소 ID로 스터디 그룹 조회", description = "주소 ID(address_id)로 스터디 그룹을 필터링합니다.")
-    public Header<List<StudyGroupResponse>> getByAddressId(
-            @RequestParam(name = "value") Long addressId,
+
+    // 추가된 시도 코드 기반 필터 API
+    @GetMapping("/filter/sido")
+    @Operation(summary = "시도 코드로 스터디 그룹 조회", description = "시도 코드(sidoCd)를 기준으로 해당 시도에 속한 스터디 그룹을 조회합니다.")
+    public Header<List<StudyGroupResponse>> getBySidoCd(
+            @RequestParam(name = "sidoCd") String sidoCd,
             @ParameterObject @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        return studyGroupService.findByAddressId(addressId, pageable);
+        return studyGroupService.findBySidoCd(sidoCd, pageable);
     }
 
     @GetMapping("/{userId}/studies")

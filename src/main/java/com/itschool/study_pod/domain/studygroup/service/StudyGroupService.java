@@ -47,7 +47,6 @@ public class StudyGroupService extends CrudWithFileService<StudyGroupRequest, St
     private final SubjectAreaRepository subjectAreaRepository;
     private final FileStorageUtil fileStorageUtil;
 
-
     @Override
     protected JpaRepository<StudyGroup, Long> getBaseRepository() {
         return studyGroupRepository;
@@ -123,11 +122,7 @@ public class StudyGroupService extends CrudWithFileService<StudyGroupRequest, St
         return convertPageToList(results);
     }
 
-    public Header<List<StudyGroupResponse>> findAllByFilters(
-            String searchStr,
-            Header<StudyGroupSearchRequest> request,
-            Pageable pageable
-    ) {
+    public Header<List<StudyGroupResponse>> findAllByFilters(String searchStr, Header<StudyGroupSearchRequest> request, Pageable pageable) {
         StudyGroupSearchRequest conditions = request.getData();
 
         RecruitmentStatus recruitmentStatus = conditions.getRecruitmentStatus();
@@ -200,10 +195,11 @@ public class StudyGroupService extends CrudWithFileService<StudyGroupRequest, St
         }
     }
 
-    public Header<List<StudyGroupResponse>> findByAddressId(Long addressId, Pageable pageable) {
-        Page<StudyGroup> results = studyGroupRepository.findByAddressId(addressId, pageable);
+    // ✅ 시도 코드 기준 조회 기능 추가
+    public Header<List<StudyGroupResponse>> findBySidoCd(String sidoCd, Pageable pageable) {
+        Page<StudyGroup> results = studyGroupRepository.findBySidoCd(sidoCd, pageable);
         if (results.getTotalElements() == 0) {
-            return Header.ERROR("해당 조건의 스터디 그룹을 불러오지 못했습니다.");
+            return Header.ERROR("해당 시도 코드에 해당하는 스터디 그룹이 존재하지 않습니다.");
         }
         return convertPageToList(results);
     }
@@ -241,7 +237,6 @@ public class StudyGroupService extends CrudWithFileService<StudyGroupRequest, St
         if (!isMember) {
             throw new RuntimeException("해당 그룹에 대한 접근 권한이 없습니다.");
         }
-
         return super.read(userId);
     }
 
@@ -259,10 +254,8 @@ public class StudyGroupService extends CrudWithFileService<StudyGroupRequest, St
             SubjectArea subjectArea = subjectAreaRepository.findById(data.getSubjectArea().getId())
                     .orElseThrow(() -> new EntityNotFoundException("주제영역 ID가 존재하지 않습니다."));
 
-            // 기존 값 업데이트
             studyGroup.updateFromRequest(data, leader, address, subjectArea);
 
-            // 파일이 새로 들어왔으면 업로드
             if (file != null && !file.isEmpty()) {
                 String uploadDirPath = new File(System.getProperty("user.dir"), "uploads/study-group").getAbsolutePath();
                 String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
