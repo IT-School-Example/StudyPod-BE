@@ -35,17 +35,5 @@ public class SggResponse {
                 .build();
     }
 
-    public SggResponse toSggResponse(Sgg sgg) {
-        return SggResponse.builder()
-                .id(sgg.getId())
-                .sggCd(sgg.getSggCd())
-                .sggNm(sgg.getSggNm())
-                .sido(SidoResponse.builder()
-                        .sidoCd(sgg.getSido().getSidoCd())
-                        .sidoNm(sgg.getSido().getSidoNm())
-                        .build())
-                .build();
-    }
-
 
 }
