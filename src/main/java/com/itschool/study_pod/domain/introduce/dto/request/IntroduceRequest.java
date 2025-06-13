@@ -14,7 +14,7 @@ public class IntroduceRequest {
     @NotBlank(message = "소개는 필수입니다.")
     private String content;
 
-    @NotBlank(message = "소개는 여부를 선택해야 합니다.")
+    @NotNull(message = "소개는 여부를 선택해야 합니다.")
     private boolean isPosted;
 
     @NotNull(message = "스터디 그룹 정보는 필수입니다.")

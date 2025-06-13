@@ -62,12 +62,6 @@ public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long> {
             """)
     Page<StudyGroup> findBySubjectAreaAndRecruiting(@Param("subjectEnum") Subject subjectEnum, Pageable pageable);
 
-    @Query("""
-                SELECT sg FROM StudyGroup sg
-                WHERE sg.address.id = :addressId
-            """)
-    Page<StudyGroup> findByAddressId(@Param("addressId") Long addressId, Pageable pageable);
-
     // ✅ 추가된 시도 코드 기반 검색
     @Query("""
                 SELECT sg FROM StudyGroup sg
@@ -78,7 +72,6 @@ public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long> {
     long count();
 
     long countByCreatedAtAfter(LocalDateTime dateTime);
-
     long countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 
     @Query("""
@@ -89,4 +82,6 @@ public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long> {
                 ORDER BY cnt DESC
             """)
     List<Object[]> findTopKeywords();
+
 }
+

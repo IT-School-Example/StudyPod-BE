@@ -1,7 +1,11 @@
 package com.itschool.study_pod.domain.studygroup.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itschool.study_pod.domain.enrollment.dto.request.EnrollmentRequest;
+import com.itschool.study_pod.domain.enrollment.dto.response.EnrollmentResponse;
 import com.itschool.study_pod.domain.enrollment.service.EnrollmentService;
+import com.itschool.study_pod.domain.introduce.dto.response.IntroduceResponse;
+import com.itschool.study_pod.domain.introduce.service.IntroduceService;
 import com.itschool.study_pod.domain.studygroup.dto.request.StudyGroupRequest;
 import com.itschool.study_pod.domain.studygroup.dto.request.StudyGroupSearchRequest;
 import com.itschool.study_pod.domain.studygroup.dto.response.StudyGroupResponse;
@@ -11,12 +15,14 @@ import com.itschool.study_pod.domain.user.dto.response.UserResponse;
 import com.itschool.study_pod.global.base.crud.CrudWithFileController;
 import com.itschool.study_pod.global.base.crud.CrudWithFileService;
 import com.itschool.study_pod.global.base.dto.Header;
+import com.itschool.study_pod.global.base.dto.ReferenceDto;
 import com.itschool.study_pod.global.enumclass.EnrollmentStatus;
 import com.itschool.study_pod.global.enumclass.MeetingMethod;
 import com.itschool.study_pod.global.enumclass.RecruitmentStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
@@ -37,7 +43,10 @@ import java.util.List;
 public class StudyGroupApiController extends CrudWithFileController<StudyGroupRequest, StudyGroupResponse, StudyGroup> {
 
     private final StudyGroupService studyGroupService;
+
     private final EnrollmentService enrollmentService;
+
+    private final IntroduceService introduceService;
 
     @Override
     protected CrudWithFileService<StudyGroupRequest, StudyGroupResponse, StudyGroup> getBaseService() {
@@ -72,11 +81,13 @@ public class StudyGroupApiController extends CrudWithFileController<StudyGroupRe
         return studyGroupService.findAllByMeetingMethod(meetingMethod, pageable);
     }
 
+    @Operation(summary = "스터디 그룹에 지원 신청한 회원 목록 조회", description = "study_group_id와 등록 상태에 따른 회원 목록을 조회")
     @GetMapping("{id}/users")
-    @Operation(summary = "스터디그룹별 등록 회원 목록 조회", description = "스터디그룹 id와 등록 상태로 회원 목록 조회")
-    public Header<List<UserResponse>> findEnrolledUsersByStudyGroupId(@PathVariable(name = "id") Long studyGroupId,
+    public Header<List<UserResponse>> findEnrolledUsersByStudyGroupId(@PathVariable(name = "id") Long id,
                                                                       @RequestParam(name = "enrollmentStatus") EnrollmentStatus enrollmentStatus) {
-        return enrollmentService.findEnrolledUsersByStudyGroupId(studyGroupId, enrollmentStatus);
+        log.info("스터디그룹별 등록 회원 목록 조회 : {}에서 id={}로 조회 요청", this.getClass().getSimpleName(), id);
+
+        return enrollmentService.findEnrolledUsersByStudyGroupId(id, enrollmentStatus);
     }
 
     @GetMapping("/my")
@@ -85,13 +96,19 @@ public class StudyGroupApiController extends CrudWithFileController<StudyGroupRe
         return studyGroupService.findStudyGroupByUserId(userId);
     }
 
-    @GetMapping("/user/{userId}/enrolled-groups")
+    @GetMapping("/user/{accountId}/enrolled-groups")
     @Operation(summary = "사용자의 등록된 스터디 그룹 목록 조회", description = "회원 ID와 등록 상태로 스터디 그룹 리스트를 반환합니다.")
     public Header<List<StudyGroupResponse>> getStudyGroupsByUserId(
-            @PathVariable(name = "userId") Long userId,
+            @PathVariable(name = "accountId") Long accountId,
             @RequestParam(name = "enrollmentStatus", required = false, defaultValue = "APPROVED") EnrollmentStatus enrollmentStatus
     ) {
-        return enrollmentService.findEnrolledStudyGroupsByUserId(userId, enrollmentStatus);
+        /*Long currentAccountId = getCurrentAccountId();
+
+        if(!accountId.equals(currentAccountId)) {
+            return Header.ERROR("가입한 회원만 조회가 가능합니다");
+        }*/
+
+        return enrollmentService.findEnrolledStudyGroupsByUserId(accountId, enrollmentStatus);
     }
 
     @GetMapping("/leader/{leaderId}")
@@ -127,4 +144,21 @@ public class StudyGroupApiController extends CrudWithFileController<StudyGroupRe
             @RequestParam(name = "enrollmentStatus") EnrollmentStatus enrollmentStatus) {
         return studyGroupService.findStudyGroupsByUserIdAndStatus(userId, enrollmentStatus);
     }
+
+    @GetMapping("/introduce/{studyGroupId}")
+    @Operation(summary = "스터디 그룹 소개글 조회", description = "스터디 그룹 ID로 등록된 소개글을 조회합니다.")
+    public Header<IntroduceResponse> getIntroduceByStudyGroupId(
+            @PathVariable(name = "studyGroupId") Long studyGroupId
+    ) {
+        return introduceService.findByStudyGroupId(studyGroupId);
+    }
+
+    @PostMapping("/enrollments")
+    @Operation(summary = "스터디 그룹 신청", description = "스터디 그룹을 신청합니다.")
+    public Header<EnrollmentResponse> applyToStudyGroup(
+            @RequestBody @Valid EnrollmentRequest request
+    ) {
+        return enrollmentService.enroll(request);
+    }
+
 }

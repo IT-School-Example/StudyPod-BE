@@ -8,10 +8,13 @@ import com.itschool.study_pod.global.base.crud.CrudService;
 import com.itschool.study_pod.global.base.dto.Header;
 import com.itschool.study_pod.global.enumclass.AdminBoardCategory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +32,31 @@ public class AdminBoardService extends CrudService<AdminBoardRequest, AdminBoard
         return AdminBoard.of(requestEntity);
     }
 
-    public Header<List<AdminBoardResponse>> findByAdminIdAndCategory(Long adminId, AdminBoardCategory category) {
+    // 관리자 공지사항, FAQ 게시글 목록 조회
+    public Header<List<AdminBoardResponse>> findByCategory(AdminBoardCategory adminBoardCategory, Pageable pageable) {
+        Page<AdminBoard> boards = adminBoardRepository.findByAdminBoardCategory(adminBoardCategory, pageable);
+
+        return convertPageToList(boards);
+    }
+
+
+    // 관리자 공지사항, FAQ 게시글 상세 보기
+    public Header<AdminBoardResponse> findByAdminBoardIdAndCategory(Long adminBoardId, AdminBoardCategory adminBoardCategory) {
+        Optional<AdminBoard> optionalBoard = adminBoardRepository.findByIdAndAdminBoardCategory(adminBoardId, adminBoardCategory);
+
+        if (optionalBoard.isEmpty()) {
+            return Header.ERROR("해당 게시글을 찾을 수 없습니다.");
+        }
+
+        AdminBoardResponse response = optionalBoard.get().response();
+
+        return Header.OK(response);
+    }
+
+
+    // region 보류
+    // 관리자 ID로 공지사항, FAQ 게시글 목록 조회
+    /*public Header<List<AdminBoardResponse>> findByAdminIdAndCategory(Long adminId, AdminBoardCategory category) {
         List<AdminBoard> adminBoards = adminBoardRepository.findByAdminIdAndAdminBoardCategory(adminId, category);
         List<AdminBoardResponse> responseList = adminBoards.stream()
                 .map(AdminBoard::response)
@@ -37,17 +64,17 @@ public class AdminBoardService extends CrudService<AdminBoardRequest, AdminBoard
         return Header.OK(responseList);
     }
 
-    public Header<List<AdminBoardResponse>> findAdminBoardDetail(Long adminId, Long adminBoardId) {
-        List<AdminBoard> boards = adminBoardRepository.findByIdAndAdminId(adminBoardId, adminId);
+    // 관리자 ID로 공지사항, FAQ 게시글 상세 보기
+    public Header<AdminBoardResponse> findAdminBoardDetail(Long adminId, Long adminBoardId, AdminBoardCategory adminBoardCategory) {
+        Optional<AdminBoard> optionalBoard = adminBoardRepository.findByIdAndAdminIdAndAdminBoardCategory(adminBoardId, adminId, adminBoardCategory);
 
-        if (boards.isEmpty()) {
+        if (optionalBoard.isEmpty()) {
             return Header.ERROR("해당 게시글을 찾을 수 없습니다.");
         }
 
-        List<AdminBoardResponse> responseList = boards.stream()
-                .map(AdminBoard::response)
-                .toList();
+        AdminBoardResponse response = optionalBoard.get().response();
 
-        return Header.OK(responseList);
-    }
+        return Header.OK(response);
+    }*/
+    // endregion
 }

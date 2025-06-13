@@ -12,6 +12,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,21 +34,72 @@ public class AdminBoardApiController extends CrudController<AdminBoardRequest, A
         return adminBoardService;
     }
 
-    @GetMapping("/admins/{adminId}")
-    @Operation(summary = "관리자 공지사항/FAQ 게시글 목록 조회", description = "관리자 ID와 관리자 게시판 카테고리로 게시글 목록을 조회")
-    public Header<List<AdminBoardResponse>> getAdminBoardsByAdminIdAndCategory(
-            @PathVariable(name = "adminId") Long adminId,
-            @RequestParam(name = "adminBoardCategory") AdminBoardCategory adminBoardCategory
+    @GetMapping("/notices")
+    @Operation(summary = "공지사항 게시글 목록 조회", description = "공지사항 카테고리에 해당하는 게시글 목록 조회")
+    public Header<List<AdminBoardResponse>> getNotices(
+            @ParameterObject @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        return adminBoardService.findByAdminIdAndCategory(adminId, adminBoardCategory);
+        return adminBoardService.findByCategory(AdminBoardCategory.NOTICE, pageable);
     }
 
-    @GetMapping("/admins/{adminId}/{adminBoardId}")
-    @Operation(summary = "관리자 공지사항/FAQ 게시글 상세 보기", description = "관리자 ID와 관리자 게시판 ID로 게시글 상세 보기")
-    public Header<List<AdminBoardResponse>> getAdminBoardDetail(
+    @GetMapping("/faqs")
+    @Operation(summary = "공지사항 FAQ 목록 조회", description = "FAQ 카테고리에 해당하는 게시글 목록 조회")
+    public Header<List<AdminBoardResponse>> getFaqs(
+            @ParameterObject @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return adminBoardService.findByCategory(AdminBoardCategory.FAQ, pageable);
+    }
+
+    @GetMapping("/notices/{adminBoardId}")
+    @Operation(summary = "공지사항 게시글 상세 보기", description = "관리자 게시판 ID로 공지사항 게시글 상세 보기")
+    public Header<AdminBoardResponse> getNoticeDetailByAdminBoardId(
+            @PathVariable(name = "adminBoardId") Long adminBoardId
+    ) {
+        return adminBoardService.findByAdminBoardIdAndCategory(adminBoardId, AdminBoardCategory.NOTICE);
+    }
+
+    @GetMapping("/faqs/{adminBoardId}")
+    @Operation(summary = "FAQ 게시글 상세 보기", description = "관리자 게시판 ID로 FAQ 게시글 상세 보기")
+    public Header<AdminBoardResponse> getFaqDetailByAdminBoardId(
+            @PathVariable(name = "adminBoardId") Long adminBoardId
+    ) {
+        return adminBoardService.findByAdminBoardIdAndCategory(adminBoardId, AdminBoardCategory.FAQ);
+    }
+
+    // region 보류
+    /*@GetMapping("/admins/{adminId}/notices")
+    @Operation(summary = "관리자 공지사항 게시글 목록 조회", description = "관리자 ID로 공지사항 게시글 목록을 조회")
+    public Header<List<AdminBoardResponse>> getNoticesByAdminId(
+            @PathVariable(name = "adminId") Long adminId
+    ) {
+        return adminBoardService.findByAdminIdAndCategory(adminId, AdminBoardCategory.NOTICE);
+    }
+
+    @GetMapping("/admins/{adminId}/faqs")
+    @Operation(summary = "관리자 FAQ 게시글 목록 조회", description = "관리자 ID로 FAQ 게시글 목록을 조회")
+    public Header<List<AdminBoardResponse>> getFaqsByAdminId(
+            @PathVariable(name = "adminId") Long adminId
+    ) {
+        return adminBoardService.findByAdminIdAndCategory(adminId, AdminBoardCategory.FAQ);
+    }
+
+    @GetMapping("/admins/{adminId}/notices/{adminBoardId}")
+    @Operation(summary = "관리자 공지사항 게시글 상세 보기", description = "관리자 ID와 공지사항 게시판 ID로 게시글 상세 보기")
+    public Header<AdminBoardResponse> getNoticeDetail(
             @PathVariable(name = "adminId") Long adminId,
             @PathVariable(name = "adminBoardId") Long adminBoardId
     ) {
-        return adminBoardService.findAdminBoardDetail(adminId, adminBoardId);
+        return adminBoardService.findAdminBoardDetail(adminId, adminBoardId, AdminBoardCategory.NOTICE);
     }
+
+    @GetMapping("/admins/{adminId}/faqs/{adminBoardId}")
+    @Operation(summary = "관리자 FAQ 게시글 상세 보기", description = "관리자 ID와 FAQ 게시판 ID로 게시글 상세 보기")
+    public Header<AdminBoardResponse> getFaqDetail(
+            @PathVariable(name = "adminId") Long adminId,
+            @PathVariable(name = "adminBoardId") Long adminBoardId
+    ) {
+        return adminBoardService.findAdminBoardDetail(adminId, adminBoardId, AdminBoardCategory.FAQ);
+    }*/
+
+    // endregion
 }

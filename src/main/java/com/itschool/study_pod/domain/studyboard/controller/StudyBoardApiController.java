@@ -16,6 +16,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,23 +40,73 @@ public class StudyBoardApiController extends CrudController<StudyBoardRequest, S
         return studyBoardService;
     }
 
-    @GetMapping("/study-groups/{studyGroupId}")
-    @Operation(summary = "스터디 공지사항/자유 게시글 목록 조회", description = "스터디 그룹 ID와 스터디 게시판 카테고리로 게시글 목록 조회")
-    public Header<List<StudyBoardResponse>> getStudyBoardsByStudyGroupIdAndCategory(
-            @PathVariable(name = "studyGroupId") Long studyGroupId,
-            @RequestParam(name = "studyBoardCategory") StudyBoardCategory studyBoardCategory
+    @GetMapping("/notices")
+    @Operation(summary = "스터디 공지사항 목록 조회", description = "공지사항 카테고리에 해당하는 게시글 목록 조회")
+    public Header<List<StudyBoardResponse>> getStudyNotices(
+            @ParameterObject @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        return studyBoardService.findByStudyGroupIdAndCategory(studyGroupId, studyBoardCategory);
+        return studyBoardService.findByCategory(StudyBoardCategory.NOTICE, pageable);
     }
 
-    @GetMapping("/study-groups/{studyGroupId}/{studyBoardId}")
-    @Operation(summary = "스터디 공지사항/자유 게시글 상세 조회", description = "스터디 그룹 ID와 게시글 ID로 게시글 상세 정보를 조회")
-    public Header<List<StudyBoardResponse>> getStudyBoardDetail(
+    @GetMapping("/frees")
+    @Operation(summary = "스터디 자유 게시글 목록 조회", description = "자유 카테고리에 해당하는 게시글 목록 조회")
+    public Header<List<StudyBoardResponse>> getStudyFrees(
+            @ParameterObject @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return studyBoardService.findByCategory(StudyBoardCategory.FREE, pageable);
+    }
+
+    @GetMapping("/notices/{studyBoardId}")
+    @Operation(summary = "스터디 공지사항 상세 조회", description = "스터디 게시판 ID로 상세 조회")
+    public Header<StudyBoardResponse> getStudyNoticeDetail(
+            @PathVariable(name = "studyBoardId") Long studyBoardId
+    ) {
+        return studyBoardService.findByStudyBoardIdAndCategory(studyBoardId, StudyBoardCategory.NOTICE);
+    }
+
+    @GetMapping("/frees/{studyBoardId}")
+    @Operation(summary = "스터디 자유 게시글 상세 조회", description = "스터디 게시판 ID로 상세 조회")
+    public Header<StudyBoardResponse> getStudyFreeDetail(
+            @PathVariable(name = "studyBoardId") Long studyBoardId
+    ) {
+        return studyBoardService.findByStudyBoardIdAndCategory(studyBoardId, StudyBoardCategory.FREE);
+    }
+
+    // region 보류
+    /*@GetMapping("/study-groups/{studyGroupId}/notices")
+    @Operation(summary = "스터디 공지사항 목록 조회", description = "스터디 그룹 ID로 공지사항 목록을 조회")
+    public Header<List<StudyBoardResponse>> getStudyNotices(
+            @PathVariable(name = "studyGroupId") Long studyGroupId
+    ) {
+        return studyBoardService.findByStudyGroupIdAndCategory(studyGroupId, StudyBoardCategory.NOTICE);
+    }
+
+    @GetMapping("/study-groups/{studyGroupId}/frees")
+    @Operation(summary = "스터디 자유 게시글 목록 조회", description = "스터디 그룹 ID로 자유 게시글 목록을 조회")
+    public Header<List<StudyBoardResponse>> getStudyFrees(
+            @PathVariable(name = "studyGroupId") Long studyGroupId
+    ) {
+        return studyBoardService.findByStudyGroupIdAndCategory(studyGroupId, StudyBoardCategory.FREE);
+    }
+
+    @GetMapping("/study-groups/{studyGroupId}/notices/{studyBoardId}")
+    @Operation(summary = "스터디 공지사항 상세 조회", description = "스터디 그룹 ID와 공지사항 ID로 상세 조회")
+    public Header<StudyBoardResponse> getStudyNoticeDetail(
             @PathVariable(name = "studyGroupId") Long studyGroupId,
             @PathVariable(name = "studyBoardId") Long studyBoardId
     ) {
-        return studyBoardService.findAdminBoardDetail(studyGroupId, studyBoardId);
+        return studyBoardService.findStudyBoardDetail(studyGroupId, studyBoardId, StudyBoardCategory.NOTICE);
     }
+
+    @GetMapping("/study-groups/{studyGroupId}/frees/{studyBoardId}")
+    @Operation(summary = "스터디 자유 게시글 상세 조회", description = "스터디 그룹 ID와 자유 게시글 ID로 상세 조회")
+    public Header<StudyBoardResponse> getStudyFreeDetail(
+            @PathVariable(name = "studyGroupId") Long studyGroupId,
+            @PathVariable(name = "studyBoardId") Long studyBoardId
+    ) {
+        return studyBoardService.findStudyBoardDetail(studyGroupId, studyBoardId, StudyBoardCategory.FREE);
+    }*/
+    // endregion
 
     // 자유게시판 댓글 생성
     @PostMapping("/{studyBoardId}/comments")

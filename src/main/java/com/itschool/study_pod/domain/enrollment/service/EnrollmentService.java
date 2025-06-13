@@ -83,4 +83,10 @@ public class EnrollmentService extends CrudService<EnrollmentRequest, Enrollment
         return apiResponse(enrollment);
     }
 
+    public Header<EnrollmentResponse> enroll(EnrollmentRequest request) {
+        Enrollment enrollment = Enrollment.of(request);         // DTO → Entity
+        Enrollment saved = enrollmentRepository.save(enrollment); // DB 저장
+        return Header.OK(saved.response());                     // Entity → Response DTO
+    }
+
 }

@@ -29,6 +29,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.io.File;
 import java.util.List;
@@ -194,14 +195,6 @@ public class StudyGroupService extends CrudWithFileService<StudyGroupRequest, St
         }
     }
 
-    public Header<List<StudyGroupResponse>> findByAddressId(Long addressId, Pageable pageable) {
-        Page<StudyGroup> results = studyGroupRepository.findByAddressId(addressId, pageable);
-        if (results.getTotalElements() == 0) {
-            return Header.ERROR("해당 조건의 스터디 그룹을 불러오지 못했습니다.");
-        }
-        return convertPageToList(results);
-    }
-
     // ✅ 시도 코드 기준 조회 기능 추가
     public Header<List<StudyGroupResponse>> findBySidoCd(String sidoCd, Pageable pageable) {
         Page<StudyGroup> results = studyGroupRepository.findBySidoCd(sidoCd, pageable);
@@ -227,11 +220,20 @@ public class StudyGroupService extends CrudWithFileService<StudyGroupRequest, St
         return Header.OK(responses);
     }
 
+    // 스터디 그룹 회원만 접근가능(스터디그룹의 상세정보)
     @Override
     public Header<StudyGroupResponse> read(Long studyGroupId) {
+
+        // 인증 정보 받아와서 해당 사용자의 id 값을 받아오는 메서드
+        // 추후에 시큐리티 적용해서 로그인 기능이 추가되면 활용 가능
+        // Long userId = getCurrentAccountId();
+
         Long userId = 1L;
+
+        // 해당 스터디의 멤버인지 확인
         boolean isMember = enrollmentRepository
                 .existsByStudyGroupIdAndUserIdAndStatus(studyGroupId, userId, EnrollmentStatus.APPROVED);
+        // 멤버가 아닐 경우
         if (!isMember) {
             throw new RuntimeException("해당 그룹에 대한 접근 권한이 없습니다.");
         }

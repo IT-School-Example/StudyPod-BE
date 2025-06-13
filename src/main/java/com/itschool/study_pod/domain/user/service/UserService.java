@@ -1,10 +1,7 @@
 package com.itschool.study_pod.domain.user.service;
 
+import com.itschool.study_pod.domain.user.dto.request.*;
 import com.itschool.study_pod.global.base.dto.Header;
-import com.itschool.study_pod.domain.user.dto.request.UserEmailUpdateRequest;
-import com.itschool.study_pod.domain.user.dto.request.UserNicknameUpdateRequest;
-import com.itschool.study_pod.domain.user.dto.request.UserPasswordUpdateRequest;
-import com.itschool.study_pod.domain.user.dto.request.UserRequest;
 import com.itschool.study_pod.domain.user.dto.response.UserResponse;
 import com.itschool.study_pod.domain.user.entity.User;
 import com.itschool.study_pod.domain.user.repository.UserRepository;
@@ -43,7 +40,6 @@ public class UserService extends CrudService<UserRequest, UserResponse, User> {
                 .createdBy(request.getEmail())
                 .build();
     }
-
     /*
     * 비밀번호 수정하기
     * */
@@ -66,7 +62,7 @@ public class UserService extends CrudService<UserRequest, UserResponse, User> {
         User entity = getBaseRepository().findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(this.getClass().getSimpleName() + " : 해당 id " + id + "에 해당하는 객체가 없습니다."));
 
-        entity.updatePassword(request.getData().getNickname());
+        entity.updateNickname(request.getData().getNickname());
 
         return Header.OK();
     }
@@ -77,7 +73,7 @@ public class UserService extends CrudService<UserRequest, UserResponse, User> {
         User entity = getBaseRepository().findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(this.getClass().getSimpleName() + " : 해당 id " + id + "에 해당하는 객체가 없습니다."));
 
-        entity.updatePassword(request.getData().getEmail());
+        entity.updateEmail(request.getData().getEmail());
 
         return Header.OK();
     }
@@ -89,6 +85,12 @@ public class UserService extends CrudService<UserRequest, UserResponse, User> {
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
+
+    public User findById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+    }
+
 
     @Transactional
     public Header<Void> findPassword(String email, Header<UserPasswordUpdateRequest> request) {
@@ -105,4 +107,14 @@ public class UserService extends CrudService<UserRequest, UserResponse, User> {
 
         return Header.OK();
     }
+
+    @Transactional
+    public void deleteUserById(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new IllegalArgumentException("해당 사용자가 존재하지 않습니다.");
+        }
+
+        userRepository.deleteById(userId);
+    }
+
 }

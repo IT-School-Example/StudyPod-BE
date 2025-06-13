@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,10 +20,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import java.util.List;
 
@@ -55,6 +58,7 @@ public class WebSecurityConfig {
                 // 개발 및 테스트 환경에서만 허용할 경로
                 .requestMatchers(
                         // 해당 요청은 필터링 제외 (local dev에서만)
+                        // new AntPathRequestMatcher("/*.html"),
                         new AntPathRequestMatcher("/css/**"),
                         new AntPathRequestMatcher("/img/**"),
                         new AntPathRequestMatcher("/js/**"),
@@ -70,30 +74,51 @@ public class WebSecurityConfig {
 
     // ✅ HTTP 요청에 대한 Spring Security 웹 기반 보안 구성
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
+        MvcRequestMatcher.Builder mvc = new MvcRequestMatcher.Builder(introspector).servletPath("/");
+
         return http
+                /*.authorizeRequests()
+                .antMatchers("/ws/**", "/app/**", "/topic/**").permitAll()*/
                 .authorizeHttpRequests(auth -> auth // 🔐 인가(Authorization) 설정 시작
+                        .requestMatchers(new AntPathRequestMatcher("/**", HttpMethod.OPTIONS.name())).permitAll()
 
                         // ✅ 비인증 사용자(비로그인 사용자)도 접근 가능한 경로
                         .requestMatchers(
-                                new AntPathRequestMatcher("/login"),
-                                new AntPathRequestMatcher("/me"),
+                                new AntPathRequestMatcher("/api/login"),
+                                new AntPathRequestMatcher("/api/me"),
                                 new AntPathRequestMatcher("/api/user/mailSend"),
                                 new AntPathRequestMatcher("/api/user/mailCheck"),
                                 new AntPathRequestMatcher("/api/user/find-pw"),
+                                new AntPathRequestMatcher("/api/login"),
                                 new AntPathRequestMatcher("/login"),
                                 new AntPathRequestMatcher("/signup"),
+                                new AntPathRequestMatcher("/api/study-groups"),
                                 new AntPathRequestMatcher("/api/user"),
+                                new AntPathRequestMatcher("/api/study-groups"),
                                 new AntPathRequestMatcher("/api/user/check-email")
                         ).permitAll() // 위 경로는 로그인 없이 접근 가능
 
                         // ✅ 로그인된 사용자 전용 API
                         .requestMatchers(
                                 new AntPathRequestMatcher("/api/**"), // 모든 /api/** 경로 (단, admin 경로 제외)
-                                new AntPathRequestMatcher("/logout")
+                                new AntPathRequestMatcher("/api/logout")
+                                // new AntPathRequestMatcher("/logout")
                         ).hasAnyAuthority(
                                 AccountRole.ROLE_USER.name(),
                                 AccountRole.ROLE_ADMIN.name()
+                        )
+
+                        // ✅ 사용자 전용 페이지
+                        .requestMatchers(
+                                new AntPathRequestMatcher("/chat.html"),
+                                new AntPathRequestMatcher("/websocket/chatting.html"),
+                                new AntPathRequestMatcher("/ws-stomp/**"),
+                                new AntPathRequestMatcher("/ws/**"), // 채팅
+                                new AntPathRequestMatcher("/app/**"), // 채팅
+                                new AntPathRequestMatcher("/topic/**") // 채팅
+                        ).hasAuthority(
+                                AccountRole.ROLE_USER.name()
                         )
 
                         // ✅ 관리자 전용 페이지
@@ -141,6 +166,8 @@ public class WebSecurityConfig {
                 )*/
 
                 // CORS 설정을 활성화
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+
                 .cors()
                 .and()
 
@@ -165,26 +192,18 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    @Profile({"local", "dev"})
-    public CorsConfigurationSource corsConfigurationSourceOnDevelopmentEnvironment() {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000")); // 프론트 주소
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(true); // 쿠키 전송 허용
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        return source;
-    }
-
-    @Profile("prod")
-    public CorsConfigurationSource corsConfigurationSourceOnProductEnvironment() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("https://studypod.click", "https://www.studypod.click"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(true); // 쿠키 전송 허용
+        config.setAllowedOrigins(List.of("https://studypod.click", "https://www.studypod.click", "http://localhost:3000", "https://admin.studypod.click"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of(
+                "Authorization",
+                "Content-Type",
+                "X-Requested-With",
+                "Accept",
+                "Origin"
+        ));
+        config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

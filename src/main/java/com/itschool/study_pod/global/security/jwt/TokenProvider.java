@@ -1,6 +1,7 @@
 package com.itschool.study_pod.global.security.jwt;
 
 import com.itschool.study_pod.global.base.account.Account;
+import com.itschool.study_pod.global.base.account.AccountDetails;
 import com.itschool.study_pod.global.base.account.AccountRepository;
 import com.itschool.study_pod.global.security.jwt.redis.RefreshToken;
 import com.itschool.study_pod.global.security.jwt.redis.RefreshTokenRepository;
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -49,14 +51,14 @@ public class TokenProvider {
     /**
      * Account 객체를 기반으로 1시간 유효한 Access Token 생성
      */
-    public String generateAccessToken(Account account) {
+    public String generateAccessToken(AccountDetails account) {
         return generateToken(account, Duration.ofHours(1), getAccessSecretKey(), "Access");
     }
 
     /**
      * Account 객체를 기반으로 5시간 유효한 Refresh Token 생성
      */
-    public String generateRefreshToken(Account account) {
+    public String generateRefreshToken(AccountDetails account) {
         return generateToken(account, Duration.ofHours(5), getRefreshSecretKey(), "Refresh");
     }
 
@@ -67,7 +69,7 @@ public class TokenProvider {
      * @param secretKey 서명용 SecretKey
      * @return 생성된 JWT 토큰 문자열
      */
-    private String generateToken(Account account, Duration expiry, SecretKey secretKey, String tokenType) {
+    private String generateToken(AccountDetails account, Duration expiry, SecretKey secretKey, String tokenType) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiry.toMillis());
 
@@ -76,7 +78,7 @@ public class TokenProvider {
                 .setIssuer(jwtProperties.getIssuer())          // 발급자 정보
                 .setIssuedAt(now)                              // 발급 시간
                 .setExpiration(expiryDate)                         // 만료 시간
-                .setSubject(account.getEmail())                // 토큰 주체 (이메일)
+                .setSubject(account.getUsername())                // 토큰 주체 (이메일)
                 .claim(CLAIM_ID, account.getId())              // 사용자 ID 클레임 추가
                 .claim(TOKEN_TYPE, tokenType)                   // 토큰 타입 클레임 추가
                 .signWith(secretKey, SignatureAlgorithm.HS256) // 서명 알고리즘 및 키 설정
@@ -160,8 +162,10 @@ public class TokenProvider {
 
         // 비밀번호가 변경된 이후에 모든 연결을 끊기 위한 로직도 추후 필요.
         // DB 에 있는 refresh token에 상태 값을 통해 유효하지 않으면 클라이언트의 access 토큰과 refresh 토큰 없애기
-        
-        return new UsernamePasswordAuthenticationToken(account, token, account.getAuthorities());
+
+        AccountDetails accountDetails = new AccountDetails(account);
+
+        return new UsernamePasswordAuthenticationToken(accountDetails, token, new AccountDetails(account).getAuthorities());
     }
 
     /**
@@ -188,7 +192,7 @@ public class TokenProvider {
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저가 DB에서 삭제된 케이스"));
 
         // 4. 새로운 액세스 토큰 발급 및 반환
-        return generateAccessToken(account);
+        return generateAccessToken(new AccountDetails(account));
     }
 
     public RefreshToken findByRefreshToken(String refreshToken) {
@@ -196,18 +200,26 @@ public class TokenProvider {
         return refreshTokenRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(() -> new EntityNotFoundException("해당 Refresh 토큰이 없음"));
     }
-    
-    // 쿠키 생성 메서드 (SameSite 속성은 헤더로 직접 추가, 메소드 위치 다른 클래스 이관 고민)
-    public static void addCookie(HttpServletResponse response, String name, String value, int maxAgeSeconds) {
-        Cookie cookie = new Cookie(name, value);
-        cookie.setPath("/");
-        cookie.setMaxAge(maxAgeSeconds);
-        response.addCookie(cookie);
 
+    @Value("${spring.profiles.active:default}")
+    private String activeProfile;
+
+    // 쿠키 생성 메서드 (SameSite 속성은 헤더로 직접 추가, 메소드 위치 다른 클래스 이관 고민)
+    public void addCookie(HttpServletResponse response, String name, String value, int maxAgeSeconds) {
+        // local, dev 프로필인 경우
+        if ("local".equals(activeProfile) || "dev".equals(activeProfile)) {
+            Cookie cookie = new Cookie(name, value);
+            cookie.setPath("/");
+            cookie.setMaxAge(maxAgeSeconds);
+            response.addCookie(cookie);
+        }
+        // 운영환경일 경우 (헤더 직접 구성)
         // SameSite 직접 헤더로 추가 (Java Servlet API 쿠키 객체는 SameSite 미지원)
-        /*String cookieHeader = String.format("%s=%s; Max-Age=%d; Path=/;", *//* Secure; HttpOnly; SameSite=Strict *//*
-                name, value, maxAgeSeconds);
-        response.addHeader("Set-Cookie", cookieHeader);*/
+        else if ("prod".equals(activeProfile)) {
+            String cookieHeader = String.format("%s=%s; Max-Age=%d; Domain=.studypod.click; Path=/; Secure; HttpOnly; SameSite=None",
+                    name, value, maxAgeSeconds);
+            response.addHeader("Set-Cookie", cookieHeader);
+        }
     }
 
     /**

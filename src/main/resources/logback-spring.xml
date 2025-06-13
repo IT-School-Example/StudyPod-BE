@@ -59,5 +59,10 @@
         <root level="INFO">
             <appender-ref ref="FILE"/>
         </root>
+
+        <!-- 특정 패키지 로거 설정 -->
+        <logger name="org.springframework.security" level="TRACE" additivity="false">
+            <appender-ref ref="FILE"/>
+        </logger>
     </springProfile>
 </configuration>
