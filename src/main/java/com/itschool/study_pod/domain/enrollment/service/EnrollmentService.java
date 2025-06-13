@@ -1,9 +1,5 @@
 package com.itschool.study_pod.domain.enrollment.service;
 
-import com.itschool.study_pod.domain.introduce.dto.response.IntroduceResponse;
-import com.itschool.study_pod.domain.introduce.entity.Introduce;
-import com.itschool.study_pod.domain.studyboard.dto.response.StudyBoardResponse;
-import com.itschool.study_pod.domain.studyboard.entity.StudyBoard;
 import com.itschool.study_pod.global.base.dto.Header;
 import com.itschool.study_pod.domain.enrollment.dto.request.EnrollmentRequest;
 import com.itschool.study_pod.domain.enrollment.dto.response.EnrollmentResponse;
@@ -22,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -88,7 +83,7 @@ public class EnrollmentService extends CrudService<EnrollmentRequest, Enrollment
         return apiResponse(enrollment);
     }
 
-    public Header<EnrollmentResponse> enroll(Long studyGroupId, EnrollmentRequest request) {
+    public Header<EnrollmentResponse> enroll(EnrollmentRequest request) {
         Enrollment enrollment = Enrollment.of(request);         // DTO → Entity
         Enrollment saved = enrollmentRepository.save(enrollment); // DB 저장
         return Header.OK(saved.response());                     // Entity → Response DTO

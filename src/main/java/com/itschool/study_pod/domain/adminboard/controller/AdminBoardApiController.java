@@ -12,6 +12,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,14 +36,18 @@ public class AdminBoardApiController extends CrudController<AdminBoardRequest, A
 
     @GetMapping("/notices")
     @Operation(summary = "공지사항 게시글 목록 조회", description = "공지사항 카테고리에 해당하는 게시글 목록 조회")
-    public Header<List<AdminBoardResponse>> getNotices() {
-        return adminBoardService.findByCategory(AdminBoardCategory.NOTICE);
+    public Header<List<AdminBoardResponse>> getNotices(
+            @ParameterObject @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return adminBoardService.findByCategory(AdminBoardCategory.NOTICE, pageable);
     }
 
     @GetMapping("/faqs")
     @Operation(summary = "공지사항 FAQ 목록 조회", description = "FAQ 카테고리에 해당하는 게시글 목록 조회")
-    public Header<List<AdminBoardResponse>> getFaqs() {
-        return adminBoardService.findByCategory(AdminBoardCategory.FAQ);
+    public Header<List<AdminBoardResponse>> getFaqs(
+            @ParameterObject @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return adminBoardService.findByCategory(AdminBoardCategory.FAQ, pageable);
     }
 
     @GetMapping("/notices/{adminBoardId}")

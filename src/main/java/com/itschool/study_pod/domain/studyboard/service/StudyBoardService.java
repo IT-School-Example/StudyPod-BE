@@ -1,17 +1,15 @@
 package com.itschool.study_pod.domain.studyboard.service;
 
-import com.itschool.study_pod.domain.adminboard.dto.response.AdminBoardResponse;
-import com.itschool.study_pod.domain.adminboard.entity.AdminBoard;
 import com.itschool.study_pod.domain.studyboard.repository.StudyBoardRepository;
 import com.itschool.study_pod.global.base.crud.CrudService;
 import com.itschool.study_pod.domain.studyboard.dto.request.StudyBoardRequest;
 import com.itschool.study_pod.domain.studyboard.dto.response.StudyBoardResponse;
 import com.itschool.study_pod.domain.studyboard.entity.StudyBoard;
-
 import com.itschool.study_pod.global.base.dto.Header;
-import com.itschool.study_pod.global.enumclass.AdminBoardCategory;
 import com.itschool.study_pod.global.enumclass.StudyBoardCategory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
@@ -34,14 +32,10 @@ public class StudyBoardService extends CrudService<StudyBoardRequest, StudyBoard
         return StudyBoard.of(requestEntity);
     }
 
-    public Header<List<StudyBoardResponse>> findByCategory(StudyBoardCategory studyBoardCategory) {
-        List<StudyBoard> studyBoards = studyBoardRepository.findByStudyBoardCategory(studyBoardCategory);
+    public Header<List<StudyBoardResponse>> findByCategory(StudyBoardCategory studyBoardCategory, Pageable pageable) {
+        Page<StudyBoard> studyBoards = studyBoardRepository.findByStudyBoardCategory(studyBoardCategory, pageable);
 
-        List<StudyBoardResponse> responses = studyBoards.stream()
-                .map(StudyBoard::response)
-                .toList();
-
-        return Header.OK(responses);
+        return convertPageToList(studyBoards);
     }
 
     public Header<StudyBoardResponse> findByStudyBoardIdAndCategory(Long studyBoardId, StudyBoardCategory studyBoardCategory) {
