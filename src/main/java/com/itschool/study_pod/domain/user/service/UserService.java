@@ -86,9 +86,9 @@ public class UserService extends CrudService<UserRequest, UserResponse, User> {
         return userRepository.findByEmail(email);
     }
 
-    public User findById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
+                // .orElseThrow(() -> new EntityNotFoundException("User not found"));
     }
 
 
@@ -108,6 +108,11 @@ public class UserService extends CrudService<UserRequest, UserResponse, User> {
         return Header.OK();
     }
 
+
+    /*public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
+    }*/
+  
     @Transactional
     public void deleteUserById(Long userId) {
         if (!userRepository.existsById(userId)) {
@@ -116,5 +121,4 @@ public class UserService extends CrudService<UserRequest, UserResponse, User> {
 
         userRepository.deleteById(userId);
     }
-
 }

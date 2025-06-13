@@ -177,19 +177,20 @@ class StudyGroupApiControllerTest {
     }
 
     @Test
-    @DisplayName("주소 ID로 스터디 그룹 조회")
-    void testGetByAddressId() throws Exception {
+    @DisplayName("시/도 코드로 스터디 그룹 조회")
+    void testGetBySidoCd() throws Exception {
         StudyGroupResponse response = new StudyGroupResponse();
         response.setId(9L);
 
-        Mockito.when(studyGroupService.findByAddressId(eq(100L), any()))
+        Mockito.when(studyGroupService.findBySidoCd(eq("11"), any()))
                 .thenReturn(Header.OK(List.of(response)));
 
-        mockMvc.perform(get("/api/study-groups/filter/location")
-                        .param("value", "100"))
+        mockMvc.perform(get("/api/study-groups/filter/sido") // 정확한 경로
+                        .param("sidoCd", "11"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].id").value(9));
     }
+
 
     @Test
     @DisplayName("회원 ID와 상태로 스터디 조회")
@@ -206,5 +207,3 @@ class StudyGroupApiControllerTest {
                 .andExpect(jsonPath("$.data[0].id").value(11));
     }
 }
-
-

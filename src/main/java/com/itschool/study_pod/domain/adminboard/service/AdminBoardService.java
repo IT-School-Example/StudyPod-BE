@@ -8,6 +8,8 @@ import com.itschool.study_pod.global.base.crud.CrudService;
 import com.itschool.study_pod.global.base.dto.Header;
 import com.itschool.study_pod.global.enumclass.AdminBoardCategory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
@@ -31,14 +33,10 @@ public class AdminBoardService extends CrudService<AdminBoardRequest, AdminBoard
     }
 
     // 관리자 공지사항, FAQ 게시글 목록 조회
-    public Header<List<AdminBoardResponse>> findByCategory(AdminBoardCategory adminBoardCategory) {
-        List<AdminBoard> boards = adminBoardRepository.findByAdminBoardCategory(adminBoardCategory);
+    public Header<List<AdminBoardResponse>> findByCategory(AdminBoardCategory adminBoardCategory, Pageable pageable) {
+        Page<AdminBoard> boards = adminBoardRepository.findByAdminBoardCategory(adminBoardCategory, pageable);
 
-        List<AdminBoardResponse> responses = boards.stream()
-                .map(AdminBoard::response)
-                .toList();
-
-        return Header.OK(responses);
+        return convertPageToList(boards);
     }
 
 

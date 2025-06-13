@@ -4,8 +4,10 @@ import com.itschool.study_pod.domain.studygroup.entity.StudyGroup;
 import com.itschool.study_pod.global.enumclass.MeetingMethod;
 import com.itschool.study_pod.global.enumclass.RecruitmentStatus;
 import com.itschool.study_pod.global.enumclass.Subject;
+import jakarta.persistence.Entity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,7 +21,6 @@ public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long> {
 
     Page<StudyGroup> findAllByLeaderId(Long leaderId, Pageable pageable);
 
-    // POST /search 필터링용
     @Query("""
                 SELECT DISTINCT sg FROM StudyGroup sg
                 WHERE (
@@ -52,12 +53,9 @@ public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long> {
             """)
     Page<StudyGroup> searchByKeyword(@Param("kw") String keyword, Pageable pageable);
 
-    // 모집 상태로 조회
     Page<StudyGroup> findAllByRecruitmentStatus(RecruitmentStatus recruitmentStatus, Pageable pageable);
 
-    // 스터디 방식으로 조회
     Page<StudyGroup> findAllByMeetingMethod(MeetingMethod meetingMethod, Pageable pageable);
-
 
     @Query("""
                 SELECT sg FROM StudyGroup sg
@@ -66,16 +64,18 @@ public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long> {
             """)
     Page<StudyGroup> findBySubjectAreaAndRecruiting(@Param("subjectEnum") Subject subjectEnum, Pageable pageable);
 
-
+    // ✅ 추가된 시도 코드 기반 검색
+    @EntityGraph(attributePaths = {"address", "address.sido", "weeklySchedules"})
     @Query("""
                 SELECT sg FROM StudyGroup sg
-                WHERE sg.address.id = :addressId
+                WHERE sg.address.sido.sidoCd = :sidoCd
             """)
-    Page<StudyGroup> findByAddressId(@Param("addressId") Long addressId, Pageable pageable);
+    Page<StudyGroup> findBySidoCd(@Param("sidoCd") String sidoCd, Pageable pageable);
 
-    // 통계용
     long count();
+
     long countByCreatedAtAfter(LocalDateTime dateTime);
+
     long countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 
     @Query("""
@@ -86,4 +86,6 @@ public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long> {
                 ORDER BY cnt DESC
             """)
     List<Object[]> findTopKeywords();
+
 }
+

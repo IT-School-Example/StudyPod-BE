@@ -2,6 +2,7 @@ package com.itschool.study_pod.domain.Message.entity;
 
 import com.itschool.study_pod.domain.Message.dto.request.MessageRequest;
 import com.itschool.study_pod.domain.Message.dto.response.MessageResponse;
+import com.itschool.study_pod.domain.chatRoom.dto.response.ChatRoomResponse;
 import com.itschool.study_pod.domain.chatRoom.entity.ChatRoom;
 import com.itschool.study_pod.domain.user.dto.response.UserResponse;
 import com.itschool.study_pod.domain.user.entity.User;
@@ -33,6 +34,11 @@ public class Message extends BaseEntity implements Convertible<MessageRequest, M
     @JoinColumn(name = "sender_id", nullable = false)
     private User sender;
 
+    // 메시지를 받는 사용자
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "receiver_id", nullable = false)
+    private User receiver;
+
     // 메시지 내용
     @Column(name = "message_text", nullable = false)
     private String messageText;
@@ -49,7 +55,8 @@ public class Message extends BaseEntity implements Convertible<MessageRequest, M
     public static Message of(MessageRequest request) { //create용
         return Message.builder()
                 .chatRoom(ChatRoom.withId(request.getChatRoom().getId()))
-                .sender(request.getSender())
+                .sender(User.of(request.getSender()))
+                .receiver(User.of(request.getReceiver()))
                 .messageText(request.getMessageText())
                 .isRead(false)
                 .messageType(request.getMessageType())
@@ -59,7 +66,8 @@ public class Message extends BaseEntity implements Convertible<MessageRequest, M
     @Override
     public void update(MessageRequest request) {
         this.chatRoom = ChatRoom.withId(request.getChatRoom().getId());
-        this.sender = request.getSender();
+        this.sender = User.of(request.getSender());
+        this.receiver = User.of(request.getReceiver());
         this.messageText = request.getMessageText();
         this.isRead = request.isRead();
         this.messageType = request.getMessageType();
@@ -69,13 +77,20 @@ public class Message extends BaseEntity implements Convertible<MessageRequest, M
     public MessageResponse response() {
         return MessageResponse.builder()
                 .id(this.id)
-                .chatRoom(ChatRoom.withId(this.chatRoom.getId()))
+                .chatRoom(ChatRoomResponse.withId(this.chatRoom.getId()))
                 .sender(this.sender.response())
+                .receiver(this.receiver.response())
                 .messageText(this.messageText)
                 .isRead(this.isRead)
                 .messageType(this.messageType)
+                .createdBy(this.createdBy)
+                .createdAt(this.createdAt)
+                .updatedBy(this.updatedBy)
+                .updatedAt(this.updatedAt)
+                .isDeleted(this.isDeleted)
                 .build();
     }
+    
 
     public static Message withId(Long id) {
         return Message.builder()

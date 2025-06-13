@@ -166,12 +166,47 @@ class StudyGroupRepositoryTest extends StudyPodApplicationTests {
     }
 
     @Test
-    @DisplayName("주소 ID로 조회")
-    void findByAddressId() {
-        studyGroupRepository.save(defaultStudyGroup());
-        Page<StudyGroup> result = studyGroupRepository.findByAddressId(savedSgg.getId(), PageRequest.of(0, 10));
+    @DisplayName("시/도 코드로 스터디 그룹 조회")
+    void findBySidoCd() {
+        // 1. 시/도 저장
+        Sido sido = sidoRepository.save(Sido.builder()
+                .sidoCd("11")
+                .sidoNm("서울특별시")
+                .build());
+
+        // 2. 시군구 저장 (Sido 연관관계 명시)
+        Sgg sgg = sggRepository.save(Sgg.builder()
+                .sggCd("110")
+                .sggNm("종로구")
+                .sido(sido) // 연관 필수
+                .build());
+
+        // 3. 스터디 그룹 저장 (Sgg 연관 필요)
+        StudyGroup studyGroup = StudyGroup.builder()
+                .title("시도코드 조회 스터디")
+                .description("테스트 설명")
+                .maxMembers(5)
+                .meetingMethod(MeetingMethod.ONLINE)
+                .recruitmentStatus(RecruitmentStatus.RECRUITING)
+                .feeType(FeeType.MONTHLY)
+                .amount(10000L)
+                .leader(savedUser)
+                .address(sgg)
+                .subjectArea(savedSubject)
+                .keywords(Set.of("서울", "스터디"))
+                .weeklySchedules(Set.of(
+                        WeeklySchedule.of(DayOfWeek.MONDAY, 9, 0, 11, 0)
+                ))
+                .build();
+
+        studyGroupRepository.save(studyGroup);
+
+        // 4. 검증
+        var result = studyGroupRepository.findBySidoCd("11", PageRequest.of(0, 10));
         assertThat(result).isNotEmpty();
+        assertThat(result.getContent().get(0).getAddress().getSido().getSidoCd()).isEqualTo("11");
     }
+
 
     @Test
     @DisplayName("키워드 검색")

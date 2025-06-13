@@ -1,5 +1,6 @@
 package com.itschool.study_pod.domain.studygroup.service;
 
+import com.itschool.study_pod.common.AuthUtil;
 import com.itschool.study_pod.common.FileStorageUtil;
 import com.itschool.study_pod.domain.enrollment.entity.Enrollment;
 import com.itschool.study_pod.domain.enrollment.repository.EnrollmentRepository;
@@ -7,6 +8,7 @@ import com.itschool.study_pod.domain.imageFileUpload.service.ImageFileUploadServ
 import com.itschool.study_pod.domain.studygroup.dto.request.StudyGroupRequest;
 import com.itschool.study_pod.domain.studygroup.dto.request.StudyGroupSearchRequest;
 import com.itschool.study_pod.domain.studygroup.dto.response.StudyGroupResponse;
+import com.itschool.study_pod.domain.studygroup.dto.response.StudyGroupSummaryResponse;
 import com.itschool.study_pod.domain.studygroup.entity.StudyGroup;
 import com.itschool.study_pod.domain.studygroup.repository.StudyGroupRepository;
 import com.itschool.study_pod.domain.subjectarea.entity.SubjectArea;
@@ -24,6 +26,7 @@ import com.itschool.study_pod.global.enumclass.Subject;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.security.SecurityUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -46,7 +49,6 @@ public class StudyGroupService extends CrudWithFileService<StudyGroupRequest, St
     private final SggRepository sggRepository;
     private final SubjectAreaRepository subjectAreaRepository;
     private final FileStorageUtil fileStorageUtil;
-
 
     @Override
     protected JpaRepository<StudyGroup, Long> getBaseRepository() {
@@ -123,11 +125,7 @@ public class StudyGroupService extends CrudWithFileService<StudyGroupRequest, St
         return convertPageToList(results);
     }
 
-    public Header<List<StudyGroupResponse>> findAllByFilters(
-            String searchStr,
-            Header<StudyGroupSearchRequest> request,
-            Pageable pageable
-    ) {
+    public Header<List<StudyGroupResponse>> findAllByFilters(String searchStr, Header<StudyGroupSearchRequest> request, Pageable pageable) {
         StudyGroupSearchRequest conditions = request.getData();
 
         RecruitmentStatus recruitmentStatus = conditions.getRecruitmentStatus();
@@ -200,10 +198,11 @@ public class StudyGroupService extends CrudWithFileService<StudyGroupRequest, St
         }
     }
 
-    public Header<List<StudyGroupResponse>> findByAddressId(Long addressId, Pageable pageable) {
-        Page<StudyGroup> results = studyGroupRepository.findByAddressId(addressId, pageable);
+    // ✅ 시도 코드 기준 조회 기능 추가
+    public Header<List<StudyGroupResponse>> findBySidoCd(String sidoCd, Pageable pageable) {
+        Page<StudyGroup> results = studyGroupRepository.findBySidoCd(sidoCd, pageable);
         if (results.getTotalElements() == 0) {
-            return Header.ERROR("해당 조건의 스터디 그룹을 불러오지 못했습니다.");
+            return Header.ERROR("해당 시도 코드에 해당하는 스터디 그룹이 존재하지 않습니다.");
         }
         return convertPageToList(results);
     }
@@ -232,8 +231,7 @@ public class StudyGroupService extends CrudWithFileService<StudyGroupRequest, St
         // 추후에 시큐리티 적용해서 로그인 기능이 추가되면 활용 가능
         // Long userId = getCurrentAccountId();
 
-        Long userId = 1L;
-
+        Long userId = AuthUtil.getCurrentAccountId();
         // 해당 스터디의 멤버인지 확인
         boolean isMember = enrollmentRepository
                 .existsByStudyGroupIdAndUserIdAndStatus(studyGroupId, userId, EnrollmentStatus.APPROVED);
@@ -241,8 +239,7 @@ public class StudyGroupService extends CrudWithFileService<StudyGroupRequest, St
         if (!isMember) {
             throw new RuntimeException("해당 그룹에 대한 접근 권한이 없습니다.");
         }
-
-        return super.read(userId);
+        return super.read(studyGroupId);
     }
 
     public Header<StudyGroupResponse> update(Long id, StudyGroupRequest data, MultipartFile file) {
@@ -259,10 +256,8 @@ public class StudyGroupService extends CrudWithFileService<StudyGroupRequest, St
             SubjectArea subjectArea = subjectAreaRepository.findById(data.getSubjectArea().getId())
                     .orElseThrow(() -> new EntityNotFoundException("주제영역 ID가 존재하지 않습니다."));
 
-            // 기존 값 업데이트
             studyGroup.updateFromRequest(data, leader, address, subjectArea);
 
-            // 파일이 새로 들어왔으면 업로드
             if (file != null && !file.isEmpty()) {
                 String uploadDirPath = new File(System.getProperty("user.dir"), "uploads/study-group").getAbsolutePath();
                 String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
@@ -279,4 +274,19 @@ public class StudyGroupService extends CrudWithFileService<StudyGroupRequest, St
             return Header.ERROR("Unhandled exception: 파일 업로드 또는 데이터 처리 중 오류 발생");
         }
     }
+
+    public StudyGroupSummaryResponse getSummary(Long studyGroupId) {
+        StudyGroup studyGroup = studyGroupRepository.findById(studyGroupId)
+                .orElseThrow(() -> new RuntimeException("해당 스터디 그룹이 존재하지 않습니다."));
+
+        return toSummaryResponse(studyGroup);
+    }
+
+    private StudyGroupSummaryResponse toSummaryResponse(StudyGroup studyGroup) {
+        return StudyGroupSummaryResponse.builder()
+                .id(studyGroup.getId())
+                .title(studyGroup.getTitle())
+                .build();
+    }
+
 }
