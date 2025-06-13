@@ -35,11 +35,7 @@ public class StudyBoardService extends CrudService<StudyBoardRequest, StudyBoard
     public Header<List<StudyBoardResponse>> findByCategory(StudyBoardCategory studyBoardCategory, Pageable pageable) {
         Page<StudyBoard> studyBoards = studyBoardRepository.findByStudyBoardCategory(studyBoardCategory, pageable);
 
-        List<StudyBoardResponse> responses = studyBoards.stream()
-                .map(StudyBoard::response)
-                .toList();
-
-        return Header.OK(responses);
+        return convertPageToList(studyBoards);
     }
 
     public Header<StudyBoardResponse> findByStudyBoardIdAndCategory(Long studyBoardId, StudyBoardCategory studyBoardCategory) {

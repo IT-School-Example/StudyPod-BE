@@ -36,11 +36,7 @@ public class AdminBoardService extends CrudService<AdminBoardRequest, AdminBoard
     public Header<List<AdminBoardResponse>> findByCategory(AdminBoardCategory adminBoardCategory, Pageable pageable) {
         Page<AdminBoard> boards = adminBoardRepository.findByAdminBoardCategory(adminBoardCategory, pageable);
 
-        List<AdminBoardResponse> responses = boards.stream()
-                .map(AdminBoard::response)
-                .toList();
-
-        return Header.OK(responses);
+        return convertPageToList(boards);
     }
 
 
