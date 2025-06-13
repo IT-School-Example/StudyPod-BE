@@ -9,9 +9,11 @@ import com.itschool.study_pod.domain.introduce.service.IntroduceService;
 import com.itschool.study_pod.domain.studygroup.dto.request.StudyGroupRequest;
 import com.itschool.study_pod.domain.studygroup.dto.request.StudyGroupSearchRequest;
 import com.itschool.study_pod.domain.studygroup.dto.response.StudyGroupResponse;
+import com.itschool.study_pod.domain.studygroup.dto.response.StudyGroupSummaryResponse;
 import com.itschool.study_pod.domain.studygroup.entity.StudyGroup;
 import com.itschool.study_pod.domain.studygroup.service.StudyGroupService;
 import com.itschool.study_pod.domain.user.dto.response.UserResponse;
+import com.itschool.study_pod.global.base.account.Account;
 import com.itschool.study_pod.global.base.crud.CrudWithFileController;
 import com.itschool.study_pod.global.base.crud.CrudWithFileService;
 import com.itschool.study_pod.global.base.dto.Header;
@@ -30,6 +32,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -161,4 +165,19 @@ public class StudyGroupApiController extends CrudWithFileController<StudyGroupRe
         return enrollmentService.enroll(request);
     }
 
+
+    @GetMapping("/detail/{studyGroupId}")
+    @Operation(summary = "스터디 그룹 상세정보 보기", description = "스터디 그룹의 멤버만 상세정보 조회 가능합니다.")
+    public Header<StudyGroupResponse> viewStudyGroupDetail(@PathVariable(name = "studyGroupId") Long studyGroupId) {
+        return studyGroupService.read(studyGroupId);
+    }
+
+
+    @GetMapping("/{id}/summary")
+    @Operation(summary = "스터디 그룹 요약 정보 조회", description = "스터디 그룹 ID로 해당 그룹의 간단한 정보(id, 제목)를 조회합니다.")
+    public ResponseEntity<StudyGroupSummaryResponse> getStudyGroupSummary(@PathVariable Long id) {
+        StudyGroupSummaryResponse summaryResponse = studyGroupService.getSummary(id);
+        return ResponseEntity.ok(summaryResponse);
+    }
 }
+

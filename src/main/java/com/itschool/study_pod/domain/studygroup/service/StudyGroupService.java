@@ -1,5 +1,6 @@
 package com.itschool.study_pod.domain.studygroup.service;
 
+import com.itschool.study_pod.common.AuthUtil;
 import com.itschool.study_pod.common.FileStorageUtil;
 import com.itschool.study_pod.domain.enrollment.entity.Enrollment;
 import com.itschool.study_pod.domain.enrollment.repository.EnrollmentRepository;
@@ -7,6 +8,7 @@ import com.itschool.study_pod.domain.imageFileUpload.service.ImageFileUploadServ
 import com.itschool.study_pod.domain.studygroup.dto.request.StudyGroupRequest;
 import com.itschool.study_pod.domain.studygroup.dto.request.StudyGroupSearchRequest;
 import com.itschool.study_pod.domain.studygroup.dto.response.StudyGroupResponse;
+import com.itschool.study_pod.domain.studygroup.dto.response.StudyGroupSummaryResponse;
 import com.itschool.study_pod.domain.studygroup.entity.StudyGroup;
 import com.itschool.study_pod.domain.studygroup.repository.StudyGroupRepository;
 import com.itschool.study_pod.domain.subjectarea.entity.SubjectArea;
@@ -24,6 +26,7 @@ import com.itschool.study_pod.global.enumclass.Subject;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.security.SecurityUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -228,8 +231,7 @@ public class StudyGroupService extends CrudWithFileService<StudyGroupRequest, St
         // 추후에 시큐리티 적용해서 로그인 기능이 추가되면 활용 가능
         // Long userId = getCurrentAccountId();
 
-        Long userId = 1L;
-
+        Long userId = AuthUtil.getCurrentAccountId();
         // 해당 스터디의 멤버인지 확인
         boolean isMember = enrollmentRepository
                 .existsByStudyGroupIdAndUserIdAndStatus(studyGroupId, userId, EnrollmentStatus.APPROVED);
@@ -237,7 +239,7 @@ public class StudyGroupService extends CrudWithFileService<StudyGroupRequest, St
         if (!isMember) {
             throw new RuntimeException("해당 그룹에 대한 접근 권한이 없습니다.");
         }
-        return super.read(userId);
+        return super.read(studyGroupId);
     }
 
     public Header<StudyGroupResponse> update(Long id, StudyGroupRequest data, MultipartFile file) {
@@ -272,4 +274,19 @@ public class StudyGroupService extends CrudWithFileService<StudyGroupRequest, St
             return Header.ERROR("Unhandled exception: 파일 업로드 또는 데이터 처리 중 오류 발생");
         }
     }
+
+    public StudyGroupSummaryResponse getSummary(Long studyGroupId) {
+        StudyGroup studyGroup = studyGroupRepository.findById(studyGroupId)
+                .orElseThrow(() -> new RuntimeException("해당 스터디 그룹이 존재하지 않습니다."));
+
+        return toSummaryResponse(studyGroup);
+    }
+
+    private StudyGroupSummaryResponse toSummaryResponse(StudyGroup studyGroup) {
+        return StudyGroupSummaryResponse.builder()
+                .id(studyGroup.getId())
+                .title(studyGroup.getTitle())
+                .build();
+    }
+
 }

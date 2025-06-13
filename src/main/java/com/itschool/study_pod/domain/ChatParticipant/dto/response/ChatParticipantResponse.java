@@ -1,37 +1,30 @@
-package com.itschool.study_pod.domain.Message.dto.response;
+package com.itschool.study_pod.domain.ChatParticipant.dto.response;
 
-import com.itschool.study_pod.domain.Message.entity.Message;
 import com.itschool.study_pod.domain.chatRoom.dto.response.ChatRoomResponse;
 import com.itschool.study_pod.domain.chatRoom.entity.ChatRoom;
 import com.itschool.study_pod.domain.user.dto.response.UserResponse;
 import com.itschool.study_pod.domain.user.entity.User;
-import com.itschool.study_pod.global.enumclass.MessageType;
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.*;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Schema(description = "채팅방 응답 DTO")
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-public class MessageResponse {
-
+public class ChatParticipantResponse {
     private Long id;
 
     private ChatRoomResponse chatRoom;
 
-    private UserResponse sender;
+    private UserResponse user;
 
-    private UserResponse receiver;
+    private String message;
 
-    private String messageText;
-
-    private boolean isRead;
-
-    private MessageType messageType;
+    private LocalDateTime joinedAt;
 
     protected String createdBy;
 
@@ -43,11 +36,9 @@ public class MessageResponse {
 
     protected boolean isDeleted;
 
-    public static MessageResponse withId(Long id) {
-        return MessageResponse.builder()
+    public static ChatParticipantResponse withId(Long id) {
+        return ChatParticipantResponse.builder()
                 .id(id)
                 .build();
     }
-
-
 }

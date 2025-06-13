@@ -2,11 +2,13 @@ package com.itschool.study_pod.global.base.crud;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itschool.study_pod.domain.imageFileUpload.service.ImageFileUploadService;
+import com.itschool.study_pod.global.base.account.Account;
 import com.itschool.study_pod.global.base.dto.Header;
 import com.itschool.study_pod.global.base.account.IncludeFileUrl;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -116,4 +118,6 @@ public abstract class CrudWithFileService<Req, Res, Entity extends IncludeFileUr
             throw new RuntimeException("파일 삭제 오류 발생", e);
         }
     }
+
+
 }

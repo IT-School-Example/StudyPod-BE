@@ -1,6 +1,9 @@
 package com.itschool.study_pod.domain.chatRoom.dto.response;
 
+import com.itschool.study_pod.domain.ChatParticipant.entity.ChatParticipant;
+import com.itschool.study_pod.domain.studygroup.dto.response.StudyGroupSummaryResponse;
 import com.itschool.study_pod.domain.studygroup.entity.StudyGroup;
+import com.itschool.study_pod.domain.user.dto.response.UserResponse;
 import com.itschool.study_pod.domain.user.entity.User;
 import com.itschool.study_pod.global.enumclass.ChatRoomType;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,6 +14,8 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Schema(description = "채팅방 응답 DTO")
 @Data
@@ -22,13 +27,13 @@ public class ChatRoomResponse {
 
     private ChatRoomType type;
 
-    private User user1;
-
-    private User user2;
-
-    private StudyGroup studyGroup;
-
     private String name;
+
+    private Long creatorId;
+
+    private StudyGroupSummaryResponse studyGroup;
+
+    private Set<UserResponse> members = new HashSet<>();
 
     protected String createdBy;
 
@@ -40,9 +45,11 @@ public class ChatRoomResponse {
 
     protected boolean isDeleted;
 
+
     public static ChatRoomResponse withId(Long id) {
         return ChatRoomResponse.builder()
                 .id(id)
                 .build();
     }
+
 }

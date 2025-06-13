@@ -1,14 +1,21 @@
 package com.itschool.study_pod.domain.chatRoom.entity;
 
+import com.itschool.study_pod.domain.ChatParticipant.entity.ChatParticipant;
 import com.itschool.study_pod.domain.chatRoom.dto.request.ChatRoomRequest;
 import com.itschool.study_pod.domain.chatRoom.dto.response.ChatRoomResponse;
+import com.itschool.study_pod.domain.studygroup.dto.response.StudyGroupSummaryResponse;
 import com.itschool.study_pod.domain.studygroup.entity.StudyGroup;
+import com.itschool.study_pod.domain.user.dto.response.UserResponse;
 import com.itschool.study_pod.domain.user.entity.User;
 import com.itschool.study_pod.global.base.BaseEntity;
 import com.itschool.study_pod.global.base.crud.Convertible;
 import com.itschool.study_pod.global.enumclass.ChatRoomType;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -26,42 +33,42 @@ public class ChatRoom extends BaseEntity implements Convertible<ChatRoomRequest,
     @Column(nullable = false)
     private ChatRoomType type;
 
-    // 1:1 채팅
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user1_id")
-    private User user1;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user2_id")
-    private User user2;
-
-    // 그룹 채팅
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "study_group_id")
-    private StudyGroup studyGroup;
-
+    // 채팅방 이름
     @Column(length = 255)
     private String name;
 
+    // 그룹 채팅
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "study_group_id", unique = true)
+    private StudyGroup studyGroup;
+
+    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ChatParticipant> members = new HashSet<>();
+
     // 요청 DTO -> Entity로 변환하는 메서드
     public static ChatRoom of(ChatRoomRequest request) { // create용
-        if (request != null) {
-        return ChatRoom.builder()
+        ChatRoom chatRoom = ChatRoom.builder()
                 .type(request.getType())
-                .user1(request.getUser1())
-                .user2(request.getUser2())
-                .studyGroup(StudyGroup.withId(request.getStudyGroup().getId()))
                 .name(request.getName())
+                .studyGroup(StudyGroup.withId(request.getStudyGroup() != null ? request.getStudyGroup().getId() : null))
                 .build();
+
+        if (request.getMemberIds() != null && !request.getMemberIds().isEmpty()) {
+            Set<ChatParticipant> participants = request.getMemberIds().stream()
+                    .map(userId -> ChatParticipant.builder()
+                            .user(User.withId(userId))
+                            .chatRoom(chatRoom)
+                            .build())
+                    .collect(Collectors.toSet());
         }
-        return null;
+
+        return chatRoom;
     }
 
     @Override
     public void update(ChatRoomRequest request) {
         this.type = request.getType();
-        this.user1 = request.getUser1();
-        this.user2 = request.getUser2();
+
         this.studyGroup = StudyGroup.withId(request.getStudyGroup().getId());
         this.name = request.getName();
     }
@@ -71,10 +78,8 @@ public class ChatRoom extends BaseEntity implements Convertible<ChatRoomRequest,
         return ChatRoomResponse.builder()
                 .id(this.id)
                 .type(this.type)
-                .user1(this.user1)
-                .user2(this.user2)
-                .studyGroup(StudyGroup.withId(this.studyGroup.getId()))
                 .name(this.name)
+                .studyGroup(StudyGroupSummaryResponse.fromEntity(this.studyGroup))
                 .build();
     }
 
