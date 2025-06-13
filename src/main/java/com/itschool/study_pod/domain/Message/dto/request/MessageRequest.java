@@ -26,6 +26,9 @@ public class MessageRequest {
     @NotNull
     private UserRequest sender;
 
+    @NotNull
+    private UserRequest receiver;
+
     // 메시지 내용
     @NotNull
     private String messageText;

@@ -99,6 +99,16 @@ public class ChatRoomService extends CrudService<ChatRoomRequest, ChatRoomRespon
                 throw new RuntimeException("스터디그룹의 리더만 생성이 가능합니다.");
             }
 
+            for (Long userId : request.getMemberIds()) {
+                boolean isApproved = enrollmentRepository.existsByStudyGroupIdAndUserIdAndStatus(
+                        studyGroup.getId(),
+                        userId,
+                        EnrollmentStatus.APPROVED
+                );
+                if (!isApproved) {
+                    throw new RuntimeException("멤버 중에 승인되지 않은 사용자가 있습니다. userId:" + userId);
+                }
+            }
             /*int currentMemberCount = enrollmentRepository.existsByStudyGroupIdAndUserIdAndStatus(studyGroup.getId(), EnrollmentStatus.APPROVED);
             int maxMember = studyGroup.getMaxMember();
 
@@ -177,7 +187,7 @@ public class ChatRoomService extends CrudService<ChatRoomRequest, ChatRoomRespon
         return super.read(chatRoomId);
     }
 
-    /*// 사용자가 참여 중인 채팅방 리스트 조회
+    // 사용자가 참여 중인 채팅방 리스트 조회
     public Header<List<ChatRoomListItemResponse>> getChatRoomsForUser(Long userId) {
         List<ChatRoom> chatRooms = chatRoomRepository.findDistinctByMembersUserId(userId);
 
@@ -207,6 +217,6 @@ public class ChatRoomService extends CrudService<ChatRoomRequest, ChatRoomRespon
 
         }).collect(Collectors.toList()));
 
-    }*/
+    }
 
 }
