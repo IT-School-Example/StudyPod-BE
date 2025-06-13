@@ -4,8 +4,10 @@ import com.itschool.study_pod.domain.studygroup.entity.StudyGroup;
 import com.itschool.study_pod.global.enumclass.MeetingMethod;
 import com.itschool.study_pod.global.enumclass.RecruitmentStatus;
 import com.itschool.study_pod.global.enumclass.Subject;
+import jakarta.persistence.Entity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -63,6 +65,7 @@ public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long> {
     Page<StudyGroup> findBySubjectAreaAndRecruiting(@Param("subjectEnum") Subject subjectEnum, Pageable pageable);
 
     // ✅ 추가된 시도 코드 기반 검색
+    @EntityGraph(attributePaths = {"address", "address.sido", "weeklySchedules"})
     @Query("""
                 SELECT sg FROM StudyGroup sg
                 WHERE sg.address.sido.sidoCd = :sidoCd
@@ -72,6 +75,7 @@ public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long> {
     long count();
 
     long countByCreatedAtAfter(LocalDateTime dateTime);
+
     long countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 
     @Query("""
