@@ -63,7 +63,7 @@ public class WebSecurityConfig {
                         new AntPathRequestMatcher("/img/**"),
                         new AntPathRequestMatcher("/js/**"),
 
-                        new AntPathRequestMatcher("/api/**"),
+                        // new AntPathRequestMatcher("/api/**"),
                         new AntPathRequestMatcher("/api-docs"),
                         new AntPathRequestMatcher("/api-docs/**"),
                         new AntPathRequestMatcher("/v3/api-docs/**"),
@@ -91,9 +91,11 @@ public class WebSecurityConfig {
                                 new AntPathRequestMatcher("/api/user/mailCheck"),
                                 new AntPathRequestMatcher("/api/user/find-pw"),
                                 new AntPathRequestMatcher("/api/login"),
+                                new AntPathRequestMatcher("/api/introduce/**"),
                                 new AntPathRequestMatcher("/login"),
                                 new AntPathRequestMatcher("/signup"),
                                 new AntPathRequestMatcher("/api/study-groups"),
+                                new AntPathRequestMatcher("/api/study-groups/public/{id}"),
                                 new AntPathRequestMatcher("/api/user"),
                                 new AntPathRequestMatcher("/api/study-groups"),
                                 new AntPathRequestMatcher("/api/user/check-email")
