@@ -29,13 +29,18 @@ public class IntroduceService extends CrudService<IntroduceRequest, IntroduceRes
     }
 
     public Header<IntroduceResponse> findByStudyGroupId(Long studyGroupId) {
-        Optional<Introduce> optionalIntroduce = introduceRepository.findByStudyGroupId(studyGroupId);
+        Optional<Introduce> optional = Optional.ofNullable(introduceRepository.findByStudyGroupId(studyGroupId)
+                .orElse(null));
 
-        if (optionalIntroduce.isEmpty()) {
+        if (optional.isEmpty()) {
             return Header.ERROR("해당 스터디 그룹의 소개글이 존재하지 않습니다.");
         }
 
-        IntroduceResponse response = optionalIntroduce.get().response();
-        return Header.OK(response);
+        Introduce introduce = optional.get();
+        if (!introduce.isPosted()) {
+            return Header.ERROR("아직 개시되지 않은 소개글입니다.");
+        }
+        return Header.OK(introduce.response());
     }
+
 }

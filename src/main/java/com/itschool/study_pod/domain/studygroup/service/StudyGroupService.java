@@ -289,4 +289,11 @@ public class StudyGroupService extends CrudWithFileService<StudyGroupRequest, St
                 .build();
     }
 
+    public Header<StudyGroupResponse> readPublic(Long studyGroupId) {
+        StudyGroup group = studyGroupRepository.findById(studyGroupId)
+                .orElseThrow(() -> new RuntimeException("스터디 그룹을 찾을 수 없습니다."));
+        return Header.OK(group.response());
+    }
+
+
 }
