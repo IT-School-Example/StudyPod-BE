@@ -20,4 +20,7 @@ public interface StudyBoardRepository extends JpaRepository<StudyBoard, Long> {
     List<StudyBoard> findByStudyGroupIdAndStudyBoardCategory(Long studyGroupId, StudyBoardCategory studyBoardCategory);
 
     Optional<StudyBoard> findByIdAndStudyGroupIdAndStudyBoardCategory(Long id, Long studyGroupId, StudyBoardCategory studyBoardCategory);
+
+    Page<StudyBoard> findByStudyGroupId(Long studyGroupId, Pageable pageable);
+
 }

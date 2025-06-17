@@ -70,4 +70,8 @@ public class StudyBoardService extends CrudService<StudyBoardRequest, StudyBoard
                 .map(board -> Header.OK(board.response()))
                 .orElseGet(() -> Header.ERROR("해당 게시글을 찾을 수 없습니다."));
     }
+    public Header<List<StudyBoardResponse>> findByStudyGroupId(Long studyGroupId, Pageable pageable) {
+        Page<StudyBoard> studyBoards = studyBoardRepository.findByStudyGroupId(studyGroupId, pageable);
+        return convertPageToList(studyBoards);
+    }
 }

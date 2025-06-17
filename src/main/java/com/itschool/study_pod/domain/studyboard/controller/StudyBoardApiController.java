@@ -147,4 +147,12 @@ public class StudyBoardApiController extends CrudController<StudyBoardRequest, S
     ) {
         return commentService.deleteCommentIfFreeBoard(studyBoardId, commentId);
     }
+    @GetMapping("/study-groups/{studyGroupId}")
+    @Operation(summary = "스터디 그룹 전체 게시글 조회", description = "스터디 그룹 ID로 모든 게시글을 카테고리 구분 없이 조회합니다.")
+    public Header<List<StudyBoardResponse>> getStudyBoardsByGroup(
+            @PathVariable Long studyGroupId,
+            @ParameterObject @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return studyBoardService.findByStudyGroupId(studyGroupId, pageable);
+    }
 }
