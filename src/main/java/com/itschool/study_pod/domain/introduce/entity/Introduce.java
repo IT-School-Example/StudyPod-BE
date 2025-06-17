@@ -48,6 +48,10 @@ public class Introduce extends BaseEntity implements Convertible<IntroduceReques
         this.isPosted = request.isPosted();
     }
 
+    public void setPosted(boolean posted) {
+        this.isPosted = posted;
+    }
+
     @Override
     public IntroduceResponse response() {
         return IntroduceResponse.builder()
