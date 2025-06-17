@@ -17,9 +17,7 @@ public interface StudyBoardRepository extends JpaRepository<StudyBoard, Long> {
 
     Optional<StudyBoard> findByIdAndStudyBoardCategory(Long id, StudyBoardCategory studyBoardCategory);
 
-    // 보류
-    // List<StudyBoard> findByStudyGroupIdAndStudyBoardCategory(Long studyGroupId, StudyBoardCategory studyBoardCategory);
+    List<StudyBoard> findByStudyGroupIdAndStudyBoardCategory(Long studyGroupId, StudyBoardCategory studyBoardCategory);
 
-    // 보류
-    // Optional<StudyBoard> findByIdAndStudyGroupIdAndStudyBoardCategory(Long id, Long studyGroupId, StudyBoardCategory studyBoardCategory);
+    Optional<StudyBoard> findByIdAndStudyGroupIdAndStudyBoardCategory(Long id, Long studyGroupId, StudyBoardCategory studyBoardCategory);
 }
