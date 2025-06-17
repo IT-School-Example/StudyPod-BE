@@ -179,5 +179,14 @@ public class StudyGroupApiController extends CrudWithFileController<StudyGroupRe
         StudyGroupSummaryResponse summaryResponse = studyGroupService.getSummary(id);
         return ResponseEntity.ok(summaryResponse);
     }
+
+    // ✅ 비회원도 접근 가능한 스터디 그룹 조회 API
+    @GetMapping("/public/{id}")
+    @Operation(summary = "스터디 그룹 공개 조회 (비회원용)", description = "로그인하지 않아도 스터디 그룹 ID로 상세 정보를 조회할 수 있습니다.")
+    public Header<StudyGroupResponse> readPublicStudyGroup(@PathVariable Long id) {
+        return studyGroupService.readPublic(id);
+    }
+
+
 }
 
