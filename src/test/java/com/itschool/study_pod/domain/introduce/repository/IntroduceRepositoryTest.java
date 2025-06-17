@@ -6,12 +6,10 @@ import com.itschool.study_pod.domain.introduce.entity.Introduce;
 import com.itschool.study_pod.domain.studygroup.entity.StudyGroup;
 import com.itschool.study_pod.domain.subjectarea.entity.SubjectArea;
 import com.itschool.study_pod.domain.user.entity.User;
-import com.itschool.study_pod.global.address.entity.Sgg;
 import com.itschool.study_pod.global.address.entity.Sido;
 import com.itschool.study_pod.domain.studygroup.repository.StudyGroupRepository;
 import com.itschool.study_pod.domain.subjectarea.repository.SubjectAreaRepository;
 import com.itschool.study_pod.domain.user.repository.UserRepository;
-import com.itschool.study_pod.global.address.repository.SggRepository;
 import com.itschool.study_pod.global.address.repository.SidoRepository;
 import com.itschool.study_pod.global.enumclass.*;
 import jakarta.persistence.EntityNotFoundException;
@@ -45,9 +43,6 @@ class IntroduceRepositoryTest extends StudyPodApplicationTests {
     private SubjectAreaRepository subjectAreaRepository;
 
     @Autowired
-    private SggRepository sggRepository;
-
-    @Autowired
     private SidoRepository sidoRepository;
 
     private StudyGroup savedStudyGroup;
@@ -58,14 +53,12 @@ class IntroduceRepositoryTest extends StudyPodApplicationTests {
 
     private Sido savedSido;
 
-    private Sgg savedSgg;
-
     @BeforeEach
     public void beforeSetUp() {
 
         savedUser = userRepository.save(
                 User.builder()
-                        .email(UUID.randomUUID() +"@example.com")
+                        .email(UUID.randomUUID() + "@example.com")
                         .password("1234")
                         .role(AccountRole.ROLE_USER)
                         .name("abc")
@@ -84,14 +77,6 @@ class IntroduceRepositoryTest extends StudyPodApplicationTests {
 
         savedSido = sidoRepository.save(sido);
 
-        Sgg sgg = Sgg.builder()
-                .sido(savedSido)
-                .sggCd("110")
-                .sggNm("종로구")
-                .build();
-
-        savedSgg = sggRepository.save(sgg);
-
         StudyGroup studyGroup = StudyGroup.builder()
                 .title("자바 스터디")
                 .description("설명")
@@ -101,7 +86,7 @@ class IntroduceRepositoryTest extends StudyPodApplicationTests {
                 .feeType(FeeType.MONTHLY)
                 .amount(10000L)
                 .leader(savedUser)
-                .address(savedSgg)
+                .sido(Sido.withId(savedSido.getSidoCd()))
                 .subjectArea(savedSubject)
                 .keywords(Set.of("키워드1", "키워드2"))
                 .weeklySchedules(Set.of(WeeklySchedule.builder()
@@ -134,7 +119,7 @@ class IntroduceRepositoryTest extends StudyPodApplicationTests {
         long afterCount = introduceRepository.count();
 
         assertThat(entity).isEqualTo(savedEntity);
-        assertThat(afterCount).isEqualTo(beforeCount+1L);
+        assertThat(afterCount).isEqualTo(beforeCount + 1L);
         assertThat(savedEntity.isDeleted()).isFalse();
     }
 

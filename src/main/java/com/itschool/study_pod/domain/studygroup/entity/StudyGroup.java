@@ -6,10 +6,10 @@ import com.itschool.study_pod.domain.subjectarea.entity.SubjectArea;
 import com.itschool.study_pod.domain.user.entity.User;
 import com.itschool.study_pod.domain.subjectarea.dto.response.SubjectAreaResponse;
 import com.itschool.study_pod.domain.user.dto.response.UserResponse;
-import com.itschool.study_pod.global.address.dto.response.SggResponse;
+import com.itschool.study_pod.global.address.dto.response.SidoResponse;
+import com.itschool.study_pod.global.address.entity.Sido;
 import com.itschool.study_pod.global.base.account.IncludeFileUrl;
 import com.itschool.study_pod.global.embedable.WeeklySchedule;
-import com.itschool.study_pod.global.address.entity.Sgg;
 import com.itschool.study_pod.global.enumclass.FeeType;
 import com.itschool.study_pod.global.enumclass.MeetingMethod;
 import com.itschool.study_pod.global.enumclass.RecruitmentStatus;
@@ -67,8 +67,8 @@ public class StudyGroup extends IncludeFileUrl<StudyGroupRequest, StudyGroupResp
     private User leader;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id", referencedColumnName = "sgg_id", nullable = false)
-    private Sgg address;
+    @JoinColumn(name = "sido_cd", referencedColumnName = "sido_cd")
+    private Sido sido;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_area_id", nullable = false)
@@ -102,7 +102,7 @@ public class StudyGroup extends IncludeFileUrl<StudyGroupRequest, StudyGroupResp
                 .feeType(request.getFeeType())
                 .amount(request.getAmount())
                 .leader(User.withId(request.getLeader().getId()))
-                .address(Sgg.withId(request.getAddress().getId()))
+                .sido(Sido.withId(request.getSidoCd()))
                 .subjectArea(SubjectArea.withId(request.getSubjectArea().getId()))
                 .keywords(request.getKeywords())
                 .weeklySchedules(request.getWeeklySchedules())
@@ -123,10 +123,8 @@ public class StudyGroup extends IncludeFileUrl<StudyGroupRequest, StudyGroupResp
         this.maxMembers = request.getMaxMembers();
         this.meetingMethod = request.getMeetingMethod();
         this.recruitmentStatus = request.getRecruitmentStatus();
-
-        this.address = Sgg.withId(request.getAddress().getId());
+        this.sido = Sido.withId(request.getSidoCd());
         this.subjectArea = SubjectArea.withId(request.getSubjectArea().getId());
-
         this.feeType = request.getFeeType();
         this.amount = request.getAmount();
         this.keywords = request.getKeywords();
@@ -148,7 +146,7 @@ public class StudyGroup extends IncludeFileUrl<StudyGroupRequest, StudyGroupResp
                 .feeType(this.feeType)
                 .amount(this.amount)
                 .leader(UserResponse.withId(this.leader.getId()))
-                .address(SggResponse.toDto(this.address))
+                .sido(SidoResponse.withId(this.sido.getSidoCd()))
                 .subjectArea(SubjectAreaResponse.withId(this.subjectArea.getId()))
                 .keywords(this.keywords)
                 .weeklySchedules(this.weeklySchedules)
@@ -161,7 +159,7 @@ public class StudyGroup extends IncludeFileUrl<StudyGroupRequest, StudyGroupResp
     }
 
 
-    public void updateFromRequest(StudyGroupRequest req, User leader, Sgg address, SubjectArea subjectArea) {
+    public void updateFromRequest(StudyGroupRequest req, User leader, String sidoCd, SubjectArea subjectArea) {
         this.title = req.getTitle();
         this.description = req.getDescription();
         this.maxMembers = req.getMaxMembers();
@@ -170,7 +168,7 @@ public class StudyGroup extends IncludeFileUrl<StudyGroupRequest, StudyGroupResp
         this.feeType = req.getFeeType();
         this.amount = req.getAmount();
         this.leader = leader;
-        this.address = address;
+        this.sido = Sido.withId(sidoCd);
         this.subjectArea = subjectArea;
         this.keywords = req.getKeywords();
         this.weeklySchedules = req.getWeeklySchedules();

@@ -42,8 +42,8 @@ public class StudyGroupRequest {
     @NotNull(message = "리더 정보는 필수입니다.")
     private ReferenceDto leader;
 
-    @NotNull(message = "주소 정보는 필수입니다.")
-    private ReferenceDto address;
+    @NotBlank(message = "시도 코드는 필수입니다.")
+    private String sidoCd;
 
     @NotNull(message = "주제 영역은 필수입니다.")
     private ReferenceDto subjectArea;

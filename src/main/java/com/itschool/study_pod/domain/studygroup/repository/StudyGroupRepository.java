@@ -65,10 +65,9 @@ public interface StudyGroupRepository extends JpaRepository<StudyGroup, Long> {
     Page<StudyGroup> findBySubjectAreaAndRecruiting(@Param("subjectEnum") Subject subjectEnum, Pageable pageable);
 
     // ✅ 추가된 시도 코드 기반 검색
-    @EntityGraph(attributePaths = {"address", "address.sido", "weeklySchedules"})
     @Query("""
                 SELECT sg FROM StudyGroup sg
-                WHERE sg.address.sido.sidoCd = :sidoCd
+                WHERE sg.sido.sidoCd = :sidoCd
             """)
     Page<StudyGroup> findBySidoCd(@Param("sidoCd") String sidoCd, Pageable pageable);
 

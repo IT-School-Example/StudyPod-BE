@@ -2,7 +2,7 @@ package com.itschool.study_pod.domain.studygroup.dto.response;
 
 import com.itschool.study_pod.domain.subjectarea.dto.response.SubjectAreaResponse;
 import com.itschool.study_pod.domain.user.dto.response.UserResponse;
-import com.itschool.study_pod.global.address.dto.response.SggResponse;
+import com.itschool.study_pod.global.address.dto.response.SidoResponse;
 import com.itschool.study_pod.global.embedable.WeeklySchedule;
 import com.itschool.study_pod.global.enumclass.FeeType;
 import com.itschool.study_pod.global.enumclass.MeetingMethod;
@@ -47,8 +47,8 @@ public class StudyGroupResponse {
     @Schema(description = "스터디 리더 정보")
     private UserResponse leader;
 
-    @Schema(description = "주소 정보")
-    private SggResponse address;
+    @Schema(description = "시도")
+    private SidoResponse sido;
 
     @Schema(description = "주제 영역")
     private SubjectAreaResponse subjectArea;

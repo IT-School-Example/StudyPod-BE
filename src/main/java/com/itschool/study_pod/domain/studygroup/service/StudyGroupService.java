@@ -4,7 +4,6 @@ import com.itschool.study_pod.common.AuthUtil;
 import com.itschool.study_pod.common.FileStorageUtil;
 import com.itschool.study_pod.domain.enrollment.entity.Enrollment;
 import com.itschool.study_pod.domain.enrollment.repository.EnrollmentRepository;
-import com.itschool.study_pod.domain.imageFileUpload.service.ImageFileUploadService;
 import com.itschool.study_pod.domain.studygroup.dto.request.StudyGroupRequest;
 import com.itschool.study_pod.domain.studygroup.dto.request.StudyGroupSearchRequest;
 import com.itschool.study_pod.domain.studygroup.dto.response.StudyGroupResponse;
@@ -15,8 +14,7 @@ import com.itschool.study_pod.domain.subjectarea.entity.SubjectArea;
 import com.itschool.study_pod.domain.subjectarea.repository.SubjectAreaRepository;
 import com.itschool.study_pod.domain.user.entity.User;
 import com.itschool.study_pod.domain.user.repository.UserRepository;
-import com.itschool.study_pod.global.address.entity.Sgg;
-import com.itschool.study_pod.global.address.repository.SggRepository;
+import com.itschool.study_pod.global.address.entity.Sido;
 import com.itschool.study_pod.global.base.crud.CrudWithFileService;
 import com.itschool.study_pod.global.base.dto.Header;
 import com.itschool.study_pod.global.enumclass.EnrollmentStatus;
@@ -26,13 +24,11 @@ import com.itschool.study_pod.global.enumclass.Subject;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.security.SecurityUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.io.File;
 import java.util.List;
@@ -46,7 +42,6 @@ public class StudyGroupService extends CrudWithFileService<StudyGroupRequest, St
     private final StudyGroupRepository studyGroupRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final UserRepository userRepository;
-    private final SggRepository sggRepository;
     private final SubjectAreaRepository subjectAreaRepository;
     private final FileStorageUtil fileStorageUtil;
 
@@ -75,9 +70,6 @@ public class StudyGroupService extends CrudWithFileService<StudyGroupRequest, St
             User leader = userRepository.findById(data.getLeader().getId())
                     .orElseThrow(() -> new EntityNotFoundException("리더 ID가 존재하지 않습니다."));
 
-            Sgg address = sggRepository.findById(data.getAddress().getId())
-                    .orElseThrow(() -> new EntityNotFoundException("주소 ID가 존재하지 않습니다."));
-
             SubjectArea subjectArea = subjectAreaRepository.findById(data.getSubjectArea().getId())
                     .orElseThrow(() -> new EntityNotFoundException("주제영역 ID가 존재하지 않습니다."));
 
@@ -90,7 +82,7 @@ public class StudyGroupService extends CrudWithFileService<StudyGroupRequest, St
                     .feeType(data.getFeeType())
                     .amount(data.getAmount())
                     .leader(leader)
-                    .address(address)
+                    .sido(Sido.withId(data.getSidoCd()))
                     .subjectArea(subjectArea)
                     .keywords(data.getKeywords())
                     .weeklySchedules(data.getWeeklySchedules())
@@ -250,13 +242,10 @@ public class StudyGroupService extends CrudWithFileService<StudyGroupRequest, St
             User leader = userRepository.findById(data.getLeader().getId())
                     .orElseThrow(() -> new EntityNotFoundException("리더 ID가 존재하지 않습니다."));
 
-            Sgg address = sggRepository.findById(data.getAddress().getId())
-                    .orElseThrow(() -> new EntityNotFoundException("주소 ID가 존재하지 않습니다."));
-
             SubjectArea subjectArea = subjectAreaRepository.findById(data.getSubjectArea().getId())
                     .orElseThrow(() -> new EntityNotFoundException("주제영역 ID가 존재하지 않습니다."));
 
-            studyGroup.updateFromRequest(data, leader, address, subjectArea);
+            studyGroup.updateFromRequest(data, leader, data.getSidoCd(), subjectArea);
 
             if (file != null && !file.isEmpty()) {
                 String uploadDirPath = new File(System.getProperty("user.dir"), "uploads/study-group").getAbsolutePath();
