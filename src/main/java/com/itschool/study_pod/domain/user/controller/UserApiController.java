@@ -42,6 +42,12 @@ public class UserApiController extends CrudController<UserRequest, UserResponse,
         return userService;
     }
 
+    @Operation(summary = "사용자 이름과 닉네임 조회", description = "유저 ID를 통해 이름과 닉네임을 조회합니다.")
+    @GetMapping("/{id}/summary")
+    public Header<Map<String, String>> getUserSummary(@PathVariable(name = "id") Long id) {
+        return userService.getUserSummary(id);
+    }
+
     @Operation(summary = "현재 로그인된 사용자 탈퇴", description = "accessToken 기반 사용자 탈퇴")
     @DeleteMapping("/signout")
     @ResponseStatus(HttpStatus.NO_CONTENT)

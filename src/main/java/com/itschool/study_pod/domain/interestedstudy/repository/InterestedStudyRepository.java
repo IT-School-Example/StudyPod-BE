@@ -7,10 +7,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.List;
 
 @Repository
 public interface InterestedStudyRepository extends JpaRepository<InterestedStudy, Long> {
     Optional<InterestedStudy> findByStudyGroupAndUser(StudyGroup studyGroup, User user);
+
+    List<InterestedStudy> findAllByUserIdAndIsDeletedFalse(Long userId);
 //    Optional<InterestedStudy> findById(Long interestedStudyList);
 //
 //    List<InterestedStudy> findByName(String name);

@@ -115,6 +115,15 @@ public class StudyGroupApiController extends CrudWithFileController<StudyGroupRe
         return enrollmentService.findEnrolledStudyGroupsByUserId(accountId, enrollmentStatus);
     }
 
+    @Operation(summary = "스터디 신청서 목록 조회", description = "스터디 그룹 ID와 상태값으로 신청서를 조회합니다.")
+    @GetMapping("/{studyId}/enrollments")
+    public Header<List<EnrollmentResponse>> getEnrollments(
+            @PathVariable("studyId") Long studyGroupId,
+            @RequestParam(name = "status", required = false) EnrollmentStatus status
+    ) {
+        return enrollmentService.findEnrollmentsByStudyGroupIdAndStatus(studyGroupId, status);
+    }
+
     @GetMapping("/leader/{leaderId}")
     @Operation(summary = "스터디 리더가 개설한 스터디 그룹 조회", description = "리더 ID로 생성한 스터디 그룹을 조회합니다.")
     public Header<List<StudyGroupResponse>> getStudyGroupsByLeaderId(
@@ -165,7 +174,6 @@ public class StudyGroupApiController extends CrudWithFileController<StudyGroupRe
         return enrollmentService.enroll(request);
     }
 
-
     @GetMapping("/detail/{studyGroupId}")
     @Operation(summary = "스터디 그룹 상세정보 보기", description = "스터디 그룹의 멤버만 상세정보 조회 가능합니다.")
     public Header<StudyGroupResponse> viewStudyGroupDetail(@PathVariable(name = "studyGroupId") Long studyGroupId) {
@@ -179,5 +187,14 @@ public class StudyGroupApiController extends CrudWithFileController<StudyGroupRe
         StudyGroupSummaryResponse summaryResponse = studyGroupService.getSummary(id);
         return ResponseEntity.ok(summaryResponse);
     }
+
+    // ✅ 비회원도 접근 가능한 스터디 그룹 조회 API
+    @GetMapping("/public/{id}")
+    @Operation(summary = "스터디 그룹 공개 조회 (비회원용)", description = "로그인하지 않아도 스터디 그룹 ID로 상세 정보를 조회할 수 있습니다.")
+    public Header<StudyGroupResponse> readPublicStudyGroup(@PathVariable Long id) {
+        return studyGroupService.readPublic(id);
+    }
+
+
 }
 
