@@ -1,5 +1,6 @@
 package com.itschool.study_pod.global.address.entity;
 
+import com.itschool.study_pod.domain.user.entity.User;
 import com.itschool.study_pod.global.address.dto.request.SidoRequest;
 import com.itschool.study_pod.global.address.dto.response.SidoResponse;
 import com.itschool.study_pod.global.base.crud.Convertible;
@@ -15,16 +16,16 @@ import org.hibernate.type.SqlTypes;
 @Builder
 @Table(schema = "address",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"sidoNm"})
+                @UniqueConstraint(columnNames = {"sido_nm"})
         }
 )
 public class Sido implements Convertible<SidoRequest, SidoResponse> {
     @Id
     @JdbcTypeCode(SqlTypes.CHAR)
-    @Column(length = 2) // , insertable = false, updatable = false
+    @Column(name = "sido_cd", columnDefinition = "CHAR(2)", length = 2)
     private String sidoCd;
 
-    @Column(columnDefinition = "character varying(100)") // , insertable = false, updatable = false
+    @Column(name = "sido_nm", columnDefinition = "character varying(100)")
     private String sidoNm;
 
     @Deprecated
@@ -36,6 +37,12 @@ public class Sido implements Convertible<SidoRequest, SidoResponse> {
                     .build();
         }
         return null;
+    }
+
+    public static Sido withId(String sidoCd) {
+        return Sido.builder()
+                .sidoCd(sidoCd)
+                .build();
     }
 
     @Deprecated

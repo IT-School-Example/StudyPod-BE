@@ -4,7 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -22,23 +21,24 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuperBuilder
 public abstract class BaseEntity {
+
     @CreatedBy
-    @Column(updatable = false, nullable = false)
+    @Column(name = "created_by", updatable = false, nullable = false)
     protected String createdBy;
 
     @CreatedDate
-    @Column(updatable = false, nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "created_at", updatable = false, nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     protected LocalDateTime createdAt;
 
     @LastModifiedBy
-    @Column(nullable = false)
+    @Column(name = "updated_by", nullable = false)
     protected String updatedBy;
 
     @LastModifiedDate
-    @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "updated_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     protected LocalDateTime updatedAt;
 
-    @Column(nullable = false, columnDefinition = "Boolean DEFAULT FALSE")
+    @Column(name = "is_deleted", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
     protected boolean isDeleted;
 
     public void softDelete() {

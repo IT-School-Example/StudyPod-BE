@@ -8,9 +8,8 @@ import com.itschool.study_pod.domain.subjectarea.entity.SubjectArea;
 import com.itschool.study_pod.domain.subjectarea.repository.SubjectAreaRepository;
 import com.itschool.study_pod.domain.user.entity.User;
 import com.itschool.study_pod.domain.user.repository.UserRepository;
-import com.itschool.study_pod.global.address.entity.Sgg;
+import com.itschool.study_pod.global.address.dto.request.SidoRequest;
 import com.itschool.study_pod.global.address.entity.Sido;
-import com.itschool.study_pod.global.address.repository.SggRepository;
 import com.itschool.study_pod.global.address.repository.SidoRepository;
 import com.itschool.study_pod.global.base.dto.Header;
 import com.itschool.study_pod.global.base.dto.ReferenceDto;
@@ -42,15 +41,12 @@ class StudyGroupServiceTest extends StudyPodApplicationTests {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private SggRepository sggRepository;
-    @Autowired
     private SidoRepository sidoRepository;
     @Autowired
     private SubjectAreaRepository subjectAreaRepository;
 
     private User leader;
     private Sido sido;
-    private Sgg sgg;
     private SubjectArea subjectArea;
 
     @BeforeEach
@@ -66,13 +62,6 @@ class StudyGroupServiceTest extends StudyPodApplicationTests {
         sido = sidoRepository.save(Sido.builder()
                 .sidoCd("11")
                 .sidoNm("서울특별시")
-                .build());
-
-        // ✅ sggCd를 3자리 이하로 수정
-        sgg = sggRepository.save(Sgg.builder()
-                .sggCd("123") // 변경된 부분
-                .sggNm("테스트구")
-                .sido(sido)
                 .build());
 
         subjectArea = subjectAreaRepository.save(SubjectArea.builder()
@@ -91,7 +80,10 @@ class StudyGroupServiceTest extends StudyPodApplicationTests {
                 .feeType(FeeType.ONE_TIME) // or FeeType.PER_EVENT
                 .amount(0L)
                 .leader(ReferenceDto.builder().id(leader.getId()).build())
-                .address(ReferenceDto.builder().id(sgg.getId()).build())
+                .sido(SidoRequest.builder()
+                        .sidoCd(sido.getSidoCd())
+                        .sidoNm(sido.getSidoNm())
+                        .build())
                 .subjectArea(ReferenceDto.builder().id(subjectArea.getId()).build())
                 .keywords(Set.of("자바", "스프링"))
                 .weeklySchedules(Set.of(WeeklySchedule.of(DayOfWeek.MONDAY, 10, 0, 12, 0)))
@@ -140,8 +132,6 @@ class StudyGroupServiceTest extends StudyPodApplicationTests {
         StudyGroupResponse response = result.getData().get(0);
 
         // 가장 안전하고 명확한 검증
-        assertThat(response.getAddress()).isNotNull();
-        assertThat(response.getAddress().getSido()).isNotNull();
-        assertThat(response.getAddress().getSido().getSidoCd()).isEqualTo("11");
+        assertThat(response.getSido().getSidoCd()).isEqualTo("11");
     }
 }

@@ -5,11 +5,9 @@ import com.itschool.study_pod.global.embedable.WeeklySchedule;
 import com.itschool.study_pod.domain.studygroup.entity.StudyGroup;
 import com.itschool.study_pod.domain.subjectarea.entity.SubjectArea;
 import com.itschool.study_pod.domain.user.entity.User;
-import com.itschool.study_pod.global.address.entity.Sgg;
 import com.itschool.study_pod.global.address.entity.Sido;
 import com.itschool.study_pod.domain.subjectarea.repository.SubjectAreaRepository;
 import com.itschool.study_pod.domain.user.repository.UserRepository;
-import com.itschool.study_pod.global.address.repository.SggRepository;
 import com.itschool.study_pod.global.address.repository.SidoRepository;
 import com.itschool.study_pod.global.enumclass.*;
 import jakarta.persistence.EntityNotFoundException;
@@ -37,14 +35,11 @@ class StudyGroupRepositoryTest extends StudyPodApplicationTests {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private SggRepository sggRepository;
-    @Autowired
     private SidoRepository sidoRepository;
 
     private SubjectArea savedSubject;
     private User savedUser;
     private Sido savedSido;
-    private Sgg savedSgg;
 
     @BeforeEach
     public void beforeSetUp() {
@@ -57,7 +52,6 @@ class StudyGroupRepositoryTest extends StudyPodApplicationTests {
                 .nickname(UUID.randomUUID().toString())
                 .build());
         savedSido = sidoRepository.save(Sido.builder().sidoCd("11").sidoNm("서울특별시").build());
-        savedSgg = sggRepository.save(Sgg.builder().sido(savedSido).sggCd("110").sggNm("종로구").build());
     }
 
     @Test
@@ -87,7 +81,7 @@ class StudyGroupRepositoryTest extends StudyPodApplicationTests {
                 .feeType(FeeType.MONTHLY)
                 .amount(10000L)
                 .leader(savedUser)
-                .address(savedSgg)
+                .sido(Sido.withId("11"))
                 .subjectArea(savedSubject)
                 .keywords(new HashSet<>(Set.of("키워드1", "키워드2")))
                 .weeklySchedules(new HashSet<>(Set.of(WeeklySchedule.builder()
@@ -109,7 +103,7 @@ class StudyGroupRepositoryTest extends StudyPodApplicationTests {
                 .feeType(savedEntity.getFeeType())
                 .amount(savedEntity.getAmount())
                 .leader(savedEntity.getLeader())
-                .address(savedEntity.getAddress())
+                .sido(savedEntity.getSido())
                 .subjectArea(savedEntity.getSubjectArea())
                 .keywords(savedEntity.getKeywords())
                 .weeklySchedules(savedEntity.getWeeklySchedules())
@@ -174,14 +168,7 @@ class StudyGroupRepositoryTest extends StudyPodApplicationTests {
                 .sidoNm("서울특별시")
                 .build());
 
-        // 2. 시군구 저장 (Sido 연관관계 명시)
-        Sgg sgg = sggRepository.save(Sgg.builder()
-                .sggCd("110")
-                .sggNm("종로구")
-                .sido(sido) // 연관 필수
-                .build());
-
-        // 3. 스터디 그룹 저장 (Sgg 연관 필요)
+        // 3. 스터디 그룹 저장
         StudyGroup studyGroup = StudyGroup.builder()
                 .title("시도코드 조회 스터디")
                 .description("테스트 설명")
@@ -191,7 +178,7 @@ class StudyGroupRepositoryTest extends StudyPodApplicationTests {
                 .feeType(FeeType.MONTHLY)
                 .amount(10000L)
                 .leader(savedUser)
-                .address(sgg)
+                .sido(savedSido)
                 .subjectArea(savedSubject)
                 .keywords(Set.of("서울", "스터디"))
                 .weeklySchedules(Set.of(
@@ -204,7 +191,7 @@ class StudyGroupRepositoryTest extends StudyPodApplicationTests {
         // 4. 검증
         var result = studyGroupRepository.findBySidoCd("11", PageRequest.of(0, 10));
         assertThat(result).isNotEmpty();
-        assertThat(result.getContent().get(0).getAddress().getSido().getSidoCd()).isEqualTo("11");
+        assertThat(result.getContent().get(0).getSido().getSidoCd()).isEqualTo("11");
     }
 
 
@@ -234,7 +221,7 @@ class StudyGroupRepositoryTest extends StudyPodApplicationTests {
                 .feeType(FeeType.MONTHLY)
                 .amount(10000L)
                 .leader(savedUser)
-                .address(savedSgg)
+                .sido(Sido.withId("11"))
                 .subjectArea(savedSubject)
                 .keywords(Set.of("키워드1", "키워드2"))
                 .weeklySchedules(Set.of(WeeklySchedule.builder()

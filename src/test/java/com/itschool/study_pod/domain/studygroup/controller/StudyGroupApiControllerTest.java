@@ -206,4 +206,21 @@ class StudyGroupApiControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].id").value(11));
     }
+
+    @Test
+    @DisplayName("비회원용 스터디 그룹 공개 조회")
+    void testReadPublicStudyGroup() throws Exception {
+        StudyGroupResponse response = new StudyGroupResponse();
+        response.setId(46L);
+        response.setTitle("공개 스터디");
+
+        Mockito.when(studyGroupService.readPublic(46L))
+                .thenReturn(Header.OK(response));
+
+        mockMvc.perform(get("/api/study-groups/public/46"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.id").value(46))
+                .andExpect(jsonPath("$.data.title").value("공개 스터디"));
+    }
+
 }

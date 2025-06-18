@@ -9,9 +9,7 @@ import com.itschool.study_pod.domain.user.entity.User;
 import com.itschool.study_pod.domain.studygroup.repository.StudyGroupRepository;
 import com.itschool.study_pod.domain.subjectarea.repository.SubjectAreaRepository;
 import com.itschool.study_pod.domain.user.repository.UserRepository;
-import com.itschool.study_pod.global.address.entity.Sgg;
 import com.itschool.study_pod.global.address.entity.Sido;
-import com.itschool.study_pod.global.address.repository.SggRepository;
 import com.itschool.study_pod.global.address.repository.SidoRepository;
 import com.itschool.study_pod.global.enumclass.*;
 import jakarta.persistence.EntityNotFoundException;
@@ -45,9 +43,6 @@ class InterestedStudyRepositoryTest extends StudyPodApplicationTests {
     private SubjectAreaRepository subjectAreaRepository;
 
     @Autowired
-    private SggRepository sggRepository;
-
-    @Autowired
     private SidoRepository sidoRepository;
 
 
@@ -59,14 +54,12 @@ class InterestedStudyRepositoryTest extends StudyPodApplicationTests {
 
     private Sido savedSido;
 
-    private Sgg savedSgg;
-
     @BeforeEach
     public void beforeSetUp() {
 
         savedUser = userRepository.save(
                 User.builder()
-                        .email(UUID.randomUUID() +"@example.com")
+                        .email(UUID.randomUUID() + "@example.com")
                         .password("1234")
                         .role(AccountRole.ROLE_USER)
                         .name("abc")
@@ -89,15 +82,6 @@ class InterestedStudyRepositoryTest extends StudyPodApplicationTests {
 
         savedSido = sidoRepository.save(sido);
 
-        Sgg sgg = Sgg.builder()
-                .sido(savedSido)
-                .sggCd("110")
-                .sggNm("종로구")
-                .build();
-
-        savedSgg = sggRepository.save(sgg);
-
-
         savedStudyGroup = studyGroupRepository.save(
                 StudyGroup.builder()
                         .title("자바 스터디")
@@ -108,7 +92,7 @@ class InterestedStudyRepositoryTest extends StudyPodApplicationTests {
                         .feeType(FeeType.MONTHLY)
                         .amount(10000L)
                         .leader(savedUser)
-                        .address(savedSgg)
+                        .sido(savedSido)
                         .subjectArea(savedSubject)
                         .keywords(Set.of("키워드1", "키워드2"))
                         .weeklySchedules(Set.of(WeeklySchedule.builder()
@@ -141,8 +125,8 @@ class InterestedStudyRepositoryTest extends StudyPodApplicationTests {
 
         InterestedStudy savedInterestedStudy = interestedStudyRepository.save(interestedStudy);
 
-         assertThat(interestedStudy).isEqualTo(savedInterestedStudy);
-         assertThat(savedInterestedStudy.isDeleted()).isFalse();
+        assertThat(interestedStudy).isEqualTo(savedInterestedStudy);
+        assertThat(savedInterestedStudy.isDeleted()).isFalse();
     }
 
     // 조회(read) 테스트
@@ -160,7 +144,7 @@ class InterestedStudyRepositoryTest extends StudyPodApplicationTests {
 
         // ID로 조회
         InterestedStudy findInterestedStudy = interestedStudyRepository.findById(savedInterestedStudy.getId())
-                        .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(EntityNotFoundException::new);
 
         // 동일성 검증
         assertThat(interestedStudy).isEqualTo(savedInterestedStudy);
