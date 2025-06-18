@@ -1,5 +1,6 @@
 package com.itschool.study_pod.domain.studyboard.entity;
 
+import com.itschool.study_pod.domain.comment.entity.Comment;
 import com.itschool.study_pod.domain.studyboard.dto.request.StudyBoardRequest;
 import com.itschool.study_pod.domain.studyboard.dto.response.StudyBoardResponse;
 import com.itschool.study_pod.domain.studygroup.entity.StudyGroup;
@@ -13,6 +14,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -46,7 +49,17 @@ public class StudyBoard extends BaseEntity implements Convertible<StudyBoardRequ
     @JoinColumn(name = "study_group_id")
     private StudyGroup studyGroup;
 
-    public static StudyBoard of (StudyBoardRequest request) {
+    @OneToMany(mappedBy = "studyBoard", cascade = CascadeType.PERSIST, orphanRemoval = false)
+    private List<Comment> comments;
+
+    @PreRemove
+    public void softDeleteComments() {
+        if (comments != null) {
+            comments.forEach(Comment::softDelete);
+        }
+    }
+
+        public static StudyBoard of (StudyBoardRequest request) {
         return StudyBoard.builder()
                 .title(request.getTitle())
                 .content(request.getContent())

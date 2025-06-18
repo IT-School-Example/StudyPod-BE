@@ -109,13 +109,12 @@ public class StudyBoardApiController extends CrudController<StudyBoardRequest, S
     // endregion
 
     // 자유게시판 댓글 생성
-    @PostMapping("/{studyBoardId}/comments")
+    @PostMapping("/comments")
     @Operation(summary = "자유게시판 댓글 생성")
     public Header<CommentResponse> createFreeBoardComment(
-            @PathVariable(name = "studyBoardId") Long studyBoardId,
             @Valid @RequestBody CommentRequest request
     ) {
-        return commentService.createCommentIfFreeBoard(studyBoardId, request);
+        return commentService.createCommentIfFreeBoard(request);
     }
 
     // 자유게시판 댓글 전체 조회

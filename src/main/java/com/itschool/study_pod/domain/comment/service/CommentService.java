@@ -44,9 +44,7 @@ public class CommentService extends CrudService<CommentRequest, CommentResponse,
     }
 
     // 댓글 생성
-    public Header<CommentResponse> createCommentIfFreeBoard(Long studyBoardId, CommentRequest request) {
-        validateFreeBoard(studyBoardId);
-        request.getStudyBoard().setId(studyBoardId); // DTO에 studyBoardId 설정
+    public Header<CommentResponse> createCommentIfFreeBoard(CommentRequest request) {
         Comment comment = commentRepository.save(Comment.of(request));
         return Header.OK(comment.response());
     }
