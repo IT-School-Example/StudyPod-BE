@@ -62,8 +62,8 @@ public class EnrollmentService extends CrudService<EnrollmentRequest, Enrollment
      * 스터디그룹별 등록 회원 조회
      * */
     public Header<List<UserResponse>> findEnrolledUsersByStudyGroupId(Long studyGroupId, EnrollmentStatus enrollmentStatus) {
-
-        List<Enrollment> enrollmentList = enrollmentRepository.findWithUserByStudyGroupIdAndStatus(studyGroupId, EnrollmentStatus.APPROVED);
+        List<Enrollment> enrollmentList = enrollmentRepository
+                .findWithUserByStudyGroupIdAndStatus(studyGroupId, enrollmentStatus);
 
         List<UserResponse> userResponses = enrollmentList.stream()
                 .map(enrollment -> enrollment.getUser().response())
@@ -88,5 +88,26 @@ public class EnrollmentService extends CrudService<EnrollmentRequest, Enrollment
         Enrollment saved = enrollmentRepository.save(enrollment); // DB 저장
         return Header.OK(saved.response());                     // Entity → Response DTO
     }
+
+    @Transactional
+    public Header<EnrollmentResponse> update(Long id, EnrollmentRequest request) {
+        Enrollment enrollment = enrollmentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당 신청 내역이 존재하지 않습니다."));
+
+        enrollment.update(request); // 상태 및 소개글 업데이트
+        return Header.OK(enrollment.response());
+    }
+
+    @Transactional(readOnly = true)
+    public Header<List<EnrollmentResponse>> findEnrollmentsByStudyGroupIdAndStatus(Long studyGroupId, EnrollmentStatus status) {
+        List<Enrollment> list = enrollmentRepository.findWithUserByStudyGroupIdAndStatus(studyGroupId, status);
+        List<EnrollmentResponse> responseList = list.stream()
+                .map(Enrollment::response)
+                .toList();
+
+        return Header.OK(responseList);
+    }
+
+
 
 }

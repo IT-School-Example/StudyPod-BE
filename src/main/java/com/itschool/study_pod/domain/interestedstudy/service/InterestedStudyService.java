@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +34,15 @@ public class InterestedStudyService extends CrudService<InterestedStudyRequest, 
     @Override
     protected InterestedStudy toEntity(InterestedStudyRequest request) {
         return InterestedStudy.of(request);
+    }
+
+    @Transactional(readOnly = true)
+    public Header<List<InterestedStudyResponse>> findAllByUserId(Long userId) {
+        List<InterestedStudy> list = interestedStudyRepository.findAllByUserIdAndIsDeletedFalse(userId);
+        List<InterestedStudyResponse> result = list.stream()
+                .map(InterestedStudy::response)
+                .toList();
+        return Header.OK(result);
     }
 
 

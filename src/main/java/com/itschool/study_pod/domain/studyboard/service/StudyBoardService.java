@@ -54,10 +54,9 @@ public class StudyBoardService extends CrudService<StudyBoardRequest, StudyBoard
         return studyBoardRepository.findById(id);
     }
 
-    // region 보류
-    // 스터디 공지사항, 자유 게시글 목록 조회
 
-    /*public Header<List<StudyBoardResponse>> findByStudyGroupIdAndCategory(Long studyGroupId, StudyBoardCategory studyBoardCategory) {
+    // 스터디 공지사항, 자유 게시글 목록 조회
+    public Header<List<StudyBoardResponse>> findByStudyGroupIdAndCategory(Long studyGroupId, StudyBoardCategory studyBoardCategory) {
         List<StudyBoard> studyBoards = studyBoardRepository.findByStudyGroupIdAndStudyBoardCategory(studyGroupId, studyBoardCategory);
         List<StudyBoardResponse> responseList = studyBoards.stream()
                 .map(StudyBoard::response)
@@ -70,7 +69,9 @@ public class StudyBoardService extends CrudService<StudyBoardRequest, StudyBoard
         return studyBoardRepository.findByIdAndStudyGroupIdAndStudyBoardCategory(studyBoardId, studyGroupId, category)
                 .map(board -> Header.OK(board.response()))
                 .orElseGet(() -> Header.ERROR("해당 게시글을 찾을 수 없습니다."));
-    }*/
-
-    // endregion
+    }
+    public Header<List<StudyBoardResponse>> findByStudyGroupId(Long studyGroupId, Pageable pageable) {
+        Page<StudyBoard> studyBoards = studyBoardRepository.findByStudyGroupId(studyGroupId, pageable);
+        return convertPageToList(studyBoards);
+    }
 }

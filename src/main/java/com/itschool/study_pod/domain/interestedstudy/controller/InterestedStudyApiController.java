@@ -11,10 +11,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -24,6 +23,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class InterestedStudyApiController extends CrudController<InterestedStudyRequest, InterestedStudyResponse, InterestedStudy> {
 
     private final InterestedStudyService interestedStudyService;
+
+    @GetMapping("/user/{userId}")
+    @Operation(summary = "유저의 관심 스터디 목록 조회", description = "유저 ID로 관심 스터디 목록을 조회합니다.")
+    public Header<List<InterestedStudyResponse>> getByUser(@PathVariable Long userId) {
+        return interestedStudyService.findAllByUserId(userId);
+    }
+
 
     @Override
     protected CrudService<InterestedStudyRequest, InterestedStudyResponse, InterestedStudy> getBaseService() {

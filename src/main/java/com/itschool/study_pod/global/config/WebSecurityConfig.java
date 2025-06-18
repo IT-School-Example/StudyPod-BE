@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -32,6 +33,11 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableGlobalMethodSecurity(
+        prePostEnabled = true,   // @PreAuthorize, @PostAuthorize 사용 가능
+        securedEnabled = true,   // @Secured 사용 가능
+        jsr250Enabled = true     // @RolesAllowed 사용 가능
+)
 public class WebSecurityConfig {
 
     private final TokenProvider tokenProvider;
@@ -63,7 +69,7 @@ public class WebSecurityConfig {
                         new AntPathRequestMatcher("/img/**"),
                         new AntPathRequestMatcher("/js/**"),
 
-                        new AntPathRequestMatcher("/api/**"),
+                        // new AntPathRequestMatcher("/api/**"),
                         new AntPathRequestMatcher("/api-docs"),
                         new AntPathRequestMatcher("/api-docs/**"),
                         new AntPathRequestMatcher("/v3/api-docs/**"),
@@ -91,9 +97,12 @@ public class WebSecurityConfig {
                                 new AntPathRequestMatcher("/api/user/mailCheck"),
                                 new AntPathRequestMatcher("/api/user/find-pw"),
                                 new AntPathRequestMatcher("/api/login"),
+                                new AntPathRequestMatcher("/api/introduce/**"),
+                                new AntPathRequestMatcher("/api/user/{id}/summary"),
                                 new AntPathRequestMatcher("/login"),
                                 new AntPathRequestMatcher("/signup"),
                                 new AntPathRequestMatcher("/api/study-groups"),
+                                new AntPathRequestMatcher("/api/study-groups/public/{id}"),
                                 new AntPathRequestMatcher("/api/user"),
                                 new AntPathRequestMatcher("/api/study-groups"),
                                 new AntPathRequestMatcher("/api/user/check-email")

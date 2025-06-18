@@ -14,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -65,6 +67,22 @@ public class UserService extends CrudService<UserRequest, UserResponse, User> {
         entity.updateNickname(request.getData().getNickname());
 
         return Header.OK();
+    }
+
+    @Transactional
+    public Header<Map<String, String>> getUserSummary(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당 유저가 존재하지 않습니다."));
+
+        Map<String, String> result = new HashMap<>();
+
+        result.put("displayName",
+                user.getNickname() != null && !user.getNickname().isBlank()
+                        ? user.getNickname()
+                        : user.getName()
+        );
+
+        return Header.OK(result);
     }
 
     @Transactional

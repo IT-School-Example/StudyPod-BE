@@ -73,7 +73,7 @@ public class StudyBoardApiController extends CrudController<StudyBoardRequest, S
     }
 
     // region 보류
-    /*@GetMapping("/study-groups/{studyGroupId}/notices")
+    @GetMapping("/study-groups/{studyGroupId}/notices")
     @Operation(summary = "스터디 공지사항 목록 조회", description = "스터디 그룹 ID로 공지사항 목록을 조회")
     public Header<List<StudyBoardResponse>> getStudyNotices(
             @PathVariable(name = "studyGroupId") Long studyGroupId
@@ -105,17 +105,16 @@ public class StudyBoardApiController extends CrudController<StudyBoardRequest, S
             @PathVariable(name = "studyBoardId") Long studyBoardId
     ) {
         return studyBoardService.findStudyBoardDetail(studyGroupId, studyBoardId, StudyBoardCategory.FREE);
-    }*/
+    }
     // endregion
 
     // 자유게시판 댓글 생성
-    @PostMapping("/{studyBoardId}/comments")
+    @PostMapping("/comments")
     @Operation(summary = "자유게시판 댓글 생성")
     public Header<CommentResponse> createFreeBoardComment(
-            @PathVariable(name = "studyBoardId") Long studyBoardId,
             @Valid @RequestBody CommentRequest request
     ) {
-        return commentService.createCommentIfFreeBoard(studyBoardId, request);
+        return commentService.createCommentIfFreeBoard(request);
     }
 
     // 자유게시판 댓글 전체 조회
@@ -146,5 +145,13 @@ public class StudyBoardApiController extends CrudController<StudyBoardRequest, S
             @PathVariable(name = "commentId") Long commentId
     ) {
         return commentService.deleteCommentIfFreeBoard(studyBoardId, commentId);
+    }
+    @GetMapping("/study-groups/{studyGroupId}")
+    @Operation(summary = "스터디 그룹 전체 게시글 조회", description = "스터디 그룹 ID로 모든 게시글을 카테고리 구분 없이 조회합니다.")
+    public Header<List<StudyBoardResponse>> getStudyBoardsByGroup(
+            @PathVariable Long studyGroupId,
+            @ParameterObject @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return studyBoardService.findByStudyGroupId(studyGroupId, pageable);
     }
 }

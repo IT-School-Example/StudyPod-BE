@@ -15,12 +15,23 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
         String uri = request.getRequestURI();
 
-        if (uri.startsWith("/api/")) {
-            response.setContentType("application/json;charset=UTF-8");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("{\"error\":\"Unauthorized\"}");
-        } else if (!uri.equals("/login")) {  // /login은 리다이렉션하지 않음
-            response.sendRedirect("/login");
+        // 이미 응답이 커밋되었는지 확인
+        if (response.isCommitted()) {
+            return;
+        }
+
+        try {
+            if (uri.startsWith("/api/")) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json;charset=UTF-8");
+                response.getWriter().write("{\"error\":\"Unauthorized\"}");
+            } else if (!uri.equals("/login")) {
+                response.sendRedirect("/login");
+            }
+        } catch (IOException e) {
+            // 로깅 후 다시 던지기 (혹은 무시)
+            e.printStackTrace();
+            throw e;
         }
     }
 }
