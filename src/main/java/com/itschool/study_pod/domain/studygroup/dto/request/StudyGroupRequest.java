@@ -44,7 +44,7 @@ public class StudyGroupRequest {
     private ReferenceDto leader;
 
     @NotBlank(message = "시도 코드는 필수입니다.")
-    private SidoRequest sidoCd; // 일관성 유지 위해 수정.
+    private SidoRequest sido; // 일관성 유지 위해 수정.
 
     @NotNull(message = "주제 영역은 필수입니다.")
     private ReferenceDto subjectArea;

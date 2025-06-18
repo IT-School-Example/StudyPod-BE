@@ -82,7 +82,7 @@ public class StudyGroupService extends CrudWithFileService<StudyGroupRequest, St
                     .feeType(data.getFeeType())
                     .amount(data.getAmount())
                     .leader(leader)
-                    .sido(Sido.withId(data.getSidoCd().getSidoCd()))
+                    .sido(Sido.withId(data.getSido().getSidoCd()))
                     .subjectArea(subjectArea)
                     .keywords(data.getKeywords())
                     .weeklySchedules(data.getWeeklySchedules())
@@ -245,7 +245,7 @@ public class StudyGroupService extends CrudWithFileService<StudyGroupRequest, St
             SubjectArea subjectArea = subjectAreaRepository.findById(data.getSubjectArea().getId())
                     .orElseThrow(() -> new EntityNotFoundException("주제영역 ID가 존재하지 않습니다."));
 
-            studyGroup.updateFromRequest(data, leader, data.getSidoCd().getSidoCd(), subjectArea);
+            studyGroup.updateFromRequest(data, leader, data.getSido().getSidoCd(), subjectArea);
 
             if (file != null && !file.isEmpty()) {
                 String uploadDirPath = new File(System.getProperty("user.dir"), "uploads/study-group").getAbsolutePath();
