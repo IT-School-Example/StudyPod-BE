@@ -102,7 +102,7 @@ public class StudyGroup extends IncludeFileUrl<StudyGroupRequest, StudyGroupResp
                 .feeType(request.getFeeType())
                 .amount(request.getAmount())
                 .leader(User.withId(request.getLeader().getId()))
-                .sido(Sido.withId(request.getSidoCd()))
+                .sido(Sido.withId(request.getSidoCd().getSidoCd()))
                 .subjectArea(SubjectArea.withId(request.getSubjectArea().getId()))
                 .keywords(request.getKeywords())
                 .weeklySchedules(request.getWeeklySchedules())
@@ -123,7 +123,7 @@ public class StudyGroup extends IncludeFileUrl<StudyGroupRequest, StudyGroupResp
         this.maxMembers = request.getMaxMembers();
         this.meetingMethod = request.getMeetingMethod();
         this.recruitmentStatus = request.getRecruitmentStatus();
-        this.sido = Sido.withId(request.getSidoCd());
+        this.sido = Sido.withId(request.getSidoCd().getSidoCd());
         this.subjectArea = SubjectArea.withId(request.getSubjectArea().getId());
         this.feeType = request.getFeeType();
         this.amount = request.getAmount();
