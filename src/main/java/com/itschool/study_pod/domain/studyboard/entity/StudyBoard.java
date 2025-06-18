@@ -49,7 +49,7 @@ public class StudyBoard extends BaseEntity implements Convertible<StudyBoardRequ
     @JoinColumn(name = "study_group_id")
     private StudyGroup studyGroup;
 
-    @OneToMany(mappedBy = "studyBoard", cascade = CascadeType.PERSIST, orphanRemoval = false)
+    @OneToMany(mappedBy = "studyBoard", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Comment> comments;
 
     @PreRemove

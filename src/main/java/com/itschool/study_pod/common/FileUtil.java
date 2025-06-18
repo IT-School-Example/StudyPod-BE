@@ -24,7 +24,9 @@ public class FileUtil {
     private static boolean validateImageFileExtension(MultipartFile file) {
         String extension = getFileExtension(file);
 
-        return file.getName() != null || (ALLOWED_IMAGE_EXTENSIONS.contains(extension) && isValidFileType(file, "image/"));
+        return file.getOriginalFilename() != null
+                && ALLOWED_IMAGE_EXTENSIONS.contains(extension)
+                && isValidFileType(file, "image/");
     }
 
     // 파일 이름 특수 문자를 통한 공격 및 코드 주입 방지
