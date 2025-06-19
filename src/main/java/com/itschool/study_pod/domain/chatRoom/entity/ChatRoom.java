@@ -5,7 +5,6 @@ import com.itschool.study_pod.domain.chatRoom.dto.request.ChatRoomRequest;
 import com.itschool.study_pod.domain.chatRoom.dto.response.ChatRoomResponse;
 import com.itschool.study_pod.domain.studygroup.dto.response.StudyGroupSummaryResponse;
 import com.itschool.study_pod.domain.studygroup.entity.StudyGroup;
-import com.itschool.study_pod.domain.user.dto.response.UserResponse;
 import com.itschool.study_pod.domain.user.entity.User;
 import com.itschool.study_pod.global.base.BaseEntity;
 import com.itschool.study_pod.global.base.crud.Convertible;
@@ -42,8 +41,14 @@ public class ChatRoom extends BaseEntity implements Convertible<ChatRoomRequest,
     @JoinColumn(name = "study_group_id", unique = true)
     private StudyGroup studyGroup;
 
+    @Builder.Default
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ChatParticipant> members = new HashSet<>();
+
+    public void addChatParticipant(ChatParticipant member) {
+        member.setChatRoom(this);
+        this.members.add(member);
+    }
 
     // 요청 DTO -> Entity로 변환하는 메서드
     public static ChatRoom of(ChatRoomRequest request) { // create용
@@ -60,6 +65,7 @@ public class ChatRoom extends BaseEntity implements Convertible<ChatRoomRequest,
                             .chatRoom(chatRoom)
                             .build())
                     .collect(Collectors.toSet());
+            chatRoom.getMembers().addAll(participants);
         }
 
         return chatRoom;

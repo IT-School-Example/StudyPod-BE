@@ -1,5 +1,6 @@
 package com.itschool.study_pod.domain.chatRoom.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.itschool.study_pod.domain.ChatParticipant.entity.ChatParticipant;
 import com.itschool.study_pod.domain.studygroup.entity.StudyGroup;
 import com.itschool.study_pod.domain.user.entity.User;
@@ -29,7 +30,7 @@ public class ChatRoomRequest {
     @NotNull
     private ReferenceDto studyGroup;
 
-    @NotNull
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Set<Long> memberIds = new HashSet<>();
 
 }

@@ -2,6 +2,7 @@ package com.itschool.study_pod.domain.ChatParticipant.entity;
 
 import com.itschool.study_pod.domain.ChatParticipant.dto.request.ChatParticipantRequest;
 import com.itschool.study_pod.domain.ChatParticipant.dto.response.ChatParticipantResponse;
+import com.itschool.study_pod.domain.ChatParticipant.dto.response.ChatParticipantSummaryResponse;
 import com.itschool.study_pod.domain.chatRoom.dto.response.ChatRoomResponse;
 import com.itschool.study_pod.domain.chatRoom.entity.ChatRoom;
 import com.itschool.study_pod.domain.user.dto.response.UserResponse;
@@ -34,7 +35,7 @@ public class ChatParticipant extends BaseEntity implements Convertible<ChatParti
     private User user;
 
     // 참가한 시간
-    @JoinColumn(name = "joined_at")
+    @Column(name = "joined_at")
     private LocalDateTime joinedAt;
 
     public static ChatParticipant of(ChatParticipantRequest request) {
@@ -66,5 +67,16 @@ public class ChatParticipant extends BaseEntity implements Convertible<ChatParti
         return ChatParticipant.builder()
                 .id(id)
                 .build();
+    }
+
+    public ChatParticipantSummaryResponse summary() {
+        return ChatParticipantSummaryResponse.builder()
+                .id(this.user.getId())
+                .nickname(this.user.getNickname())
+                .build();
+    }
+
+    public void setChatRoom(ChatRoom chatRoom) {
+        this.chatRoom = chatRoom;
     }
 }
