@@ -12,6 +12,7 @@ import com.itschool.study_pod.global.base.dto.Header;
 import com.itschool.study_pod.global.enumclass.ChatRoomType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -31,9 +32,10 @@ public class ChatRoomApiController extends CrudController<ChatRoomRequest, ChatR
     protected CrudService<ChatRoomRequest, ChatRoomResponse, ChatRoom> getBaseService() {return chatRoomService; }
 
 
-    @PostMapping("/created")
+    @PostMapping("")
+    @Override
     @Operation(summary = "채팅방 생성", description = "채팅방 생성 api")
-    public ChatRoom createChatRoom(@RequestBody ChatRoomRequest request) {
+    public Header<ChatRoomResponse> create(@RequestBody @Valid Header<ChatRoomRequest> request) {
         return chatRoomService.create(request);
     }
 

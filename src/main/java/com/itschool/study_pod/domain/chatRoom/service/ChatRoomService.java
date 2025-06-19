@@ -49,6 +49,28 @@ public class ChatRoomService extends CrudService<ChatRoomRequest, ChatRoomRespon
     @Override
     protected ChatRoom toEntity(ChatRoomRequest request) {return ChatRoom.of(request);}
 
+    // 승인된 멤버인지 체크하는 메서드
+    private boolean isApprovedMember(Long studyGroupId, Long userId) {
+        return enrollmentRepository.existsByStudyGroupIdAndUserIdAndStatus(
+                studyGroupId, userId, EnrollmentStatus.APPROVED);
+    }
+
+    // 스터디 그룹 내 승인된 멤버 리스트 조회
+    private List<User> getApprovedMembers(Long studyGroupId) {
+        return enrollmentRepository.findAllByStudyGroupIdAndStatus(studyGroupId
+                , EnrollmentStatus.APPROVED)
+                .stream()
+                .map(enrollment -> enrollment.getUser())
+                .collect(Collectors.toList());
+    }
+
+    // 권한 체크 메서드
+    private void chechUserIsMemberOfStudyGroup(Long studyGroupId, Long userId) {
+        if (!isApprovedMember(studyGroupId, userId)) {
+            throw new RuntimeException("해당 그룹에 대한 접근 권한이 없습니다.");
+        }
+    }
+
     // 채팅방 생성 (creator = 채팅방 생성자)
     public ChatRoom create(ChatRoomRequest request) {
 
@@ -58,145 +80,84 @@ public class ChatRoomService extends CrudService<ChatRoomRequest, ChatRoomRespon
                 .orElseThrow(() -> new EntityNotFoundException("채팅방 생성자가 존재하지 않습니다."));
 
 
-       /* // 멤버 Id가 없으면
-        if (request.getMemberIds() == null || request.getMemberIds().isEmpty()) {
-            throw new RuntimeException("채팅방에 멤버가 없습니다.");
-        }
-
-        for (Long userId : request.getMemberIds()) {
-            if (userId == null || userId == 0) {
-                throw new RuntimeException("유효하지 않은 멤버 ID가 포함되어 있습니다. userId:" + userId + "," + request.getMemberIds());
-            }
-        }*/
-
         ChatRoom chatRoom;
 
         if (type == ChatRoomType.DIRECT) {
-            // 1:1 채팅
-            if (request.getMemberIds() == null || request.getMemberIds().size() != 2) {
-                throw new RuntimeException("1:1 채팅은 2명의 멤버만 들어갈 수 있습니다.");
-            }
+            chatRoom = createDirectChatRoom(request, type);
 
-            chatRoom = ChatRoom.builder()
-                    .type(type)
-                    .name(request.getName())
-                    .build();
+        }
+        else if (type == ChatRoomType.GROUP) {
+            chatRoom = createGroupChatRoom(request, type, creator);
 
-            for (Long userId : request.getMemberIds()) {
-                User user = userRepository.findById(userId)
-                        .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다." + userId));
-
-                chatRoom.getMembers().add(ChatParticipant.builder()
-                        .user(user)
-                        .chatRoom(chatRoom)
-                        .build());
-                /*ChatParticipant chatParticipant = ChatParticipant.builder()
-                        .user(user)
-                        .chatRoom(chatRoom)
-                        .build();
-                chatRoom.getMembers().add(chatParticipant);*/
-            }
-
-        } else if (type == ChatRoomType.GROUP) {
-            // 그룹 채팅
-            if (request.getStudyGroup() == null || request.getStudyGroup().getId() == null) {
-                throw new RuntimeException("그룹채팅에는 스터디 그룹 정보가 필요합니다.");
-            }
-
-            StudyGroup studyGroup = studyGroupRepository.findById(request.getStudyGroup().getId())
-                    .orElseThrow(() -> new EntityNotFoundException("스터디그룹이 존재하지 않습니다."));
-
-            chatRoom = ChatRoom.builder()
-                    .type(type)
-                    .name(request.getName())
-                    .studyGroup(studyGroup)
-                    .build();
-
-            // 리더만 생성 가능
-            if (!studyGroup.getLeader().getId().equals(creator.getId())) {
-                throw new RuntimeException("스터디그룹의 리더만 생성이 가능합니다.");
-            }
-
-            List<Long> memberIds = List.of();
-            // memberIds가 비었을 경우 승인된 멤버 자동 조회
-            if (request.getMemberIds() == null || request.getMemberIds().isEmpty()) {
-                enrollmentRepository.findAllByStudyGroupIdAndStatus(
-                        studyGroup.getId(), EnrollmentStatus.APPROVED
-                ).stream()
-                        .forEach(enrollment -> {
-                            boolean isApproved = enrollmentRepository.existsByStudyGroupIdAndUserIdAndStatus(
-                                    studyGroup.getId(),
-                                    enrollment.getUser().getId(),
-                                    EnrollmentStatus.APPROVED);
-
-                            if (!isApproved) {
-                                // throw new RuntimeException("멤버 중에 승인되지 않은 사용자가 있습니다. userId:" + enrollment.getUser().getId());
-                                return;
-                            }
-
-                            ChatParticipant chatParticipant = ChatParticipant.builder()
-                                            .chatRoom(chatRoom)
-                                            .user(enrollment.getUser())
-                                            .joinedAt(LocalDateTime.now())
-                                            .build();
-
-                            chatRoom.addChatParticipant(chatParticipant);
-                        });
-
-            } else {
-                memberIds = request.getMemberIds().stream()
-                        .filter(id -> id != 0L)
-                        .collect(Collectors.toList());
-
-                // chatRoom.getMembers();
-            }
-
-            // 멤버 승인 여부 확인
-            /*for (Long userId : memberIds) {
-                boolean isApproved = enrollmentRepository.existsByStudyGroupIdAndUserIdAndStatus(
-                        studyGroup.getId(),
-                        userId,
-                        EnrollmentStatus.APPROVED
-                );
-                if (!isApproved) {
-                    throw new RuntimeException("멤버 중에 승인되지 않은 사용자가 있습니다. userId:" + userId);
-                }
-            }*/
-            /*int currentMemberCount = enrollmentRepository.existsByStudyGroupIdAndUserIdAndStatus(studyGroup.getId(), EnrollmentStatus.APPROVED);
-            int maxMember = studyGroup.getMaxMember();
-
-            if (currentMemberCount > maxMember) {
-                throw new RuntimeException("그룹 최대 인원 수를 초과했습니다.");
-            }*/
-
-
-
-            for (Long userId : memberIds) {
-                User user = userRepository.findById(userId)
-                        .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
-
-                chatRoom.getMembers().add(ChatParticipant.builder()
-                        .user(user)
-                        .chatRoom(chatRoom)
-                        .build());
-            }
-
-            // 리더 자동 추가 (만약 멤버 목록에리더가 없으면)
-            User leader = studyGroup.getLeader();
-            if (!memberIds.contains(leader.getId())) {
-                chatRoom.getMembers().add(ChatParticipant.builder()
-                        .user(leader)
-                        .chatRoom(chatRoom)
-                        .build());
-            }
-
-        } else {
+        }
+        else {
             throw new RuntimeException("유효하지 않은 채팅방 타입입니다.");
         }
 
         return chatRoomRepository.save(chatRoom);
     }
 
+    // 그룹 채팅방 생성 (승인된 스터디 멤버 자동 추가)
+    private ChatRoom createGroupChatRoom(ChatRoomRequest request, ChatRoomType type, User creator) {
+        //ChatRoom chatRoom;
+        // 그룹 채팅
+        // 요청에 스터디 그룹 정보나 ID가 없으면 예외발생
+        if (request.getStudyGroup() == null || request.getStudyGroup().getId() == null) {
+            throw new RuntimeException("그룹채팅에는 스터디 그룹 정보가 필요합니다.");
+        }
+
+        // 클라이언트가 보낸 스터디그룹 ID로 DB에서 실제 스터디 그룹 정보 조회(없으면 예외 발생)
+        StudyGroup studyGroup = studyGroupRepository.findById(request.getStudyGroup().getId())
+                .orElseThrow(() -> new EntityNotFoundException("스터디그룹이 존재하지 않습니다."));
+
+        // 리더만 생성 가능
+        if (!studyGroup.getLeader().getId().equals(creator.getId())) {
+            throw new RuntimeException("스터디그룹의 리더만 생성이 가능합니다.");
+        }
+
+        // 채팅방 생성
+        ChatRoom chatRoom = ChatRoom.builder()
+                .type(type)
+                .name(request.getName())
+                .studyGroup(studyGroup)
+                .build();
+
+        // 멤버 ID 리스트를 빈 리스트로 시작
+        List<User> approvedMembers = getApprovedMembers(studyGroup.getId());
+        approvedMembers.forEach(user -> {
+            chatRoom.addChatParticipant(ChatParticipant.builder()
+                    .chatRoom(chatRoom)
+                    .user(user)
+                    .joinedAt(LocalDateTime.now())
+                    .build());
+        });
+        return chatRoom;
+    }
+
+    private ChatRoom createDirectChatRoom(ChatRoomRequest request, ChatRoomType type) {
+        // 1:1 채팅(방 생성)
+        if (request.getMemberIds() == null || request.getMemberIds().size() != 2) {
+            throw new RuntimeException("1:1 채팅은 2명의 멤버만 들어갈 수 있습니다.");
+        }
+
+        ChatRoom chatRoom = ChatRoom.builder()
+                .type(type)
+                .name(request.getName())
+                .build();
+
+        // 멤버 등록
+        for (Long userId : request.getMemberIds()) {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다." + userId));
+
+            chatRoom.getMembers().add(ChatParticipant.builder()
+                    .user(user)
+                    .chatRoom(chatRoom)
+                    .build());
+
+        }
+        return chatRoom;
+    }
 
     // 스터디 그룹 채팅방(해당 스터디그룹 회원만)
     @Override
@@ -210,16 +171,10 @@ public class ChatRoomService extends CrudService<ChatRoomRequest, ChatRoomRespon
 
         Long userId = AuthUtil.getCurrentAccountId();
 
-        // 해당 유저가 스터디 그룹의 멤버인지
-        boolean isMember = enrollmentRepository
-                .existsByStudyGroupIdAndUserIdAndStatus(studyGroupId, userId, EnrollmentStatus.APPROVED);
-        // 멤버가 아닐 경우
-        if (!isMember) {
-            throw new RuntimeException("해당 그룹에 대한 접근 권한이 없습니다.");
-        }
+
+        chechUserIsMemberOfStudyGroup(studyGroupId, userId);
 
         // 입장메시지 발송
-
         return super.read(chatRoomId);
     }
 
@@ -227,7 +182,7 @@ public class ChatRoomService extends CrudService<ChatRoomRequest, ChatRoomRespon
         return chatRoomRepository.findById(id);
     }
 
-    // 1:1 채팅방
+    // 1:1 채팅방(참여자 권한 체크)
     public Header<ChatRoomResponse> userChatRoom(Long chatRoomId) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 채팅방입니다."));
