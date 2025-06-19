@@ -1,6 +1,6 @@
 plugins {
 	id 'java' // Java 플러그인 적용
-	id 'org.springframework.boot' version '3.0.13' // Spring Boot 플러그인 (3.0.2 버전)
+	id 'org.springframework.boot' version '3.0.13' // Spring Boot 플러그인
 	id 'io.spring.dependency-management' version '1.1.4' // 의존성 버전 자동 관리
 }
 
