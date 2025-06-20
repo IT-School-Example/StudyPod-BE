@@ -45,7 +45,9 @@ public class CommentService extends CrudService<CommentRequest, CommentResponse,
     }
 
     // 댓글 생성
-    public Header<CommentResponse> createCommentIfFreeBoard(CommentRequest request) {
+    public Header<CommentResponse> createCommentIfFreeBoard(Long studyBoardId, CommentRequest request) {
+        validateFreeBoard(studyBoardId);
+        request.getStudyBoard().setId(studyBoardId);
         Comment comment = commentRepository.save(Comment.of(request));
         return Header.OK(comment.response());
     }
@@ -82,7 +84,7 @@ public class CommentService extends CrudService<CommentRequest, CommentResponse,
         return Header.OK(comment.response());
     }
 
-    // 댓글과 댓글들까지 삭제
+    // 댓글과 대댓글들까지 삭제
     @Transactional
     public void deleteCommentAndChildren(Long commentId) {
 
