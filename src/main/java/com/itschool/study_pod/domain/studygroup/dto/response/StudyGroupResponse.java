@@ -1,5 +1,6 @@
 package com.itschool.study_pod.domain.studygroup.dto.response;
 
+import com.itschool.study_pod.domain.studygroup.entity.StudyGroup;
 import com.itschool.study_pod.domain.subjectarea.dto.response.SubjectAreaResponse;
 import com.itschool.study_pod.domain.user.dto.response.UserResponse;
 import com.itschool.study_pod.global.address.dto.response.SidoResponse;
@@ -79,4 +80,12 @@ public class StudyGroupResponse {
                 .build();
     }
 
+    // ✅ 정적 팩토리 메서드 추가
+    public static StudyGroupResponse fromEntity(StudyGroup group) {
+        return StudyGroupResponse.builder()
+                .id(group.getId())
+                .title(group.getTitle())
+                .description(group.getDescription())
+                .build();
+    }
 }

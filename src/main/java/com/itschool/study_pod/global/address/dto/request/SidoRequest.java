@@ -11,4 +11,11 @@ public class SidoRequest {
     private String sidoCd;
 
     private String sidoNm;
+
+    public static SidoRequest withId(String sidoCd) {
+        return SidoRequest.builder()
+                .sidoCd(sidoCd)
+                .build();
+    }
+
 }

@@ -21,6 +21,18 @@ public class User extends Account implements Convertible<UserRequest, UserRespon
     @Column(unique = true)
     private String nickname;
 
+    // ✅ 추가됨: 논리 삭제 여부
+    @Column(name = "is_deleted")
+    private Boolean deleted = false;
+
+    // ✅ 추가됨: 정지 여부
+    @Column(name = "is_suspended", nullable = false)
+    private Boolean suspended = false;
+
+    // ✅ 추가됨: 정지 사유
+    @Column(name = "suspend_reason")
+    private String suspendReason;
+
     public static User of(UserRequest request) { // create용
         throw new UnsupportedOperationException("사용되지 않는 메서드. 서비스 계층 toEntity() 참조");
         /*return User.builder()
@@ -31,6 +43,12 @@ public class User extends Account implements Convertible<UserRequest, UserRespon
                 .nickname(request.getNickname())
                 .createdBy(request.getEmail())
                 .build();*/
+    }
+
+    public static User withId(Long id) {
+        return User.builder()
+                .id(id)
+                .build();
     }
 
     // update용
@@ -50,13 +68,13 @@ public class User extends Account implements Convertible<UserRequest, UserRespon
         this.name = request.getName();
 
         // 닉네임 수정 (처음 가입할때 null을 허용하나, null로 update 요청 시 현재 닉네임 유지)
-        this.nickname = request.getNickname() != null? request.getNickname() : this.nickname;
+        this.nickname = request.getNickname() != null ? request.getNickname() : this.nickname;
     }
 
     public void updatePassword(String password) {
         // PATCH 일부 업데이트
         // 비밀번호 null로 수정 불가 (null로 수정 요청 오면 현재 비밀번호 유지)
-        this.password = password != null? password : this.password;
+        this.password = password != null ? password : this.password;
     }
 
     public void updateNickname(String nickname) {
@@ -82,9 +100,16 @@ public class User extends Account implements Convertible<UserRequest, UserRespon
                 .build();
     }
 
-    public static User withId(Long id) {
-        return User.builder()
-                .id(id)
-                .build();
+    // ✅ Setter 추가 (엔티티는 보호되어 있으므로 setter는 최소한으로 공개)
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public void setSuspended(boolean suspended) {
+        this.suspended = suspended;
+    }
+
+    public void setSuspendReason(String suspendReason) {
+        this.suspendReason = suspendReason;
     }
 }
