@@ -6,6 +6,8 @@ import com.itschool.study_pod.global.base.account.Account;
 import com.itschool.study_pod.global.base.account.AccountDetails;
 import com.itschool.study_pod.global.enumclass.AccountRole;
 import com.itschool.study_pod.domain.user.repository.UserRepository;
+import com.itschool.study_pod.global.security.jwt.redis.RefreshToken;
+import com.itschool.study_pod.global.security.jwt.redis.RefreshTokenRepository;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -32,6 +34,9 @@ class TokenProviderTest extends StudyPodApplicationTests {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
 
     private User testUser;
 
@@ -127,5 +132,23 @@ class TokenProviderTest extends StudyPodApplicationTests {
 
         // then
         assertThat(userIdByToken).isEqualTo(testUser.getId());
+    }
+
+    @DisplayName("리프레시 토큰으로 새로운 액세스 토큰을 발급 받을 수 있다.")
+    @Test
+    void refreshAccessToken() {
+        // given
+        String refreshToken = tokenProvider.generateRefreshToken(new AccountDetails(testUser));
+        refreshTokenRepository.save(RefreshToken.builder()
+                .accountId(testUser.getId())
+                .refreshToken(refreshToken)
+                .build());
+
+        // when
+        String newAccessToken = tokenProvider.refreshAccessToken(refreshToken);
+
+        // then
+        assertThat(newAccessToken).isNotNull();
+        assertThat(tokenProvider.validateAccessToken(newAccessToken)).isTrue();
     }
 }

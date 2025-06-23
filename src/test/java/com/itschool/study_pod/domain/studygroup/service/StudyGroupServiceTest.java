@@ -8,6 +8,7 @@ import com.itschool.study_pod.domain.subjectarea.entity.SubjectArea;
 import com.itschool.study_pod.domain.subjectarea.repository.SubjectAreaRepository;
 import com.itschool.study_pod.domain.user.entity.User;
 import com.itschool.study_pod.domain.user.repository.UserRepository;
+import com.itschool.study_pod.global.address.dto.request.SidoRequest;
 import com.itschool.study_pod.global.address.entity.Sido;
 import com.itschool.study_pod.global.address.repository.SidoRepository;
 import com.itschool.study_pod.global.base.dto.Header;
@@ -79,7 +80,10 @@ class StudyGroupServiceTest extends StudyPodApplicationTests {
                 .feeType(FeeType.ONE_TIME) // or FeeType.PER_EVENT
                 .amount(0L)
                 .leader(ReferenceDto.builder().id(leader.getId()).build())
-                .sidoCd(sido.getSidoCd())
+                .sido(SidoRequest.builder()
+                        .sidoCd(sido.getSidoCd())
+                        .sidoNm(sido.getSidoNm())
+                        .build())
                 .subjectArea(ReferenceDto.builder().id(subjectArea.getId()).build())
                 .keywords(Set.of("자바", "스프링"))
                 .weeklySchedules(Set.of(WeeklySchedule.of(DayOfWeek.MONDAY, 10, 0, 12, 0)))

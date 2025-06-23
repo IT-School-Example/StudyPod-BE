@@ -49,7 +49,7 @@ public class StudyBoard extends BaseEntity implements Convertible<StudyBoardRequ
     @JoinColumn(name = "study_group_id")
     private StudyGroup studyGroup;
 
-        public static StudyBoard of (StudyBoardRequest request) {
+    public static StudyBoard of (StudyBoardRequest request) {
         return StudyBoard.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
