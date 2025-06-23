@@ -19,7 +19,8 @@ public abstract class IncludeFileUrl<Req, Res> extends BaseEntity implements Con
     protected String fileUrl;
 
     // 기존 파일 경로 수정
-    public void updateFileUrl(String fileUrl){
+    public void updateFileUrl(String fileUrl) {
         this.fileUrl = fileUrl;
     }
+
 }

@@ -48,6 +48,7 @@ public class StudyBoardApiControllerTest extends MockMvcTest {
                 .role(AccountRole.ROLE_USER)
                 .name("abc")
                 .nickname(UUID.randomUUID().toString())
+                .suspended(false)
                 .build());
 
         StudyBoardRequest studyBoardRequest = StudyBoardRequest.builder()
@@ -82,6 +83,7 @@ public class StudyBoardApiControllerTest extends MockMvcTest {
                 .role(AccountRole.ROLE_USER)
                 .name("abc")
                 .nickname(UUID.randomUUID().toString())
+                .suspended(false)
                 .build());
 
         StudyBoard savedBoard = studyBoardRepository.save(StudyBoard.builder()
@@ -111,6 +113,7 @@ public class StudyBoardApiControllerTest extends MockMvcTest {
                 .role(AccountRole.ROLE_USER)
                 .name("abc")
                 .nickname(UUID.randomUUID().toString())
+                .suspended(false)
                 .build());
 
         StudyBoard savedBoard = studyBoardRepository.save(StudyBoard.builder()
@@ -153,6 +156,7 @@ public class StudyBoardApiControllerTest extends MockMvcTest {
                 .role(AccountRole.ROLE_USER)
                 .name("abc")
                 .nickname(UUID.randomUUID().toString())
+                .suspended(false)
                 .build());
 
         StudyBoard savedBoard = studyBoardRepository.save(StudyBoard.builder()

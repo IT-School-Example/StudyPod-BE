@@ -49,17 +49,7 @@ public class StudyBoard extends BaseEntity implements Convertible<StudyBoardRequ
     @JoinColumn(name = "study_group_id")
     private StudyGroup studyGroup;
 
-    @OneToMany(mappedBy = "studyBoard", cascade = CascadeType.PERSIST, orphanRemoval = false)
-    private List<Comment> comments;
-
-    @PreRemove
-    public void softDeleteComments() {
-        if (comments != null) {
-            comments.forEach(Comment::softDelete);
-        }
-    }
-
-        public static StudyBoard of (StudyBoardRequest request) {
+    public static StudyBoard of (StudyBoardRequest request) {
         return StudyBoard.builder()
                 .title(request.getTitle())
                 .content(request.getContent())

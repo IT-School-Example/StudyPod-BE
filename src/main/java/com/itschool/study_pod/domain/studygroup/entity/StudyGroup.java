@@ -1,5 +1,6 @@
 package com.itschool.study_pod.domain.studygroup.entity;
 
+import com.itschool.study_pod.domain.admin.entity.Admin;
 import com.itschool.study_pod.domain.studygroup.dto.request.StudyGroupRequest;
 import com.itschool.study_pod.domain.studygroup.dto.response.StudyGroupResponse;
 import com.itschool.study_pod.domain.subjectarea.entity.SubjectArea;
@@ -43,6 +44,19 @@ public class StudyGroup extends IncludeFileUrl<StudyGroupRequest, StudyGroupResp
 
     @Column(nullable = false)
     private Integer maxMembers;
+
+    // ✅ 추가됨: 관리자 정지 여부
+    @Column(name = "is_suspended", nullable = false)
+    private Boolean suspended;
+
+    // ✅ 추가됨: 정지 사유
+    @Column(name = "suspend_reason")
+    private String suspendReason;
+
+    // 추가
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "admin_id")
+    private Admin admin;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -102,11 +116,12 @@ public class StudyGroup extends IncludeFileUrl<StudyGroupRequest, StudyGroupResp
                 .feeType(request.getFeeType())
                 .amount(request.getAmount())
                 .leader(User.withId(request.getLeader().getId()))
-                .sido(Sido.withId(request.getSidoCd()))
+                .sido(Sido.withId(request.getSido().getSidoCd()))
                 .subjectArea(SubjectArea.withId(request.getSubjectArea().getId()))
-                .keywords(request.getKeywords())
-                .weeklySchedules(request.getWeeklySchedules())
+                .keywords(new HashSet<>(request.getKeywords()))
+                .weeklySchedules(new HashSet<>(request.getWeeklySchedules()))
                 // .fileUrl(request.getFileUrl())
+                .suspended(false)
                 .build();
     }
 
@@ -123,12 +138,12 @@ public class StudyGroup extends IncludeFileUrl<StudyGroupRequest, StudyGroupResp
         this.maxMembers = request.getMaxMembers();
         this.meetingMethod = request.getMeetingMethod();
         this.recruitmentStatus = request.getRecruitmentStatus();
-        this.sido = Sido.withId(request.getSidoCd());
+        this.sido = Sido.withId(request.getSido().getSidoCd());
         this.subjectArea = SubjectArea.withId(request.getSubjectArea().getId());
         this.feeType = request.getFeeType();
         this.amount = request.getAmount();
-        this.keywords = request.getKeywords();
-        this.weeklySchedules = request.getWeeklySchedules();
+        this.keywords = new HashSet<>(request.getKeywords());
+        this.weeklySchedules = new HashSet<>(request.getWeeklySchedules());
 
         // fk 변경 위험, 스터디장 변경은 fetch로 스터디장만 변경하는 다른 api 로직 생성 필요
         // this.leader = User.of(request.getLeader());
@@ -172,6 +187,15 @@ public class StudyGroup extends IncludeFileUrl<StudyGroupRequest, StudyGroupResp
         this.subjectArea = subjectArea;
         this.keywords = req.getKeywords();
         this.weeklySchedules = req.getWeeklySchedules();
+    }
+
+
+    public void setSuspended(boolean suspended) {
+        this.suspended = suspended;
+    }
+
+    public void setSuspendReason(String suspendReason) {
+        this.suspendReason = suspendReason;
     }
 
 }

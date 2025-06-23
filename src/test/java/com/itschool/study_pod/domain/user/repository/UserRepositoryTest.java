@@ -14,7 +14,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
-class UserRequestRepositoryTest extends StudyPodApplicationTests {
+class UserRepositoryTest extends StudyPodApplicationTests {
 
     @Autowired
     private UserRepository userRepository;
@@ -29,6 +29,7 @@ class UserRequestRepositoryTest extends StudyPodApplicationTests {
                 .role(AccountRole.ROLE_USER)
                 .name("abc")
                 .nickname(UUID.randomUUID().toString())
+                .suspended(false)
                 .build();
 
         // 사용자 저장
@@ -54,6 +55,7 @@ class UserRequestRepositoryTest extends StudyPodApplicationTests {
                 .role(AccountRole.ROLE_USER)
                 .name("abc")
                 .nickname(UUID.randomUUID().toString())
+                .suspended(false)
                 .build();
 
         // 저장 후 저장된 객체 return
@@ -79,6 +81,7 @@ class UserRequestRepositoryTest extends StudyPodApplicationTests {
                 .role(AccountRole.ROLE_USER)
                 .name("abc")
                 .nickname(UUID.randomUUID().toString())
+                .suspended(false)
                 .build();
 
         // 저장
@@ -108,6 +111,7 @@ class UserRequestRepositoryTest extends StudyPodApplicationTests {
                 .role(AccountRole.ROLE_USER)
                 .name("abc")
                 .nickname(UUID.randomUUID().toString())
+                .suspended(false)
                 .build();
 
         // 저장

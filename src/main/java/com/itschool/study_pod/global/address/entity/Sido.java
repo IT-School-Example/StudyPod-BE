@@ -22,7 +22,7 @@ import org.hibernate.type.SqlTypes;
 public class Sido implements Convertible<SidoRequest, SidoResponse> {
     @Id
     @JdbcTypeCode(SqlTypes.CHAR)
-    @Column(name = "sido_cd", length = 2)
+    @Column(name = "sido_cd", columnDefinition = "CHAR(2)", length = 2)
     private String sidoCd;
 
     @Column(name = "sido_nm", columnDefinition = "character varying(100)")

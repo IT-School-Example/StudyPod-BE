@@ -40,6 +40,7 @@ public class UserService extends CrudService<UserRequest, UserResponse, User> {
                 .name(request.getName())
                 .nickname(request.getNickname())
                 .createdBy(request.getEmail())
+                .suspended(false)
                 .build();
     }
     /*
