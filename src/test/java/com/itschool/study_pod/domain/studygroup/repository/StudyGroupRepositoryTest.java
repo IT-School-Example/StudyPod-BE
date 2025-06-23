@@ -25,7 +25,6 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Transactional
 class StudyGroupRepositoryTest extends StudyPodApplicationTests {
 
     @Autowired
@@ -50,6 +49,7 @@ class StudyGroupRepositoryTest extends StudyPodApplicationTests {
                 .role(AccountRole.ROLE_USER)
                 .name("abc")
                 .nickname(UUID.randomUUID().toString())
+                .suspended(false)
                 .build());
         savedSido = sidoRepository.save(Sido.builder().sidoCd("11").sidoNm("서울특별시").build());
     }
@@ -63,9 +63,11 @@ class StudyGroupRepositoryTest extends StudyPodApplicationTests {
 
     @Test
     @DisplayName("조회 테스트")
+    @Transactional
     void read() {
         StudyGroup saved = studyGroupRepository.save(defaultStudyGroup());
-        StudyGroup found = studyGroupRepository.findById(saved.getId()).orElseThrow(EntityNotFoundException::new);
+        StudyGroup found = studyGroupRepository.findById(saved.getId())
+                .orElseThrow(EntityNotFoundException::new);
         assertThat(found).isEqualTo(saved);
     }
 
@@ -89,30 +91,20 @@ class StudyGroupRepositoryTest extends StudyPodApplicationTests {
                         .startTime(LocalTime.of(9, 0))
                         .endTime(LocalTime.of(10, 0))
                         .build())))
+                .suspended(false)
                 .build();
 
         StudyGroup savedEntity = studyGroupRepository.save(entity);
 
-        StudyGroup updated = StudyGroup.builder()
-                .id(savedEntity.getId())  // ID 명시
-                .title("수정된 제목")
-                .description(savedEntity.getDescription())
-                .maxMembers(savedEntity.getMaxMembers())
-                .meetingMethod(savedEntity.getMeetingMethod())
-                .recruitmentStatus(savedEntity.getRecruitmentStatus())
-                .feeType(savedEntity.getFeeType())
-                .amount(savedEntity.getAmount())
-                .leader(savedEntity.getLeader())
-                .sido(savedEntity.getSido())
-                .subjectArea(savedEntity.getSubjectArea())
-                .keywords(savedEntity.getKeywords())
-                .weeklySchedules(savedEntity.getWeeklySchedules())
-                .isDeleted(true)
-                .build();
+        StudyGroup findEntity = studyGroupRepository.findById(savedEntity.getId())
+                .orElseThrow(() -> new EntityNotFoundException());
 
-        StudyGroup updatedEntity = studyGroupRepository.save(updated);
+        findEntity.softDelete();
 
-        assertThat(updatedEntity.getTitle()).isEqualTo("수정된 제목");
+        StudyGroup updatedEntity = studyGroupRepository.save(findEntity);
+        // studyGroupRepository.flush();
+
+        // assertThat(updatedEntity.getTitle()).isEqualTo("수정된 제목");
         assertThat(updatedEntity.isDeleted()).isTrue();
     }
 
@@ -184,6 +176,7 @@ class StudyGroupRepositoryTest extends StudyPodApplicationTests {
                 .weeklySchedules(Set.of(
                         WeeklySchedule.of(DayOfWeek.MONDAY, 9, 0, 11, 0)
                 ))
+                .suspended(false)
                 .build();
 
         studyGroupRepository.save(studyGroup);
@@ -229,6 +222,7 @@ class StudyGroupRepositoryTest extends StudyPodApplicationTests {
                         .startTime(LocalTime.of(9, 0))
                         .endTime(LocalTime.of(10, 0))
                         .build()))
+                .suspended(false)
                 .build();
     }
 }

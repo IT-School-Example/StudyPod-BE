@@ -21,7 +21,7 @@ public class RefreshToken {
     @Column(name = "account_id", nullable = false)
     private Long accountId;
 
-    @Column(name = "refresh_token", nullable = false)
+    @Column(name = "refresh_token", nullable = false, length = 512)
     private String refreshToken;
 
     public void update(String newRefreshToken) {
