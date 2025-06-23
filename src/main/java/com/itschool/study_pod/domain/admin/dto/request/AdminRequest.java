@@ -1,10 +1,11 @@
 package com.itschool.study_pod.domain.admin.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 import lombok.*;
+import com.itschool.study_pod.domain.admin.dto.request.AdminRequest.SuspendStudyGroupRequest;
+
 
 @Data // 종합선물세트 : @Getter, @Setter, @ToString, @EqualsAndHashCode, @RequiredArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -26,8 +27,39 @@ public class AdminRequest {
     @NotEmpty
     private String name;
 
+    @NotEmpty   // ✅ 추가
+    private String createdBy;
+
+    @NotEmpty   // ✅ 추가
+    private String updatedBy;
+
     /*@NotNull
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private AccountRole role;*/
+
+    // ✅ 회원 정지 요청 DTO 통합
+    @Getter
+    @Setter
+    public static class SuspendUserRequest {
+
+        @NotNull(message = "회원 ID는 필수입니다.")
+        private Long userId;
+
+        @NotBlank(message = "정지 사유를 입력해야 합니다.")
+        private String reason;
+    }
+
+    // 추가
+    @Getter
+    @Setter
+    public static class SuspendStudyGroupRequest {
+        @NotNull
+        @JsonProperty("studyGroupId")
+        private Long studyGroupId;
+
+        @NotBlank
+        private String reason;
+    }
+
 
 }

@@ -18,8 +18,18 @@ public abstract class IncludeFileUrl<Req, Res> extends BaseEntity implements Con
     @Column
     protected String fileUrl;
 
+    // 추가
+    @Column(name = "is_deleted", insertable = false, updatable = false)
+    protected boolean deleted = false;
+
     // 기존 파일 경로 수정
-    public void updateFileUrl(String fileUrl){
+    public void updateFileUrl(String fileUrl) {
         this.fileUrl = fileUrl;
     }
+
+    // 추가
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
 }

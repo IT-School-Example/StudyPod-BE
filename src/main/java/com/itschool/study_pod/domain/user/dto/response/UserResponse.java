@@ -1,5 +1,6 @@
 package com.itschool.study_pod.domain.user.dto.response;
 
+import com.itschool.study_pod.domain.user.entity.User;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -31,6 +32,16 @@ public class UserResponse {
     public static UserResponse withId(Long id) {
         return UserResponse.builder()
                 .id(id)
+                .build();
+    }
+
+    // ✅ 정적 팩토리 메서드 추가
+    public static UserResponse fromEntity(User user) {
+        return UserResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .name(user.getName())
+                .nickname(user.getNickname())
                 .build();
     }
 }
