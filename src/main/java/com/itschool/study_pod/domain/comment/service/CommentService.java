@@ -12,6 +12,7 @@ import com.itschool.study_pod.global.enumclass.StudyBoardCategory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,7 +45,9 @@ public class CommentService extends CrudService<CommentRequest, CommentResponse,
     }
 
     // 댓글 생성
-    public Header<CommentResponse> createCommentIfFreeBoard(CommentRequest request) {
+    public Header<CommentResponse> createCommentIfFreeBoard(Long studyBoardId, CommentRequest request) {
+        validateFreeBoard(studyBoardId);
+        request.getStudyBoard().setId(studyBoardId);
         Comment comment = commentRepository.save(Comment.of(request));
         return Header.OK(comment.response());
     }
@@ -74,7 +77,25 @@ public class CommentService extends CrudService<CommentRequest, CommentResponse,
         validateFreeBoard(studyBoardId);
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("댓글이 존재하지 않습니다."));
-        commentRepository.delete(comment);
+
+        // 대댓글까지 모두 삭제
+        deleteCommentAndChildren(commentId);
+
         return Header.OK(comment.response());
+    }
+
+    // 댓글과 대댓글들까지 삭제
+    @Transactional
+    public void deleteCommentAndChildren(Long commentId) {
+
+        List<Comment> childComments = commentRepository.findAllByParentCommentId(commentId);
+
+        // 자식 댓글들에 대해 재귀 삭제 호출
+        for (Comment child : childComments) {
+            deleteCommentAndChildren(child.getId());
+        }
+
+        // 현재 댓글 삭제
+        commentRepository.deleteById(commentId);
     }
 }

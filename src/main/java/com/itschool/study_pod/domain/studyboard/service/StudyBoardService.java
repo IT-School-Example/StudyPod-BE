@@ -1,5 +1,7 @@
 package com.itschool.study_pod.domain.studyboard.service;
 
+import com.itschool.study_pod.domain.comment.entity.Comment;
+import com.itschool.study_pod.domain.comment.repository.CommentRepository;
 import com.itschool.study_pod.domain.studyboard.repository.StudyBoardRepository;
 import com.itschool.study_pod.global.base.crud.CrudService;
 import com.itschool.study_pod.domain.studyboard.dto.request.StudyBoardRequest;
@@ -12,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +24,8 @@ import java.util.Optional;
 public class StudyBoardService extends CrudService<StudyBoardRequest, StudyBoardResponse, StudyBoard> {
 
     private final StudyBoardRepository studyBoardRepository;
+
+    private final CommentRepository commentRepository;
 
     @Override
     protected JpaRepository<StudyBoard, Long> getBaseRepository() {
@@ -36,6 +41,19 @@ public class StudyBoardService extends CrudService<StudyBoardRequest, StudyBoard
         Page<StudyBoard> studyBoards = studyBoardRepository.findByStudyBoardCategory(studyBoardCategory, pageable);
 
         return convertPageToList(studyBoards);
+    }
+
+    @Override
+    @Transactional
+    // 스터디 게시판 삭제시 댓글 자동 삭제
+    public Header<Void> delete(Long id) {
+        // 댓글 삭제
+        List<Comment> commentList = commentRepository.findAllByStudyBoardId(id);
+
+        commentRepository.deleteAll(commentList);
+
+        // 스터디 게시글 삭제
+        return super.delete(id);
     }
 
     public Header<StudyBoardResponse> findByStudyBoardIdAndCategory(Long studyBoardId, StudyBoardCategory studyBoardCategory) {
