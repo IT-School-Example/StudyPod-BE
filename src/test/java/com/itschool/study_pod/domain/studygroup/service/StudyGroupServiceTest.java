@@ -57,6 +57,7 @@ class StudyGroupServiceTest extends StudyPodApplicationTests {
                 .name("테스터")
                 .nickname("nick" + UUID.randomUUID())
                 .role(AccountRole.ROLE_USER)
+                .suspended(false)
                 .build());
 
         sido = sidoRepository.save(Sido.builder()

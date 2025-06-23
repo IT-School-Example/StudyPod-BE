@@ -27,12 +27,6 @@ public class AdminRequest {
     @NotEmpty
     private String name;
 
-    @NotEmpty   // ✅ 추가
-    private String createdBy;
-
-    @NotEmpty   // ✅ 추가
-    private String updatedBy;
-
     /*@NotNull
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private AccountRole role;*/

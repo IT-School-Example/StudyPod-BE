@@ -52,8 +52,6 @@ public class AdminService extends CrudService<AdminRequest, AdminResponse, Admin
                 .name(request.getName())
                 .password(bCryptPasswordEncoder.encode(request.getPassword()))
                 .role(AccountRole.ROLE_ADMIN)
-                .createdBy(request.getCreatedBy())      // ✅ 추가
-                .updatedBy(request.getUpdatedBy())      // ✅ 추가
                 .build();
     }
 
@@ -114,8 +112,8 @@ public class AdminService extends CrudService<AdminRequest, AdminResponse, Admin
     public void deleteStudyGroup(Long studyGroupId) {
         StudyGroup group = studyGroupRepository.findById(studyGroupId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "스터디 그룹을 찾을 수 없습니다."));
-        group.setDeleted(true);
-        studyGroupRepository.save(group);
+
+        studyGroupRepository.delete(group);
     }
 
     /**

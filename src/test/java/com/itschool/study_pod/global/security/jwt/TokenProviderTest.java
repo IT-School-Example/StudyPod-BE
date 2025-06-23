@@ -48,6 +48,7 @@ class TokenProviderTest extends StudyPodApplicationTests {
                 .password("test")
                 .name("테스터")
                 .role(AccountRole.ROLE_USER)
+                .suspended(false)
                 .build());
     }
 

@@ -86,6 +86,7 @@ public class StudyGroupService extends CrudWithFileService<StudyGroupRequest, St
                     .subjectArea(subjectArea)
                     .keywords(data.getKeywords())
                     .weeklySchedules(data.getWeeklySchedules())
+                    .suspended(false)
                     .build();
 
             if (file != null && !file.isEmpty()) {

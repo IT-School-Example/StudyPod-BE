@@ -38,6 +38,7 @@ public class StudyBoardRepositoryTest extends StudyPodApplicationTests {
                 .role(AccountRole.ROLE_USER)
                 .name("abc")
                 .nickname(UUID.randomUUID().toString())
+                .suspended(false)
                 .build();
 
         savedUser = userRepository.save(user);

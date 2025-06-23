@@ -47,7 +47,7 @@ public class StudyGroup extends IncludeFileUrl<StudyGroupRequest, StudyGroupResp
 
     // ✅ 추가됨: 관리자 정지 여부
     @Column(name = "is_suspended", nullable = false)
-    private Boolean suspended = false;
+    private Boolean suspended;
 
     // ✅ 추가됨: 정지 사유
     @Column(name = "suspend_reason")
@@ -121,6 +121,7 @@ public class StudyGroup extends IncludeFileUrl<StudyGroupRequest, StudyGroupResp
                 .keywords(new HashSet<>(request.getKeywords()))
                 .weeklySchedules(new HashSet<>(request.getWeeklySchedules()))
                 // .fileUrl(request.getFileUrl())
+                .suspended(false)
                 .build();
     }
 

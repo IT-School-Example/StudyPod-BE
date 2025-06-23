@@ -65,6 +65,7 @@ class EnrollmentRepositoryTest extends StudyPodApplicationTests {
                         .role(AccountRole.ROLE_USER)
                         .name("abc")
                         .nickname(UUID.randomUUID().toString())
+                        .suspended(false)
                         .build()
         );
 
@@ -97,6 +98,7 @@ class EnrollmentRepositoryTest extends StudyPodApplicationTests {
                                 .startTime(LocalTime.of(9, 0))
                                 .endTime(LocalTime.of(10, 0))
                                 .build()))
+                        .suspended(false)
                         .build()
         );
     }

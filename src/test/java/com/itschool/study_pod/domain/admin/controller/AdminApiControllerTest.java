@@ -70,6 +70,7 @@ class AdminApiControllerTest extends MockMvcTest {
                 .password("pass1234")
                 .name("테스트유저")
                 .role(AccountRole.ROLE_USER)
+                .suspended(false)
                 .build());
 
         subjectArea = subjectAreaRepository.save(SubjectArea.builder()
@@ -92,6 +93,7 @@ class AdminApiControllerTest extends MockMvcTest {
                 .maxMembers(5)
                 .feeType(FeeType.MONTHLY)
                 .amount(0L)
+                .suspended(false)
                 .build());
     }
 
@@ -215,6 +217,7 @@ class AdminApiControllerTest extends MockMvcTest {
                 .name("테스터")
                 .password("1234")
                 .role(AccountRole.ROLE_USER)
+                .suspended(false)
                 .build());
 
         SubjectArea subjectArea = subjectAreaRepository.save(

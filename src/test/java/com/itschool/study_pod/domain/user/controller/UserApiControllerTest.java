@@ -92,6 +92,7 @@ class UserApiControllerTest extends MockMvcTest {
                 .role(AccountRole.ROLE_USER)
                 .name("조회테스트")
                 .nickname("nick" + UUID.randomUUID())
+                .suspended(false)
                 .build());
 
         url.append("/").append(savedUser.getId());
@@ -123,6 +124,7 @@ class UserApiControllerTest extends MockMvcTest {
                 .role(AccountRole.ROLE_USER)
                 .name("수정테스트")
                 .nickname("수정될 닉네임")
+                .suspended(false)
                 .build());
 
         url.append("/").append(savedUser.getId());
@@ -167,6 +169,7 @@ class UserApiControllerTest extends MockMvcTest {
                 .role(AccountRole.ROLE_USER)
                 .name("조회테스트")
                 .nickname("nick" + UUID.randomUUID())
+                .suspended(false)
                 .build());
 
         final Long beforeCount = userRepository.count();
