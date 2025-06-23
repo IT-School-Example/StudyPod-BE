@@ -43,18 +43,18 @@ public class ChatRoomListItemResponse {
             String lastMessage,
             int unreadMessageCount,
             LocalDateTime lastMessageTime,
-            List<ChatParticipantResponse> participants,
+            //List<ChatParticipantResponse> participants,
             String opponentUsername) {
 
         return ChatRoomListItemResponse.builder()
                 .chatRoomId(chatRoom.getId())
+                .chatRoomType(chatRoom.getType())
                 .name(chatRoom.getName())
                 .lastMessage(lastMessage)
                 .unreadMessageCount((long) unreadMessageCount)
-                .participants(participants)
+                //.participants(participants)
                 .lastMessageTime(lastMessageTime)
                 .opponentUsername(opponentUsername)
-                .chatRoomType(chatRoom.getType())
                 .build();
     }
 }

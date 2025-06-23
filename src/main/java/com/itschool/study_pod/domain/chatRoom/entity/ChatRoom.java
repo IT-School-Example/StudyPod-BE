@@ -1,10 +1,14 @@
 package com.itschool.study_pod.domain.chatRoom.entity;
 
 import com.itschool.study_pod.domain.ChatParticipant.entity.ChatParticipant;
+import com.itschool.study_pod.domain.ChatParticipant.service.ChatParticipantService;
 import com.itschool.study_pod.domain.chatRoom.dto.request.ChatRoomRequest;
+import com.itschool.study_pod.domain.chatRoom.dto.request.DirectChatRoomRequest;
+import com.itschool.study_pod.domain.chatRoom.dto.request.StudyGroupChatRoomRequest;
 import com.itschool.study_pod.domain.chatRoom.dto.response.ChatRoomResponse;
 import com.itschool.study_pod.domain.studygroup.dto.response.StudyGroupSummaryResponse;
 import com.itschool.study_pod.domain.studygroup.entity.StudyGroup;
+import com.itschool.study_pod.domain.user.dto.response.UserResponse;
 import com.itschool.study_pod.domain.user.entity.User;
 import com.itschool.study_pod.global.base.BaseEntity;
 import com.itschool.study_pod.global.base.crud.Convertible;
@@ -38,7 +42,7 @@ public class ChatRoom extends BaseEntity implements Convertible<ChatRoomRequest,
 
     // 그룹 채팅
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "study_group_id", unique = true)
+    @JoinColumn(name = "study_group_id"/*, unique = true*/)
     private StudyGroup studyGroup;
 
     @Builder.Default
@@ -51,7 +55,16 @@ public class ChatRoom extends BaseEntity implements Convertible<ChatRoomRequest,
     }
 
     // 요청 DTO -> Entity로 변환하는 메서드
-    public static ChatRoom of(ChatRoomRequest request) { // create용
+    public static ChatRoom of(ChatRoomRequest request) {
+        if (request instanceof StudyGroupChatRoomRequest studyGroupChatRoomRequest) {
+            return of(studyGroupChatRoomRequest);
+        } else if (request instanceof DirectChatRoomRequest directChatRoomRequest) {
+            return of(directChatRoomRequest);
+        } else {
+            throw new IllegalArgumentException("알 수 없는 ChatRoomRequest 타입입니다.");
+        }
+    }
+   /* public static ChatRoom of(ChatRoomRequest request) { // create용
         ChatRoom chatRoom = ChatRoom.builder()
                 .type(request.getType())
                 .name(request.getName())
@@ -59,33 +72,54 @@ public class ChatRoom extends BaseEntity implements Convertible<ChatRoomRequest,
                 .build();
 
         if (request.getMemberIds() != null && !request.getMemberIds().isEmpty()) {
-            Set<ChatParticipant> participants = request.getMemberIds().stream()
-                    .map(userId -> ChatParticipant.builder()
-                            .user(User.withId(userId))
-                            .chatRoom(chatRoom)
-                            .build())
-                    .collect(Collectors.toSet());
-            chatRoom.getMembers().addAll(participants);
+            request.getMemberIds().forEach(userId -> {
+                ChatParticipant participant = ChatParticipant.builder()
+                        .user(User.withId(userId))
+                        .build();
+                chatRoom.addChatParticipant(participant);
+            });
         }
 
         return chatRoom;
-    }
-
-    @Override
+    }*/
+    /*@Override
     public void update(ChatRoomRequest request) {
         this.type = request.getType();
+        this.name = request.getName();
+        this.studyGroup = StudyGroup.withId(request.getCreatorId().getId());
 
         this.studyGroup = StudyGroup.withId(request.getStudyGroup().getId());
         this.name = request.getName();
+    }*/
+
+    public void update(ChatRoomRequest request) {
+        if (request instanceof StudyGroupChatRoomRequest studyGroupChatRoomRequest) {
+            update(studyGroupChatRoomRequest);
+        } else if (request instanceof DirectChatRoomRequest directChatRoomRequest) {
+            update(directChatRoomRequest);
+        } else {
+            throw new IllegalArgumentException("알 수 없는 ChatRoomRequest 타입입니다.");
+        }
     }
+
 
     @Override
     public ChatRoomResponse response() {
+//        Set<UserResponse> memberResponse = this.members.stream()
+//                .map(ChatParticipant::getUser)
+//                .map(User::response)
+//                .collect(Collectors.toSet());
+
         return ChatRoomResponse.builder()
                 .id(this.id)
                 .type(this.type)
                 .name(this.name)
-                .studyGroup(StudyGroupSummaryResponse.fromEntity(this.studyGroup))
+                //.studyGroup(StudyGroupSummaryResponse.fromEntity(this.studyGroup))
+                .studyGroup(studyGroup != null ? StudyGroupSummaryResponse.fromEntity(studyGroup) : null)
+                .members(this.members.stream()
+                        .map(ChatParticipant::getUser)
+                        .map(User::response)
+                        .collect(Collectors.toSet()))
                 .build();
     }
 
