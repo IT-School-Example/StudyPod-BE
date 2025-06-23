@@ -2,6 +2,7 @@ package com.itschool.study_pod.domain.ChatParticipant.service;
 
 import com.itschool.study_pod.domain.ChatParticipant.dto.request.ChatParticipantRequest;
 import com.itschool.study_pod.domain.ChatParticipant.dto.response.ChatParticipantResponse;
+import com.itschool.study_pod.domain.ChatParticipant.dto.response.ChatParticipantSummaryResponse;
 import com.itschool.study_pod.domain.ChatParticipant.entity.ChatParticipant;
 import com.itschool.study_pod.domain.ChatParticipant.repostory.ChatParticipantRepository;
 import com.itschool.study_pod.domain.chatRoom.entity.ChatRoom;
@@ -35,7 +36,7 @@ public class ChatParticipantService extends CrudService<ChatParticipantRequest, 
         }
     }
 
-    public Header<ChatParticipant> recordEntranceTime(User user, ChatRoom chatRoom) {
+    public Header<ChatParticipantSummaryResponse> recordEntranceTime(User user, ChatRoom chatRoom) {
         // 이미 참가한 사용자라면 joinedAt만 업데이트
         Optional<ChatParticipant> existingParticipant = chatParticipantRepository.findByUserAndChatRoom(user, chatRoom);
 
@@ -60,6 +61,13 @@ public class ChatParticipantService extends CrudService<ChatParticipantRequest, 
         }
         ChatParticipant savedParticipant = chatParticipantRepository.save(chatParticipant);
 
-        return Header.OK(savedParticipant);
+        //chatParticipant.addChatParticipant(savedParticipant);
+
+        ChatParticipantSummaryResponse response = ChatParticipantSummaryResponse.builder()
+                .id(savedParticipant.getId())
+                .nickname(savedParticipant.getUser().getNickname())
+                .entranceTime(savedParticipant.getJoinedAt())
+                .build();
+        return Header.OK(response);
     }
 }

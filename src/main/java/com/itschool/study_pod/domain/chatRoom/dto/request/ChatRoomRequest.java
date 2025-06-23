@@ -1,5 +1,6 @@
 package com.itschool.study_pod.domain.chatRoom.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.itschool.study_pod.domain.ChatParticipant.entity.ChatParticipant;
 import com.itschool.study_pod.domain.studygroup.entity.StudyGroup;
 import com.itschool.study_pod.domain.user.entity.User;
@@ -7,6 +8,7 @@ import com.itschool.study_pod.global.base.dto.ReferenceDto;
 import com.itschool.study_pod.global.enumclass.ChatRoomType;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,8 +16,8 @@ import java.util.Set;
 @Data // 종합선물세트 : @Getter, @Setter, @ToString, @EqualsAndHashCode, @RequiredArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
-public class ChatRoomRequest {
+@SuperBuilder
+public abstract class ChatRoomRequest {
 
     @NotNull
     private ChatRoomType type;
@@ -26,10 +28,11 @@ public class ChatRoomRequest {
     @NotNull
     private Long creatorId;
 
-    @NotNull
-    private ReferenceDto studyGroup;
+//    @NotNull
+//    private ReferenceDto studyGroup;
 
-    @NotNull
-    private Set<Long> memberIds = new HashSet<>();
-
+    /*@JsonInclude(JsonInclude.Include.NON_NULL)
+    private Set<Long> memberIds;*/
+    /*@JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private Set<Long> memberIds = new HashSet<>();*/
 }

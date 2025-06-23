@@ -85,7 +85,7 @@ public class ChatController {
                 }
             } else {
                 // 정의되지 않는 채팅방 타입 처리
-                log.warn("알 수 없는 채팅방입니다: chatRoomId={}", chatRoom.getId(), chatRoom.getType());
+                log.warn("알 수 없는 채팅방입니다: chatRoomId={} {}", chatRoom.getId(), chatRoom.getType());
                 return;
             }
 
