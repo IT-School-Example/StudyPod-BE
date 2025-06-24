@@ -28,10 +28,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // "/ws" 경로로 웹소켓 연결 엔드포인트 등록 (웹소켓 연결을 허용한다)
         registry.addEndpoint("/ws")
                 // 허용할 도메인 설정
-                .setAllowedOrigins("https://studypod.click",
-                        "https://www.studypod.click",
-                        "http://localhost:3000",
-                        "https://admin.studypod.click")
+                .setAllowedOriginPatterns("*")
                 .setHandshakeHandler(new DefaultHandshakeHandler())
                 // 웹소켓이 지원되지 않는 환경을 위해 SockJS 폴백 기능 활성화
                 .withSockJS();

@@ -12,6 +12,7 @@ import com.itschool.study_pod.global.base.dto.Header;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -36,6 +37,7 @@ public class ChatParticipantService extends CrudService<ChatParticipantRequest, 
         }
     }
 
+    @Transactional
     public Header<ChatParticipantSummaryResponse> recordEntranceTime(User user, ChatRoom chatRoom) {
         // 이미 참가한 사용자라면 joinedAt만 업데이트
         Optional<ChatParticipant> existingParticipant = chatParticipantRepository.findByUserAndChatRoom(user, chatRoom);

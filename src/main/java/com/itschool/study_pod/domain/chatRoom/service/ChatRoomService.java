@@ -170,6 +170,7 @@ public class ChatRoomService extends CrudService<ChatRoomRequest, ChatRoomRespon
         return Header.OK(response);
     }
 
+
     // 스터디 그룹 채팅방(해당 스터디그룹 회원만)
     @Override
     public Header<ChatRoomResponse> read(Long chatRoomId) {
@@ -225,7 +226,7 @@ public class ChatRoomService extends CrudService<ChatRoomRequest, ChatRoomRespon
             Message lastMessage = messageRepository.findTopByChatRoomIdOrderByCreatedAtDesc(chatRoom.getId());
 
             // 안 읽은 메시지 수 조회
-            Long unreadCount = messageRepository.countByChatRoomIdAndReceiverIdAndIsReadFalse(chatRoom.getId(), userId);
+            // Long unreadCount = messageRepository.countByChatRoomIdAndReceiverIdAndIsReadFalse(chatRoom.getId(), userId);
 
             // 상대방 닉네임 찾기
             String opponentUsername = chatRoom.getMembers().stream()
@@ -241,7 +242,7 @@ public class ChatRoomService extends CrudService<ChatRoomRequest, ChatRoomRespon
                     .name(chatRoom.getName())
                     .lastMessage(lastMessage != null ? lastMessage.getMessageText() : "")
                     .lastMessageTime(lastMessage != null ? lastMessage.getCreatedAt() : null)
-                    .unreadMessageCount(unreadCount)
+                    // .unreadMessageCount(unreadCount)
                     .opponentUsername(opponentUsername)
                     .build();
 

@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
@@ -36,8 +37,8 @@ public class ChatController {
     private final ChatParticipantService chatParticipantService;
     private final EnrollmentRepository enrollmentRepository;
 
-    @MessageMapping("/app/chat/message") // 클라이언트가 /app/chat/message로 보낼 경우 매핑
-    public void message(MessageRequest messageRequest, Principal principal) {
+    @MessageMapping("/chat/message") // 클라이언트가 /app/chat/message로 보낼 경우 매핑
+    public void message(MessageRequest messageRequest, @AuthenticationPrincipal Principal principal) {
 
         try {
             // 메시지 없을때 로그를 찍고 실행 중단
@@ -60,7 +61,7 @@ public class ChatController {
             }
 
             // 채팅방 조회
-            ChatRoom chatRoom = chatRoomRepository.findById(messageRequest.getChatRoom().getId())
+            ChatRoom chatRoom = chatRoomRepository.findWithMembersById(messageRequest.getChatRoom().getId())
                     .orElseThrow(() -> new RuntimeException("채팅방을 찾을 수 없습니다."));
 
             // 권한 검사 - 1:1채팅인지 그룹 채팅인지 구분

@@ -35,9 +35,9 @@ public class Message extends BaseEntity implements Convertible<MessageRequest, M
     private User sender;
 
     // 메시지를 받는 사용자
-    @ManyToOne(fetch = FetchType.LAZY)
+    /*@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id", nullable = false)
-    private User receiver;
+    private User receiver;*/
 
     // 메시지 내용
     @Column(name = "message_text", nullable = false)
@@ -55,8 +55,8 @@ public class Message extends BaseEntity implements Convertible<MessageRequest, M
     public static Message of(MessageRequest request) { //create용
         return Message.builder()
                 .chatRoom(ChatRoom.withId(request.getChatRoom().getId()))
-                .sender(User.of(request.getSender()))
-                .receiver(User.of(request.getReceiver()))
+                /*.sender(User.of(request.getSender()))
+                .receiver(User.of(request.getReceiver()))*/
                 .messageText(request.getMessageText())
                 .isRead(false)
                 .messageType(request.getMessageType())
@@ -66,10 +66,10 @@ public class Message extends BaseEntity implements Convertible<MessageRequest, M
     @Override
     public void update(MessageRequest request) {
         this.chatRoom = ChatRoom.withId(request.getChatRoom().getId());
-        this.sender = User.of(request.getSender());
-        this.receiver = User.of(request.getReceiver());
+        /*this.sender = User.of(request.getSender());
+        this.receiver = User.of(request.getReceiver());*/
         this.messageText = request.getMessageText();
-        this.isRead = request.isRead();
+        /*this.isRead = request.isRead();*/
         this.messageType = request.getMessageType();
     }
 
@@ -79,7 +79,7 @@ public class Message extends BaseEntity implements Convertible<MessageRequest, M
                 .id(this.id)
                 .chatRoom(ChatRoomResponse.withId(this.chatRoom.getId()))
                 .sender(this.sender.response())
-                .receiver(this.receiver.response())
+                // .receiver(this.receiver.response())
                 .messageText(this.messageText)
                 .isRead(this.isRead)
                 .messageType(this.messageType)

@@ -7,7 +7,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 
     Message findTopByChatRoomIdOrderByCreatedAtDesc(Long chatRoomId);
 
-    Long countByChatRoomIdAndReceiverIdAndIsReadFalse(Long chatRoomId, Long receiverId);
+    // Long countByChatRoomIdAndReceiverIdAndIsReadFalse(Long chatRoomId, Long receiverId);
 //    Optional<InterestedStudy> findById(Long interestedStudyList);
 //
 //    List<InterestedStudy> findByName(String name);
