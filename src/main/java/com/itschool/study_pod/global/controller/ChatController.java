@@ -47,6 +47,12 @@ public class ChatController {
                 return;
             }
 
+            // principal null 체크
+            if (principal == null) {
+                log.warn("WebSocket 인증 정보(principal)가 없습니다.");
+                return;
+            }
+
             // JWT에서 사용자 이메일 가져오기
             String email = principal.getName();
 

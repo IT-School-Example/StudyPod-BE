@@ -219,7 +219,7 @@ public class ChatRoomService extends CrudService<ChatRoomRequest, ChatRoomRespon
 
     // 사용자가 참여 중인 채팅방 리스트 조회
     public Header<List<ChatRoomListItemResponse>> getChatRoomsForUser(Long userId) {
-        List<ChatRoom> chatRooms = chatRoomRepository.findDistinctByMembersUserId(userId);
+        List<ChatRoom> chatRooms = chatRoomRepository.findDistinctByMembersUserIdWithUser(userId);
 
         return Header.OK(chatRooms.stream().map(chatRoom -> {
             // 마지막 메시지 조회
