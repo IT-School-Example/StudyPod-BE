@@ -33,7 +33,7 @@ public class MessageService extends CrudService<MessageRequest, MessageResponse,
     @Override
     protected Message toEntity(MessageRequest request) {return Message.of(request);}
 
-    public Header<MessageResponse> createMessage(MessageRequest request) {
+   /* public Header<MessageResponse> createMessage(MessageRequest request) {
         // 채팅방, 사용자 조회 및 검증
         ChatRoom chatRoom = chatRoomRepository.findById(request.getChatRoom().getId())
                 .orElseThrow(() -> new RuntimeException("채팅방이 존재하지 않습니다."));
@@ -64,7 +64,7 @@ public class MessageService extends CrudService<MessageRequest, MessageResponse,
         return messages.stream()
                 .map(Message::response)
                 .collect(Collectors.toList());
-    }
+    }*/
     /*public Header<MessageResponse> createMessage(User user, ChatRoom chatRoom) {
 
         User nickname = userRepository.findById(user.getNickname())

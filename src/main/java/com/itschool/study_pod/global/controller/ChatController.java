@@ -124,18 +124,17 @@ public class ChatController {
 
             MessageResponse response = message.response();
 
-            String destination = (chatRoom.getType() == ChatRoomType.DIRECT)
+            /*String destination = (chatRoom.getType() == ChatRoomType.DIRECT)
                     ? "/topic/chat/direct" + chatRoom.getId()
-                    : "/topic/chat/group" + chatRoom.getId();
+                    : "/topic/chat/group" + chatRoom.getId();*/
 
             // 전송시 (엔티티 -> response 변환
             // 채팅방 구독자들에게 실시간으로 메시지 전송
             log.info("메시지 도착: {}", message.getMessageText());
-            messageSendingOperations.convertAndSend(destination, response);
-            /*messageSendingOperations.convertAndSend(
+            messageSendingOperations.convertAndSend(
                     "/topic/chat/room/" + chatRoom.getId(),
                     response
-            );*/
+            );
 
             log.info("메시지 전송 완료: {}", message);
         }catch (Exception e) {

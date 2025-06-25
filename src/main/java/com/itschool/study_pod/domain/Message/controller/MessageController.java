@@ -36,7 +36,7 @@ public class MessageController extends CrudController<MessageRequest, MessageRes
     @Override
     protected CrudService<MessageRequest, MessageResponse, Message> getBaseService() {return messageService; }
 
-    @Operation(summary = "채팅 메시지 전송", description = "WebSocket을 통해 받은 메시지를 저장한 뒤, 같은 채팅방 사용자들에게 실시간으로 전달합니다.")
+   /* @Operation(summary = "채팅 메시지 전송", description = "WebSocket을 통해 받은 메시지를 저장한 뒤, 같은 채팅방 사용자들에게 실시간으로 전달합니다.")
     @MessageMapping("/chat/send-message")
     public void sendMessage(MessageRequest messageRequest) {
         // 메시지 저장
@@ -62,5 +62,5 @@ public class MessageController extends CrudController<MessageRequest, MessageRes
     @GetMapping("/message/{chatRoomId}")
     public List<MessageResponse> getMessage(@PathVariable Long chatRoomId) {
         return messageService.findMessagesByChatRoomId(chatRoomId);
-    }
+    }*/
 }
