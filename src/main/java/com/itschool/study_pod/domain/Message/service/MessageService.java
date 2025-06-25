@@ -1,5 +1,6 @@
 package com.itschool.study_pod.domain.Message.service;
 
+import com.itschool.study_pod.common.AuthUtil;
 import com.itschool.study_pod.domain.Message.dto.request.MessageRequest;
 import com.itschool.study_pod.domain.Message.dto.response.MessageResponse;
 import com.itschool.study_pod.domain.Message.entity.Message;
@@ -37,7 +38,7 @@ public class MessageService extends CrudService<MessageRequest, MessageResponse,
         ChatRoom chatRoom = chatRoomRepository.findById(request.getChatRoom().getId())
                 .orElseThrow(() -> new RuntimeException("채팅방이 존재하지 않습니다."));
 
-        User sender = userRepository.findByNickname(request.getSender().getNickname())
+        User sender = userRepository.findByNickname(AuthUtil.getCurrentAccountDetails().getNickname())
                 .orElseThrow(() -> new RuntimeException("해당 사용자(닉네임)가 없습니다."));
 
         Message message = Message.builder()

@@ -1,5 +1,6 @@
 package com.itschool.study_pod.global.base.account;
 
+import com.itschool.study_pod.domain.user.entity.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -60,5 +61,14 @@ public class AccountDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true; // 구현 시 구분 필드 필요
+    }
+
+    public String getNickname() {
+        if(account instanceof User) {
+            User user = (User) account;
+            return user.getNickname();
+        } else {
+            throw new RuntimeException("일반 사용자가 아닙니다.");
+        }
     }
 }

@@ -14,4 +14,14 @@ public class AuthUtil {
         }
         throw new IllegalArgumentException("인증된 사용자 정보를 확인할 수 없습니다.");
     }
+
+    public static AccountDetails getCurrentAccountDetails() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof AccountDetails) {
+            AccountDetails accountDetails = (AccountDetails) principal;
+            return accountDetails;
+        }
+        throw new IllegalArgumentException("인증된 사용자 정보를 확인할 수 없습니다.");
+    }
 }
