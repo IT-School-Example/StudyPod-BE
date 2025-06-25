@@ -2,6 +2,7 @@ package com.itschool.study_pod.domain.ChatParticipant.controller;
 
 import com.itschool.study_pod.domain.ChatParticipant.dto.request.ChatParticipantRequest;
 import com.itschool.study_pod.domain.ChatParticipant.dto.response.ChatParticipantResponse;
+import com.itschool.study_pod.domain.ChatParticipant.dto.response.ChatParticipantSummaryResponse;
 import com.itschool.study_pod.domain.ChatParticipant.entity.ChatParticipant;
 import com.itschool.study_pod.domain.ChatParticipant.service.ChatParticipantService;
 import com.itschool.study_pod.domain.chatRoom.entity.ChatRoom;
@@ -34,9 +35,16 @@ public class ChatParticipantController extends CrudController<ChatParticipantReq
     protected CrudService<ChatParticipantRequest, ChatParticipantResponse, ChatParticipant> getBaseService() {return chatParticipantService; }
 
     @GetMapping("/check")
+    @Operation(summary = "채팅방 참여자 검증 API", description = "특정 유저가 해당 채팅방에 참여 중인지 확인합니다.")
     public ResponseEntity<ChatParticipantResponse> chatParticipant(
-            @RequestParam Long userId,
-            @RequestParam Long chatRoomId) {
+            @RequestParam(name = "userId", required = false) Long userId,
+            @RequestParam(name = "chatRoomId", required = false) Long chatRoomId) {
+        if (userId == null || chatRoomId == null) {
+            return ResponseEntity.badRequest().body(
+                    ChatParticipantResponse.builder()
+                            .message("userId와 chatRoomId는 필수 입니다.")
+                            .build());
+        }
         chatParticipantService.checkUserInChatRoom(userId, chatRoomId);
 
         ChatParticipantResponse response = ChatParticipantResponse.builder()
@@ -47,7 +55,7 @@ public class ChatParticipantController extends CrudController<ChatParticipantReq
     }
     @PostMapping("/chat-participants/enter")
     @Operation(summary = "입장기록", description = "입장 기록 API")
-    public Header<ChatParticipant> saveEntranceRecord(@RequestBody ChatParticipantRequest request) {
+    public Header<ChatParticipantSummaryResponse> saveEntranceRecord(@RequestBody ChatParticipantRequest request) {
 
         Long userId = request.getUser().getId();
         Long chatRoomId = request.getChatRoom().getId();

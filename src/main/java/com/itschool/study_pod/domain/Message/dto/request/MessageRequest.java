@@ -23,20 +23,19 @@ public class MessageRequest {
     private ChatRoom chatRoom;
 
     // 메시지를 보낸 사용자
-    @NotNull
+    /*@NotNull
     private UserRequest sender;
 
     // 메시지를 받는 사용자
     @NotNull
-    private UserRequest receiver;
+    private UserRequest receiver;*/
 
     // 메시지 내용
-    @NotNull
     private String messageText;
 
     // 메시지 읽었는지 여부
-    @NotNull
-    private boolean isRead;
+   /* @NotNull
+    private boolean isRead;*/
 
     @NotNull
     private MessageType messageType;

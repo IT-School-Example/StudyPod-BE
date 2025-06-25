@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
@@ -36,13 +37,13 @@ public class ChatController {
     private final ChatParticipantService chatParticipantService;
     private final EnrollmentRepository enrollmentRepository;
 
-    @MessageMapping("/app/chat/message") // 클라이언트가 /app/chat/message로 보낼 경우 매핑
-    public void message(MessageRequest messageRequest, Principal principal) {
+    @MessageMapping("/chat/message") // 클라이언트가 /app/chat/message로 보낼 경우 매핑
+    public void message(MessageRequest messageRequest, @AuthenticationPrincipal Principal principal) {
 
         try {
             // 메시지 없을때 로그를 찍고 실행 중단
-            if (messageRequest == null) {
-                log.warn("수신된 메시지가 null입니다.");
+            if (messageRequest == null || messageRequest.getChatRoom() == null) {
+                log.warn("잘못된 메시지 요청: {}", messageRequest);
                 return;
             }
 
@@ -53,15 +54,17 @@ public class ChatController {
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
+            // 채팅방 조회
+            ChatRoom chatRoom = chatRoomRepository.findWithMembersById(messageRequest.getChatRoom().getId())
+                    .orElseThrow(() -> new RuntimeException("채팅방을 찾을 수 없습니다."));
+
             // 채팅방정보&보낸 사람정보가 없으면 로그찍고 중단
-            if (messageRequest.getChatRoom() == null) {
+            if (messageRequest == null || messageRequest.getChatRoom() == null) {
                 log.warn("채팅방 또는 보낸 사람 정보가 없습니다. message: {}", messageRequest);
                 return;
             }
 
-            // 채팅방 조회
-            ChatRoom chatRoom = chatRoomRepository.findById(messageRequest.getChatRoom().getId())
-                    .orElseThrow(() -> new RuntimeException("채팅방을 찾을 수 없습니다."));
+
 
             // 권한 검사 - 1:1채팅인지 그룹 채팅인지 구분
             if (chatRoom.getType() == ChatRoomType.GROUP) {
@@ -85,7 +88,7 @@ public class ChatController {
                 }
             } else {
                 // 정의되지 않는 채팅방 타입 처리
-                log.warn("알 수 없는 채팅방입니다: chatRoomId={}", chatRoom.getId(), chatRoom.getType());
+                log.warn("알 수 없는 채팅방입니다: chatRoomId={} {}", chatRoom.getId(), chatRoom.getType());
                 return;
             }
 
@@ -94,7 +97,6 @@ public class ChatController {
 
             String messageText;
             if (MessageType.ENTER.equals(messageType)) {
-
                 // 입장 메시지일때,
                 chatParticipantService.checkUserInChatRoom(user.getId(), chatRoom.getId());
                 chatParticipantService.recordEntranceTime(user, chatRoom);
@@ -121,6 +123,10 @@ public class ChatController {
             Message savedMessage = messageRepository.save(message);
 
             MessageResponse response = message.response();
+
+            /*String destination = (chatRoom.getType() == ChatRoomType.DIRECT)
+                    ? "/topic/chat/direct" + chatRoom.getId()
+                    : "/topic/chat/group" + chatRoom.getId();*/
 
             // 전송시 (엔티티 -> response 변환
             // 채팅방 구독자들에게 실시간으로 메시지 전송

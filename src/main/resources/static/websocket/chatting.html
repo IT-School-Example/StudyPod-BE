@@ -2,10 +2,8 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Message</title>
-    <!-- SockJS CDN -->
+    <title>채팅방 목록 + 채팅창</title>
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
-    <!-- @stomp/stompjs CDN -->
     <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
     <style>
         body {
@@ -13,111 +11,144 @@
           background-color: #deb887;
           margin: 0;
           padding: 20px;
+        }
 
+        #chatRoomList {
+          height: 300px;
+          overflow-y: auto;
+          border: 1px solid #ccc;
+          padding: 10px;
+          margin-bottom: 10px;
+          background-color: #fff;
+        }
+
+        #chatRoomList div {
+          cursor: pointer;
+          padding: 8px;
+          border-bottom: 1px solid #ddd;
+        }
+
+        #chatRoomList div:hover {
+          background-color: #f0f0f0;
+        }
+
+        #message {
+          height: 60vh;
+          max-height: 600px;
+          background-color: #fff;
+          opacity: 0.8;
+          border-radius: 10px;
+          padding: 10px;
+          overflow-y: auto;
+          margin-bottom: 10px;
         }
 
         input {
-          background-color: #fff;
-          opacity: 0.7;
-        }
-
-        #roomId {
-          width: calc(100% - 155px);
+          width: calc(100% - 100px);
           padding: 11px;
-          margin-bottom: 10px;
           border: none;
           border-radius: 8px;
-        }
-        #messageInput {
-          width: calc(100% - 90px);
-          padding: 11px;
           margin-bottom: 10px;
-          border: none;
-          border-radius: 8px;
-          opacity: 0.7;
+          opacity: 0.8;
         }
 
         button {
           padding: 8px 16px;
-          margin-left: 4px;
           border: none;
           border-radius: 8px;
           background-color: #cd853f;
           color: white;
           cursor: pointer;
-        }
-
-        #message {
-          height: 80vh;
-          max-height: 780px;
-          background-color: #fff;
-          opacity: 0.7;
-          border-radius: 10px;
-          padding: 10px;
-          overflow-y: auto;
-          margin-bottom: 10px;
-
+          margin-left: 4px;
         }
     </style>
 </head>
-<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
 <body>
-<!-- 채팅방 리스트 -->
-<div id="chatRoomList" style="height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px">
 
+<h2>채팅방 목록</h2>
+<div id="chatRoomList">
+    <p>불러오는 중...</p>
 </div>
-<!-- 방 번호 입력창 -->
-<input type="text" id="roomId" placeholder="방 번호 입력해 주세요." />
 
-<!-- 연결 버튼 -->
-<button id="connect">연결</button>
+<h2>채팅창</h2>
+<button id="leaveBtn" disabled>퇴장</button>
 
-<!-- 퇴장버튼 -->
-<button id="leaveBtn">퇴장</button>
+<div id="message"></div>
 
-<!--메시지 보여줄 공간 -->
-<div id = "message"></div>
-
-<!-- 메시지 입력창 -->
-<input type="text" id="messageInput" placeholder="메시지를 입력해 주세요." />
-
-<!-- 전송 버튼 -->
-<button id="sendBtn">전송</button>
+<input type="text" id="messageInput" placeholder="메시지를 입력해 주세요." disabled />
+<button id="sendBtn" disabled>전송</button>
 
 <script>
     let stompClient = null;
     let roomId = null;
     let subscription = null;
 
-    const connectBtn = document.getElementById("connect");
+    const chatRoomList = document.getElementById("chatRoomList");
     const messageBox = document.getElementById("message");
     const input = document.getElementById("messageInput");
     const sendBtn = document.getElementById("sendBtn");
     const leaveBtn = document.getElementById("leaveBtn");
 
-    // 서버와 연결
-    connectBtn.addEventListener("click", function () {
+    function loadChatRooms() {
+        fetch("/api/chat-rooms/list")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("방 목록을 가져오는 데 실패했습니다.");
+                }
+                return response.json();
+            })
+            .then(response => {
+                let data = response.data;
+
+                chatRoomList.innerHTML = "";
+
+                data.forEach(room => {
+                    const roomItem = document.createElement("div");
+                    roomItem.textContent = `${room.name} (안 읽은 메시지 수 : ${room.unreadMessageCount})`;
+                    roomItem.addEventListener("click", function() {
+                        enterRoom(room.chatRoomId, room.chatRoomType);
+                    });
+
+                    chatRoomList.appendChild(roomItem);
+                });
+
+                if (data.length === 0) {
+                    chatRoomList.innerHTML = "<p>생성된 채팅방이 없습니다.</p>";
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                chatRoomList.innerHTML = "<p>방 목록을 가져오는 데 실패했습니다.</p>";
+            });
+    }
+
+    function enterRoom(selectedRoomId, chatRoomType) {
         if (stompClient && stompClient.connected) {
-            alert("이미 연결되어 있습니다.");
+            alert("이미 연결되어 있습니다. 먼저 퇴장하세요.");
             return;
         }
 
-        roomId = document.getElementById("roomId").value.trim();
-        if (!roomId) {
-            alert("방 번호를 입력하세요.");
-            return;
-        }
+        roomId = selectedRoomId;
 
-        connectBtn.disabled = true;
-
-        const socket = new SockJS('/ws');
+        const socket = new SockJS(window.location.origin + '/ws');
         stompClient = Stomp.over(socket);
 
-        stompClient.connect({}, function (frame) {
+        const headers = {};
+
+        stompClient.connect(headers, function (frame) {
             console.log('웹소켓 서버 연결 성공!', frame);
 
-            // 채팅방 구독
-            subscription = stompClient.subscribe("/topic/chat/room/" + roomId, function (message) {
+            // ✅ 구독 주소 생성
+            let subscribeUrl = "";
+            if (chatRoomType === "DIRECT") {
+                subscribeUrl = `/topic/chat/direct${roomId}`;
+            } else {
+                subscribeUrl = `/topic/chat/group${roomId}`;
+            }
+
+            console.log("Subscribe URL:", subscribeUrl);
+
+            subscription = stompClient.subscribe(subscribeUrl, function (message) {
                 const body = JSON.parse(message.body);
                 const nickname = body.sender?.nickname || "알 수 없음";
                 const time = new Date(body.createdAt).toLocaleTimeString();
@@ -130,14 +161,13 @@
                     handleLeaveMessage(nickname);
                     return;
                 } else {
-                    displayText = `<p class="talk-message"><strong>${nickname}</strong>: ${body.messageText} <span class="timestamp">${time}</span></p>`;
+                    displayText = `<p class="talk-message"><strong>${nickname}</strong>: ${escapeHtml(body.messageText)} <span class="timestamp">${time}</span></p>`;
                 }
 
                 messageBox.innerHTML += displayText + '<br>';
                 messageBox.scrollTop = messageBox.scrollHeight;
             });
 
-            // 입장 메시지 자동 전송
             stompClient.send('/app/chat/message', {}, JSON.stringify({
                 messageType: "ENTER",
                 chatRoom: { id: roomId }
@@ -146,14 +176,12 @@
             input.disabled = false;
             sendBtn.disabled = false;
             leaveBtn.disabled = false;
-
         }, function (error) {
             console.error("STOMP 연결 실패:", error);
             alert("서버 연결 실패!");
         });
-    });
+    }
 
-    // 메시지 보내기
     function sendMessage() {
         const text = input.value.trim();
         if (!text) return;
@@ -173,7 +201,6 @@
     }
 
     sendBtn.addEventListener("click", sendMessage);
-
     input.addEventListener("keydown", function (event) {
         if (event.key === "Enter") {
             event.preventDefault();
@@ -204,14 +231,13 @@
         }
 
         stompClient.disconnect(() => {
-            // 연결 종료 후 콜백
+            roomId = null;
             clearMessageBox();
         });
 
         input.disabled = true;
         sendBtn.disabled = true;
         leaveBtn.disabled = true;
-        connectBtn.disabled = false;
     }
 
     function clearMessageBox() {
@@ -219,6 +245,18 @@
             messageBox.innerHTML = "";
         }, 3000);
     }
+
+    function escapeHtml(unsafe) {
+        return unsafe
+             .replace(/&/g, "&amp;")
+             .replace(/</g, "&lt;")
+             .replace(/>/g, "&gt;")
+             .replace(/"/g, "&quot;")
+             .replace(/'/g, "&#039;");
+    }
+
+    // 초기 실행
+    loadChatRooms();
 </script>
 
 </body>

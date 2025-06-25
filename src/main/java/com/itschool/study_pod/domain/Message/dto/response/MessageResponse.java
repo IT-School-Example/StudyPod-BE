@@ -25,7 +25,7 @@ public class MessageResponse {
 
     private UserResponse sender;
 
-    private UserResponse receiver;
+    //private UserResponse receiver;
 
     private String messageText;
 
