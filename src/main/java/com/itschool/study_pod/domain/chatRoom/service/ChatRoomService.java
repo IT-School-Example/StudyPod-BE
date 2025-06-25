@@ -242,7 +242,7 @@ public class ChatRoomService extends CrudService<ChatRoomRequest, ChatRoomRespon
                     .name(chatRoom.getName())
                     .lastMessage(lastMessage != null ? lastMessage.getMessageText() : "")
                     .lastMessageTime(lastMessage != null ? lastMessage.getCreatedAt() : null)
-                    // .unreadMessageCount(unreadCount)
+                    //.unreadMessageCount(unreadCount)
                     .opponentUsername(opponentUsername)
                     .build();
 

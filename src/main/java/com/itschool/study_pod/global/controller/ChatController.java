@@ -42,8 +42,8 @@ public class ChatController {
 
         try {
             // 메시지 없을때 로그를 찍고 실행 중단
-            if (messageRequest == null) {
-                log.warn("수신된 메시지가 null입니다.");
+            if (messageRequest == null || messageRequest.getChatRoom() == null) {
+                log.warn("잘못된 메시지 요청: {}", messageRequest);
                 return;
             }
 
@@ -54,15 +54,17 @@ public class ChatController {
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
+            // 채팅방 조회
+            ChatRoom chatRoom = chatRoomRepository.findWithMembersById(messageRequest.getChatRoom().getId())
+                    .orElseThrow(() -> new RuntimeException("채팅방을 찾을 수 없습니다."));
+
             // 채팅방정보&보낸 사람정보가 없으면 로그찍고 중단
-            if (messageRequest.getChatRoom() == null) {
+            if (messageRequest == null || messageRequest.getChatRoom() == null) {
                 log.warn("채팅방 또는 보낸 사람 정보가 없습니다. message: {}", messageRequest);
                 return;
             }
 
-            // 채팅방 조회
-            ChatRoom chatRoom = chatRoomRepository.findWithMembersById(messageRequest.getChatRoom().getId())
-                    .orElseThrow(() -> new RuntimeException("채팅방을 찾을 수 없습니다."));
+
 
             // 권한 검사 - 1:1채팅인지 그룹 채팅인지 구분
             if (chatRoom.getType() == ChatRoomType.GROUP) {
@@ -95,7 +97,6 @@ public class ChatController {
 
             String messageText;
             if (MessageType.ENTER.equals(messageType)) {
-
                 // 입장 메시지일때,
                 chatParticipantService.checkUserInChatRoom(user.getId(), chatRoom.getId());
                 chatParticipantService.recordEntranceTime(user, chatRoom);
@@ -123,13 +124,18 @@ public class ChatController {
 
             MessageResponse response = message.response();
 
+            String destination = (chatRoom.getType() == ChatRoomType.DIRECT)
+                    ? "/topic/chat/direct" + chatRoom.getId()
+                    : "/topic/chat/group" + chatRoom.getId();
+
             // 전송시 (엔티티 -> response 변환
             // 채팅방 구독자들에게 실시간으로 메시지 전송
             log.info("메시지 도착: {}", message.getMessageText());
-            messageSendingOperations.convertAndSend(
+            messageSendingOperations.convertAndSend(destination, response);
+            /*messageSendingOperations.convertAndSend(
                     "/topic/chat/room/" + chatRoom.getId(),
                     response
-            );
+            );*/
 
             log.info("메시지 전송 완료: {}", message);
         }catch (Exception e) {
