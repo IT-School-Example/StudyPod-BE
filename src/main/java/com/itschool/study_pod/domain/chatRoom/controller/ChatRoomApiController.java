@@ -69,10 +69,10 @@ public class ChatRoomApiController extends CrudController<ChatRoomRequest, ChatR
             throw  new RuntimeException("알 수 없는 채팅방입니다.");
         }
     }
-    @GetMapping("/list/{userId}")
+    @GetMapping("/list")
     @Operation(summary = "사용자가 참여 중인 채팅방 리스트 조회", description = "현재 로그인한 사용자의 채팅방 목록 반환")
-    public Header<List<ChatRoomListItemResponse>> fetchUserChatRooms(@PathVariable(name = "userId") Long userId) {
-        // Long userId = AuthUtil.getCurrentAccountId();
+    public Header<List<ChatRoomListItemResponse>> fetchUserChatRooms() {
+        Long userId = AuthUtil.getCurrentAccountId();
         // log.info("현재 로그인한 사용자 ID: {}",userId);
         return chatRoomService.getChatRoomsForUser(userId);
     }
