@@ -98,6 +98,7 @@ public class WebSecurityConfig {
                                 new AntPathRequestMatcher("/api/user/find-pw"),
                                 new AntPathRequestMatcher("/api/login"),
                                 new AntPathRequestMatcher("/api/introduce/**"),
+                                new AntPathRequestMatcher("/api/study-groups/introduce/**"),
                                 new AntPathRequestMatcher("/api/user/{id}/summary"),
                                 new AntPathRequestMatcher("/login"),
                                 new AntPathRequestMatcher("/signup"),
@@ -105,6 +106,8 @@ public class WebSecurityConfig {
                                 new AntPathRequestMatcher("/api/admin-boards/faqs/**"),
                                 new AntPathRequestMatcher("/api/study-groups"),
                                 new AntPathRequestMatcher("/api/study-groups/public/{id}"),
+                                new AntPathRequestMatcher("/api/study-groups/search"),
+                                new AntPathRequestMatcher("/api/study-groups/filter/**"),
                                 new AntPathRequestMatcher("/api/user"),
                                 new AntPathRequestMatcher("/api/study-groups"),
                                 new AntPathRequestMatcher("/api/user/check-email")

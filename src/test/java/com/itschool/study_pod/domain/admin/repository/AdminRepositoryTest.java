@@ -1,13 +1,24 @@
 package com.itschool.study_pod.domain.admin.repository;
 
+import com.itschool.study_pod.JpaRepositoryTest;
 import com.itschool.study_pod.StudyPodApplicationTests;
 import com.itschool.study_pod.domain.admin.entity.Admin;
+import com.itschool.study_pod.global.config.AuditorAwareImpl;
+import com.itschool.study_pod.global.config.JpaAuditingConfig;
 import com.itschool.study_pod.global.enumclass.AccountRole;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
@@ -15,12 +26,10 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Transactional
-class AdminRepositoryTest extends StudyPodApplicationTests {
+class AdminRepositoryTest extends JpaRepositoryTest {
 
     @Autowired
     private AdminRepository adminRepository;
-
 
 
     @Test

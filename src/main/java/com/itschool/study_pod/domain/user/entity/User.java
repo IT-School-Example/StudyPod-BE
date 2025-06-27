@@ -21,10 +21,6 @@ public class User extends Account implements Convertible<UserRequest, UserRespon
     @Column(unique = true)
     private String nickname;
 
-    // ✅ 추가됨: 논리 삭제 여부
-    @Column(name = "is_deleted")
-    private Boolean deleted = false;
-
     // ✅ 추가됨: 정지 여부
     @Column(name = "is_suspended", nullable = false)
     private Boolean suspended = false;
@@ -98,11 +94,6 @@ public class User extends Account implements Convertible<UserRequest, UserRespon
                 .updatedAt(this.updatedAt)
                 .updatedBy(this.updatedBy)
                 .build();
-    }
-
-    // ✅ Setter 추가 (엔티티는 보호되어 있으므로 setter는 최소한으로 공개)
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
     }
 
     public void setSuspended(boolean suspended) {

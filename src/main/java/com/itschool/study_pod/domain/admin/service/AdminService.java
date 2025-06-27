@@ -77,8 +77,8 @@ public class AdminService extends CrudService<AdminRequest, AdminResponse, Admin
     public void deleteUser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "회원이 존재하지 않습니다."));
-        user.setDeleted(true);
-        userRepository.save(user);
+
+        userRepository.delete(user);
     }
 
     /**

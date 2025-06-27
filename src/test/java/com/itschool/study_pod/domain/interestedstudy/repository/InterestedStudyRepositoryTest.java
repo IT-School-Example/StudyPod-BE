@@ -1,6 +1,9 @@
 package com.itschool.study_pod.domain.interestedstudy.repository;
 
+import com.itschool.study_pod.JpaRepositoryTest;
 import com.itschool.study_pod.StudyPodApplicationTests;
+import com.itschool.study_pod.global.config.AuditorAwareImpl;
+import com.itschool.study_pod.global.config.JpaAuditingConfig;
 import com.itschool.study_pod.global.embedable.WeeklySchedule;
 import com.itschool.study_pod.domain.interestedstudy.entity.InterestedStudy;
 import com.itschool.study_pod.domain.studygroup.entity.StudyGroup;
@@ -18,6 +21,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
@@ -27,8 +33,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Transactional
-class InterestedStudyRepositoryTest extends StudyPodApplicationTests {
+class InterestedStudyRepositoryTest extends JpaRepositoryTest {
 
     @Autowired
     private InterestedStudyRepository interestedStudyRepository;
