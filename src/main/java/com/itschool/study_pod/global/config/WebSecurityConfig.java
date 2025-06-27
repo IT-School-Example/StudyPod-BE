@@ -98,6 +98,7 @@ public class WebSecurityConfig {
                                 new AntPathRequestMatcher("/api/user/find-pw"),
                                 new AntPathRequestMatcher("/api/login"),
                                 new AntPathRequestMatcher("/api/introduce/**"),
+                                new AntPathRequestMatcher("/api/study-groups/introduce/**"),
                                 new AntPathRequestMatcher("/api/user/{id}/summary"),
                                 new AntPathRequestMatcher("/login"),
                                 new AntPathRequestMatcher("/signup"),
