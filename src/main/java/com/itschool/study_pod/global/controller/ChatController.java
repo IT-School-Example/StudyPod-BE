@@ -76,7 +76,9 @@ public class ChatController {
             if (chatRoom.getType() == ChatRoomType.GROUP) {
                 // 그룹채팅방 권한 검사
                 Long studyGroupId = chatRoom.getStudyGroup().getId();
+                log.info("채팅방 studyGroupId = {}, userId = {}", studyGroupId, user.getId());
                 boolean isMember = enrollmentRepository.existsByStudyGroupIdAndUserIdAndStatus(studyGroupId, user.getId(), EnrollmentStatus.APPROVED);
+                log.info("isMember 조회 결과 = {}", isMember);
 
                 if (!isMember) {
                     log.warn("미승인 사용자 그룹채팅 메시지 접근 : userId={}, chatRoomId={}", user.getId(), chatRoom.getId());
@@ -97,6 +99,7 @@ public class ChatController {
                 log.warn("알 수 없는 채팅방입니다: chatRoomId={} {}", chatRoom.getId(), chatRoom.getType());
                 return;
             }
+
 
             // 메시지 타입 변환
             MessageType messageType = messageRequest.getMessageType();
