@@ -13,6 +13,7 @@ import com.itschool.study_pod.domain.chatRoom.dto.response.ChatRoomListItemRespo
 import com.itschool.study_pod.domain.chatRoom.dto.response.ChatRoomResponse;
 import com.itschool.study_pod.domain.chatRoom.entity.ChatRoom;
 import com.itschool.study_pod.domain.chatRoom.repository.ChatRoomRepository;
+import com.itschool.study_pod.domain.enrollment.entity.Enrollment;
 import com.itschool.study_pod.domain.enrollment.repository.EnrollmentRepository;
 import com.itschool.study_pod.domain.studygroup.entity.StudyGroup;
 import com.itschool.study_pod.domain.studygroup.repository.StudyGroupRepository;
@@ -100,6 +101,15 @@ public class ChatRoomService extends CrudService<ChatRoomRequest, ChatRoomRespon
         if (!studyGroup.getLeader().getId().equals(creator.getId())) {
             throw new RuntimeException("스터디그룹의 리더만 생성이 가능합니다.");
         }
+
+        enrollmentRepository.save (
+            Enrollment.builder()
+                    .studyGroup(studyGroup)
+                    .user(creator)
+                    .status(EnrollmentStatus.APPROVED)
+                    .introduce("") // 리더 자동 등록
+                    .build()
+        );
 
         ChatRoom chatRoom = ChatRoom.builder()
                 .type(ChatRoomType.GROUP)
@@ -219,7 +229,7 @@ public class ChatRoomService extends CrudService<ChatRoomRequest, ChatRoomRespon
 
     // 사용자가 참여 중인 채팅방 리스트 조회
     public Header<List<ChatRoomListItemResponse>> getChatRoomsForUser(Long userId) {
-        List<ChatRoom> chatRooms = chatRoomRepository.findDistinctByMembersUserId(userId);
+        List<ChatRoom> chatRooms = chatRoomRepository.findDistinctByMembersUserIdWithUser(userId);
 
         return Header.OK(chatRooms.stream().map(chatRoom -> {
             // 마지막 메시지 조회
