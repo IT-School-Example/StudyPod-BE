@@ -1,8 +1,11 @@
 package com.itschool.study_pod.domain.adminboard.repository;
 
+import com.itschool.study_pod.JpaRepositoryTest;
 import com.itschool.study_pod.StudyPodApplicationTests;
 import com.itschool.study_pod.domain.admin.entity.Admin;
 import com.itschool.study_pod.domain.adminboard.entity.AdminBoard;
+import com.itschool.study_pod.global.config.AuditorAwareImpl;
+import com.itschool.study_pod.global.config.JpaAuditingConfig;
 import com.itschool.study_pod.global.enumclass.AccountRole;
 import com.itschool.study_pod.global.enumclass.AdminBoardCategory;
 import com.itschool.study_pod.domain.admin.repository.AdminRepository;
@@ -12,14 +15,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Transactional
-public class AdminBoardRepositoryTest extends StudyPodApplicationTests {
+public class AdminBoardRepositoryTest extends JpaRepositoryTest {
 
     @Autowired
     private AdminBoardRepository adminBoardRepository;

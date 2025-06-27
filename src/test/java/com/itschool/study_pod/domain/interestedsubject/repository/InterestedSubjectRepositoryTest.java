@@ -1,9 +1,12 @@
 package com.itschool.study_pod.domain.interestedsubject.repository;
 
+import com.itschool.study_pod.JpaRepositoryTest;
 import com.itschool.study_pod.StudyPodApplicationTests;
 import com.itschool.study_pod.domain.interestedsubject.entity.InterestedSubject;
 import com.itschool.study_pod.domain.subjectarea.entity.SubjectArea;
 import com.itschool.study_pod.domain.user.entity.User;
+import com.itschool.study_pod.global.config.AuditorAwareImpl;
+import com.itschool.study_pod.global.config.JpaAuditingConfig;
 import com.itschool.study_pod.global.enumclass.AccountRole;
 import com.itschool.study_pod.global.enumclass.Subject;
 import com.itschool.study_pod.domain.subjectarea.repository.SubjectAreaRepository;
@@ -14,14 +17,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Transactional
-class InterestedSubjectRepositoryTest extends StudyPodApplicationTests {
+class InterestedSubjectRepositoryTest extends JpaRepositoryTest {
 
     @Autowired
     private InterestedSubjectRepository interestedSubjectRepository;
