@@ -95,7 +95,7 @@ public class WebSecurityConfig {
                                 new AntPathRequestMatcher("/api/me"),
                                 new AntPathRequestMatcher("/api/user/mailSend"),
                                 new AntPathRequestMatcher("/api/user/mailCheck"),
-                                new AntPathRequestMatcher("/api/user/find-pw"),
+                                new AntPathRequestMatcher("/api/user/find-pw/**"),
                                 new AntPathRequestMatcher("/api/login"),
                                 new AntPathRequestMatcher("/api/introduce/**"),
                                 new AntPathRequestMatcher("/api/study-groups/introduce/**"),
